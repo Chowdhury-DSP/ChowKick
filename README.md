@@ -9,7 +9,6 @@ UI:
 - Filter vis?
 
 DSP:
-- WDF's with templates!
 - More voices (SSE?)
 - More filter modes?
 

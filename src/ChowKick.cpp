@@ -2,7 +2,6 @@
 
 ChowKick::ChowKick() :
     trigger (vts),
-    pulseShaper (vts),
     resFilter (vts, trigger),
     outFilter (vts)
 {
@@ -19,7 +18,7 @@ void ChowKick::addParameters (Parameters& params)
 void ChowKick::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     monoBuffer.setSize (1, samplesPerBlock);
-    pulseShaper.reset (sampleRate);
+    pulseShaper = std::make_unique<PulseShaper> (vts, sampleRate);
     resFilter.reset (sampleRate);
     outFilter.reset (sampleRate);
 }
@@ -41,7 +40,7 @@ void ChowKick::processSynth (AudioBuffer<float>& buffer, MidiBuffer& midi)
     magicState.processMidiBuffer (midi, numSamples);
 
     trigger.processBlock (monoBuffer, midi);
-    pulseShaper.processBlock (monoBuffer.getWritePointer (0), numSamples);
+    pulseShaper->processBlock (monoBuffer.getWritePointer (0), numSamples);
     resFilter.processBlock (monoBuffer.getWritePointer (0), numSamples);
     outFilter.processBlock (monoBuffer.getWritePointer (0), numSamples);
 

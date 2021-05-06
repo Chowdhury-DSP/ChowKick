@@ -21,7 +21,7 @@ private:
     AudioBuffer<float> monoBuffer;
 
     Trigger trigger;
-    PulseShaper pulseShaper;
+    std::unique_ptr<PulseShaper> pulseShaper;
     ResonantFilter resFilter;
     OutputFilter outFilter;
 
