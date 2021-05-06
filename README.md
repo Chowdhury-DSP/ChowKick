@@ -3,6 +3,16 @@
 ![CI](https://github.com/Chowdhury-DSP/ChowKick/workflows/CI/badge.svg)
 [![License](https://img.shields.io/badge/License-BSD-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
+TODO:
+UI:
+- Pulse vis
+- Filter vis?
+
+DSP:
+- WDF's with templates!
+- More voices (SSE?)
+- More filter modes?
+
 This repository contains template code for building a Chowdhury DSP
 audio plugin.
 

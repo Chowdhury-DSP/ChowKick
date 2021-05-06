@@ -1,5 +1,11 @@
 target_sources(ChowKick PRIVATE
-    ChowKick.cpp)
+    ChowKick.cpp
+
+    dsp/OutputFilter.cpp
+    dsp/PulseShaper.cpp
+    dsp/ResonantFilter.cpp
+    dsp/Trigger.cpp
+)
 
 target_precompile_headers(ChowKick PRIVATE pch.h)
     
