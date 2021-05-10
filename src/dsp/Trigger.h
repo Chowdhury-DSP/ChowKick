@@ -18,7 +18,6 @@ private:
     std::atomic<float>* ampParam   = nullptr;
 
     float fs = 44100.0f;
-    int pulseSamples = 0;
     int leftoverSamples = 0;
 
     float curFreqHz = 10.0f;

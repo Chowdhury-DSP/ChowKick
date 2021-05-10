@@ -1,10 +1,13 @@
 #include "ChowKick.h"
+#include "gui/PulseViewer.h"
+#include "gui/CustomLNFs.h"
 
 ChowKick::ChowKick() :
     trigger (vts),
     resFilter (vts, trigger),
     outFilter (vts)
 {
+    scope = magicState.createAndAddObject<foleys::MagicOscilloscope> ("scope");
 }
 
 void ChowKick::addParameters (Parameters& params)
@@ -21,6 +24,8 @@ void ChowKick::prepareToPlay (double sampleRate, int samplesPerBlock)
     pulseShaper = std::make_unique<PulseShaper> (vts, sampleRate);
     resFilter.reset (sampleRate);
     outFilter.reset (sampleRate);
+
+    scope->prepareToPlay (sampleRate, samplesPerBlock);
 }
 
 void ChowKick::releaseResources()
@@ -47,11 +52,17 @@ void ChowKick::processSynth (AudioBuffer<float>& buffer, MidiBuffer& midi)
     // copy monoBuffer to other channels
     for (int ch = 0; ch < buffer.getNumChannels(); ++ch)
         buffer.copyFrom (ch, 0, monoBuffer.getReadPointer (0), numSamples);
+
+    scope->pushSamples (buffer);
 }
 
 AudioProcessorEditor* ChowKick::createEditor()
 {
-    auto editor = new foleys::MagicPluginEditor (magicState, BinaryData::gui_xml, BinaryData::gui_xmlSize);
+    auto builder = chowdsp::createGUIBuilder (magicState);
+    builder->registerFactory ("PulseViewer", &PulseViewerItem::factory);
+    builder->registerLookAndFeel ("SliderLNF", std::make_unique<SliderLNF>());
+
+    auto editor = new foleys::MagicPluginEditor (magicState, BinaryData::gui_xml, BinaryData::gui_xmlSize, std::move (builder));
     editor->setResizeLimits (10, 10, 1000, 1000);
 
     return editor;

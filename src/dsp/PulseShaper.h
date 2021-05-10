@@ -8,7 +8,6 @@ public:
     PulseShaper (AudioProcessorValueTreeState& vts, double sampleRate);
 
     static void addParameters (Parameters& params);
-    void reset (double sampleRate);
     void processBlock (float* block, const int numSamples);
 
     inline float processSample (float x) noexcept
@@ -23,8 +22,8 @@ public:
     }
 
 private:
-    std::atomic<float>* r1Param = nullptr;
-    std::atomic<float>* r2Param = nullptr;
+    std::atomic<float>* sustainParam = nullptr;
+    std::atomic<float>* decayParam = nullptr;
 
     using Resistor = chowdsp::WDF::Resistor;
     using Capacitor = chowdsp::WDF::Capacitor;

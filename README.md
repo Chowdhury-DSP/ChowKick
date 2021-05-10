@@ -9,7 +9,7 @@ UI:
 - Filter vis?
 
 DSP:
-- More voices (SSE?)
+- More voices (4 voices with SSE)
 - More filter modes?
 
 This repository contains template code for building a Chowdhury DSP
