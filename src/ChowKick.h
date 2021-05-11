@@ -16,6 +16,7 @@ public:
     void processSynth (AudioBuffer<float>& buffer, MidiBuffer& midi) override;
 
     AudioProcessorEditor* createEditor() override;
+    AudioProcessorValueTreeState& getVTS() { return vts; }
 
 private:
     AudioBuffer<float> monoBuffer;
@@ -24,6 +25,8 @@ private:
     std::unique_ptr<PulseShaper> pulseShaper;
     ResonantFilter resFilter;
     OutputFilter outFilter;
+
+    foleys::MagicPlotSource* scope = nullptr;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChowKick)
 };

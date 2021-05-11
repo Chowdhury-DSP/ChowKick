@@ -5,6 +5,8 @@ target_sources(ChowKick PRIVATE
     dsp/PulseShaper.cpp
     dsp/ResonantFilter.cpp
     dsp/Trigger.cpp
+
+    gui/PulseViewer.cpp
 )
 
 target_precompile_headers(ChowKick PRIVATE pch.h)
