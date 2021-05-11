@@ -114,7 +114,7 @@ float ResonantFilter::getD2Val() const noexcept
 float ResonantFilter::getD3Val() const noexcept
 {
     auto dp = jmax (bounceParam->load(), tightParam->load());
-    return 4.9f * std::pow (dp, 2.0f) + 0.1f;
+    return 4.5f * std::pow (dp, 2.0f) + 0.5f;
 }
 
 void ResonantFilter::calcCoefs (float freq, float Q, float G)
