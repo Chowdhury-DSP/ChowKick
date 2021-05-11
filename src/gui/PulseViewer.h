@@ -25,7 +25,7 @@ private:
     Trigger trigger;
     PulseShaper shaper;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PulseViewer);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PulseViewer)
 };
 
 class PulseViewerItem : public foleys::GuiItem
@@ -54,7 +54,7 @@ public:
     juce::Component* getWrappedComponent() override
     {
         return comp.get();
-    };
+    }
 
 private:
     std::unique_ptr<PulseViewer> comp;

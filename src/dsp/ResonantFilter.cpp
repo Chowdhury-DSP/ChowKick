@@ -2,8 +2,8 @@
 
 using namespace ResTags;
 
-ResonantFilter::ResonantFilter (AudioProcessorValueTreeState& vts, const Trigger& trigger) :
-    trigger (trigger)
+ResonantFilter::ResonantFilter (AudioProcessorValueTreeState& vts, const Trigger& trig) :
+    trigger (trig)
 {
     freqParam = vts.getRawParameterValue (freqTag);
     linkParam = vts.getRawParameterValue (linkTag);
@@ -62,7 +62,7 @@ void ResonantFilter::reset (double sampleRate)
 
 float ResonantFilter::getFrequencyHz() const noexcept
 {
-    return freqMult * (bool (*linkParam) ? trigger.getFrequencyHz() : *freqParam);
+    return freqMult * (bool (*linkParam) ? trigger.getFrequencyHz() : freqParam->load());
 }
 
 void ResonantFilter::calcCoefs (float freq, float Q, float G)
