@@ -50,7 +50,7 @@
         <PulseViewer margin="3" padding="0" flex-grow="0.67" background="1B2A33" trace="FFFFB200"
                      background-color="00000000"/>
         <View max-height="5" background-color="0x00000000"/>
-        <View margin="0" padding="0" background-color="0x00000000">
+        <View margin="0" padding="0" background-color="0x00000000" max-height="150">
           <Slider class="SliderClass" parameter="trig_width" caption="Width" lookAndFeel="SliderLNF"
                   margin="0" background-color="0x00000000" slider-textbox="textbox-below"
                   slider-text="FFFFFFFF" slider-text-outline="00000000" slider-text-highlight="00000000"
@@ -99,26 +99,26 @@
                   slider-text-outline="00000000" caption-color="C5D1D8"/>
         </View>
         <View margin="0" padding="0" background-color="00000000">
-          <Slider class="SliderClass" parameter="res_tight" caption="Tight" background-color="00000000"
-                  lookAndFeel="SliderLNF" background-color="0x00000000" slider-thumb="FFFFB200"
-                  slider-track="1B2A33" slider-text="FFFFFFFF" slider-text-highlight="00000000"
-                  slider-text-outline="00000000" caption-color="C5D1D8"/>
-          <Slider class="SliderClass" parameter="res_bounce" caption="Bounce" background-color="00000000"
-                  lookAndFeel="SliderLNF" background-color="0x00000000" slider-thumb="FFFFB200"
-                  slider-track="1B2A33" slider-text="FFFFFFFF" slider-text-highlight="00000000"
-                  slider-text-outline="00000000" caption-color="C5D1D8"/>
-          <Slider class="SliderClass" parameter="out_tone" caption="Tone" background-color="00000000"
-                  lookAndFeel="SliderLNF" background-color="0x00000000" slider-thumb="FFFFB200"
-                  slider-track="1B2A33" slider-text="FFFFFFFF" slider-text-highlight="00000000"
-                  slider-text-outline="00000000" caption-color="C5D1D8"/>
+          <Slider class="SliderClass" parameter="res_tight" caption="Tight" background-color="0x00000000"
+                  lookAndFeel="SliderLNF" slider-thumb="FFFFB200" slider-track="1B2A33"
+                  slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
+                  caption-color="C5D1D8"/>
+          <Slider class="SliderClass" parameter="res_bounce" caption="Bounce" background-color="0x00000000"
+                  lookAndFeel="SliderLNF" slider-thumb="FFFFB200" slider-track="1B2A33"
+                  slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
+                  caption-color="C5D1D8"/>
+          <Slider class="SliderClass" parameter="out_tone" caption="Tone" background-color="0x00000000"
+                  lookAndFeel="SliderLNF" slider-thumb="FFFFB200" slider-track="1B2A33"
+                  slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
+                  caption-color="C5D1D8"/>
         </View>
         <View max-height="5" background-color="00000000"/>
       </View>
       <View flex-direction="row" flex-grow="0.2" margin="0" padding="0" background-color="FF425866">
         <Slider class="SliderClass" parameter="out_level" caption="Level" slider-type="linear-vertical"
-                background-color="00000000" lookAndFeel="SliderLNF" slider-thumb="FFFFB200"
-                slider-track="1B2A33" slider-text="FFFFFFFF" slider-text-highlight="00000000"
-                slider-text-outline="00000000" caption-color="C5D1D8"/>
+                background-color="00000000" lookAndFeel="SliderLNF" slider-track="FFFFB200"
+                slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
+                caption-color="C5D1D8" slider-background="1B2A33" slider-thumb=""/>
       </View>
     </View>
     <KeyboardComponent padding="0" margin="0" flex-grow="0.4"/>

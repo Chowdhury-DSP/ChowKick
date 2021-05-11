@@ -14,11 +14,26 @@ OutputFilter::OutputFilter (AudioProcessorValueTreeState& vts)
 
 void OutputFilter::addParameters (Parameters& params)
 {
+    using namespace chowdsp::ParamUtils;
+
     NormalisableRange<float> freqRange (300.0f, 7000.0f);
     freqRange.setSkewForCentre (800.0f);
 
-    params.push_back (std::make_unique<AudioParameterFloat> (toneTag, "Tone", freqRange, 800.0f));
-    params.push_back (std::make_unique<AudioParameterFloat> (levelTag, "Level [dB]", -30.0f, 30.0f, 0.0f));
+    params.push_back (std::make_unique<VTSParam> (toneTag,
+                                                  "Tone",
+                                                  String(),
+                                                  freqRange,
+                                                  800.0f,
+                                                  &freqValToString,
+                                                  &stringToFreqVal));
+
+    params.push_back (std::make_unique<VTSParam> (levelTag,
+                                                  "Level",
+                                                  String(),
+                                                  NormalisableRange<float> { -30.0f, 30.0f },
+                                                  0.0f,
+                                                  &gainValToString,
+                                                  &stringToGainVal));
 }
 
 void OutputFilter::reset (double sampleRate)
