@@ -43,45 +43,7 @@ public:
         return std::tanh (x * drive) / drive;
     }
 
-    inline float drive_deriv (float x) const noexcept
-    {
-        return 1.0f - std::pow (std::tanh (x), 2.0f);
-    }
-
-    inline float getMagForFreq (float freq) const noexcept
-    {
-        std::complex<float> s (0, freq / freqParam->load()); // s = j (w / w0)
-        const auto gVal = getGVal();
-        const auto qVal = qParam->load();
-
-        auto numerator = s * s + s / qVal + 1.0f;
-        auto denominator = s * s * (gVal + 1.0f) + gVal * s / qVal + gVal + 1.0f;
-        return std::abs (numerator / denominator);
-    }
-
-    inline float getMagForFreqNL (float freq) const noexcept
-    {
-        std::complex<float> s (0, freq / freqParam->load()); // s = j (w / w0)
-        const auto gVal = getGVal();
-        const auto qVal = qParam->load();
-
-        const auto T = 1.0f / fs;
-        const auto g1 = drive_deriv (getD1Val());
-        const auto g2 = drive_deriv (getD2Val());
-        const auto g3 = drive_deriv (getD3Val());
-
-        auto b0Corr = 1.0f - b[1] - b[2] + g1 * b[1] + g1 * g2 * b[2];
-        auto b1Corr = (s / qVal) + (b[2] - g1 * g2 * b[2]) * s * T;
-        auto b2Corr = (s * s) + (s * s * T / 4.0f) * (g1 * g2 * b[2] - g1 * b[1] - b[2] + b[1]);
-
-        auto a0Corr = (gVal + 1.0f) - a[1] - a[2] + g1 * g3 * a[1] + g1 * g2 * g3 * a[2];
-        auto a1Corr = (gVal * s / qVal) + (a[2] - g1 * g2 * g3 * a[2]) * s * T;
-        auto a2Corr = (s * s * (gVal + 1.0f)) + (s * s * T / 4.0f) * (g1 * g2 * g3 * a[2] - g1 * g3 * a[1] - a[2] + a[1]);
-
-        auto numerator = b2Corr + b1Corr + b0Corr;
-        auto denominator = a2Corr + a1Corr + a0Corr;
-        return std::abs (numerator / denominator);
-    }
+    friend class FilterViewHelper;
 
 private:
     const Trigger& trigger;

@@ -27,7 +27,8 @@ float getYForMagnitude (float mag, float height)
 
 FilterViewer::FilterViewer (AudioProcessorValueTreeState& vts) :
     trigger (vts),
-    resFilter (vts, trigger)
+    resFilter (vts, trigger),
+    helper (resFilter)
 {
     setColour (backgroundColour, Colours::black);
     setColour (traceColour, Colours::lightblue);
@@ -50,13 +51,15 @@ void FilterViewer::paint (Graphics& g)
     const auto left = (float) getX();
     const auto top = (float) getY();
 
+    helper.prepare();
+
     Path tracePath;
-    float traceMagnitude = resFilter.getMagForFreq (getFreqForX (0.0f));
+    float traceMagnitude = helper.getMagForFreq (getFreqForX (0.0f));
     float yPos = getYForMagnitude (traceMagnitude, height);
     tracePath.startNewSubPath (left, top + yPos);
 
     Path tracePathNL;
-    float traceMagnitudeNL = resFilter.getMagForFreqNL (getFreqForX (0.0f));
+    float traceMagnitudeNL = helper.getMagForFreqNL (getFreqForX (0.0f));
     float yPosNL = getYForMagnitude (traceMagnitudeNL, height);
     tracePathNL.startNewSubPath (left, top + yPosNL);
 
@@ -64,11 +67,11 @@ void FilterViewer::paint (Graphics& g)
     bool beforeRes = false;
     for (float xPos = 1.0f; xPos < width; xPos += xInc)
     {
-        traceMagnitude = resFilter.getMagForFreq (getFreqForX (xPos / width));
+        traceMagnitude = helper.getMagForFreq (getFreqForX (xPos / width));
         yPos = getYForMagnitude (traceMagnitude, height);
         tracePath.lineTo (left + xPos, top + yPos);
 
-        traceMagnitudeNL = resFilter.getMagForFreqNL (getFreqForX (xPos / width));
+        traceMagnitudeNL = helper.getMagForFreqNL (getFreqForX (xPos / width));
         yPosNL = getYForMagnitude (traceMagnitudeNL, height);
         tracePathNL.lineTo (left + xPos, top + yPosNL);
 
@@ -77,11 +80,11 @@ void FilterViewer::paint (Graphics& g)
             auto resFreq = resFilter.getFrequencyHz();
             auto xP = width * getXForFreq (resFreq);
             
-            traceMagnitude = resFilter.getMagForFreq (resFreq);
+            traceMagnitude = helper.getMagForFreq (resFreq);
             yPos = getYForMagnitude (traceMagnitude, height);
             tracePath.lineTo (left + xP, top + yPos);
 
-            traceMagnitudeNL = resFilter.getMagForFreqNL (resFreq);
+            traceMagnitudeNL = helper.getMagForFreqNL (resFreq);
             yPosNL = getYForMagnitude (traceMagnitudeNL, height);
             tracePathNL.lineTo (left + xP, top + yPosNL);
 

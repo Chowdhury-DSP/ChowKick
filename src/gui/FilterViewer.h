@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ChowKick.h"
+#include "FilterViewHelper.h"
 
 class FilterViewer : public Component,
                      private Timer
@@ -22,6 +23,8 @@ public:
 private:
     Trigger trigger;
     ResonantFilter resFilter;
+
+    FilterViewHelper helper;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilterViewer)
 };
