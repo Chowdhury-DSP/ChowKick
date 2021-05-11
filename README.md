@@ -6,6 +6,7 @@
 TODO:
 - better output viz
 - makeup gain for filter NLs
+- Other NL types... (hard clip?)
 - 4 voices
 - presets
 - CI
