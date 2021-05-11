@@ -8,9 +8,8 @@ namespace ResTags
     const String linkTag = "res_link";
     const String qTag = "res_q";
     const String dampTag = "res_damp";
-    const String d1Tag = "res_d1";
-    const String d2Tag = "res_d2";
-    const String d3Tag = "res_d3";
+    const String tightTag = "res_tight";
+    const String bounceTag = "res_bounce";
 }
 
 class ResonantFilter
@@ -26,6 +25,9 @@ public:
     void setFreqMult (float newMult) { freqMult = newMult; }
     float getFrequencyHz() const noexcept;
     float getGVal() const noexcept;
+    float getD1Val() const noexcept;
+    float getD2Val() const noexcept;
+    float getD3Val() const noexcept;
 
     inline float processSample (float x, float d1, float d2, float d3) noexcept
     {
@@ -36,9 +38,14 @@ public:
         return y;
     }
 
-    inline float drive (float x, float drive) noexcept
+    inline float drive (float x, float drive) const noexcept
     {
         return std::tanh (x * drive) / drive;
+    }
+
+    inline float drive_deriv (float x) const noexcept
+    {
+        return 1.0f - std::pow (std::tanh (x), 2.0f);
     }
 
     inline float getMagForFreq (float freq) const noexcept
@@ -52,6 +59,30 @@ public:
         return std::abs (numerator / denominator);
     }
 
+    inline float getMagForFreqNL (float freq) const noexcept
+    {
+        std::complex<float> s (0, freq / freqParam->load()); // s = j (w / w0)
+        const auto gVal = getGVal();
+        const auto qVal = qParam->load();
+
+        const auto T = 1.0f / fs;
+        const auto g1 = drive_deriv (getD1Val());
+        const auto g2 = drive_deriv (getD2Val());
+        const auto g3 = drive_deriv (getD3Val());
+
+        auto b0Corr = 1.0f - b[1] - b[2] + g1 * b[1] + g1 * g2 * b[2];
+        auto b1Corr = (s / qVal) + (b[2] - g1 * g2 * b[2]) * s * T;
+        auto b2Corr = (s * s) + (s * s * T / 4.0f) * (g1 * g2 * b[2] - g1 * b[1] - b[2] + b[1]);
+
+        auto a0Corr = (gVal + 1.0f) - a[1] - a[2] + g1 * g3 * a[1] + g1 * g2 * g3 * a[2];
+        auto a1Corr = (gVal * s / qVal) + (a[2] - g1 * g2 * g3 * a[2]) * s * T;
+        auto a2Corr = (s * s * (gVal + 1.0f)) + (s * s * T / 4.0f) * (g1 * g2 * g3 * a[2] - g1 * g3 * a[1] - a[2] + a[1]);
+
+        auto numerator = b2Corr + b1Corr + b0Corr;
+        auto denominator = a2Corr + a1Corr + a0Corr;
+        return std::abs (numerator / denominator);
+    }
+
 private:
     const Trigger& trigger;
 
@@ -59,9 +90,8 @@ private:
     std::atomic<float>* linkParam = nullptr;
     std::atomic<float>* qParam    = nullptr;
     std::atomic<float>* dampParam = nullptr;
-    std::atomic<float>* drive1Param = nullptr; // state1
-    std::atomic<float>* drive2Param = nullptr; // state2
-    std::atomic<float>* drive3Param = nullptr; // FB
+    std::atomic<float>* tightParam = nullptr;
+    std::atomic<float>* bounceParam = nullptr;
     float freqMult = 1.0f;
 
     SmoothedValue<float, ValueSmoothingTypes::Multiplicative> freqSmooth;

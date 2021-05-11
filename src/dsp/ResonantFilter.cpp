@@ -9,14 +9,14 @@ ResonantFilter::ResonantFilter (AudioProcessorValueTreeState& vts, const Trigger
     linkParam = vts.getRawParameterValue (linkTag);
     qParam    = vts.getRawParameterValue (qTag);
     dampParam = vts.getRawParameterValue (dampTag);
-    drive1Param = vts.getRawParameterValue (d1Tag);
-    drive2Param = vts.getRawParameterValue (d2Tag);
-    drive3Param = vts.getRawParameterValue (d3Tag);
+    tightParam = vts.getRawParameterValue (tightTag);
+    bounceParam = vts.getRawParameterValue (bounceTag);
 }
 
 void ResonantFilter::addParameters (Parameters& params)
 {
     using namespace chowdsp::ParamUtils;
+    NormalisableRange<float> percentRange (0.0f, 1.0f);
 
     NormalisableRange<float> freqRange (30.0f, 500.0f);
     freqRange.setSkewForCentre (100.0f);
@@ -42,18 +42,28 @@ void ResonantFilter::addParameters (Parameters& params)
     params.push_back (std::make_unique<VTSParam> (dampTag,
                                                   "Damping",
                                                   String(),
-                                                  NormalisableRange<float> { 0.0f, 1.0f },
+                                                  percentRange,
                                                   0.5f,
                                                   &percentValToString,
                                                   &stringToPercentVal));
 
-    NormalisableRange<float> driveRange (0.1f, 5.0f);
-    driveRange.setSkewForCentre (1.0f);
+    params.push_back (std::make_unique<VTSParam> (tightTag,
+                                                  "Tight",
+                                                  String(),
+                                                  percentRange,
+                                                  0.5f,
+                                                  &percentValToString,
+                                                  &stringToPercentVal));
+
+    params.push_back (std::make_unique<VTSParam> (bounceTag,
+                                                  "Bounce",
+                                                  String(),
+                                                  percentRange,
+                                                  0.0f,
+                                                  &percentValToString,
+                                                  &stringToPercentVal));
 
     params.push_back (std::make_unique<AudioParameterBool>  (linkTag, "Link", false));
-    params.push_back (std::make_unique<AudioParameterFloat> (d1Tag, "Drive1", driveRange, 1.0f));
-    params.push_back (std::make_unique<AudioParameterFloat> (d2Tag, "Drive2", driveRange, 1.0f));
-    params.push_back (std::make_unique<AudioParameterFloat> (d3Tag, "Drive3", driveRange, 1.0f));
 }
 
 void ResonantFilter::reset (double sampleRate)
@@ -71,9 +81,9 @@ void ResonantFilter::reset (double sampleRate)
     freqSmooth.setCurrentAndTargetValue (getFrequencyHz());
     qSmooth.setCurrentAndTargetValue (*qParam);
     gSmooth.setCurrentAndTargetValue (getGVal());
-    d1Smooth.setCurrentAndTargetValue (*drive1Param);
-    d2Smooth.setCurrentAndTargetValue (*drive2Param);
-    d3Smooth.setCurrentAndTargetValue (*drive3Param);
+    d1Smooth.setCurrentAndTargetValue (getD1Val());
+    d2Smooth.setCurrentAndTargetValue (getD2Val());
+    d3Smooth.setCurrentAndTargetValue (getD3Val());
 
     calcCoefs (freqSmooth.getTargetValue(), qSmooth.getTargetValue(), gSmooth.getTargetValue());
 }
@@ -89,6 +99,22 @@ float ResonantFilter::getGVal() const noexcept
     constexpr float highDamp = 0.5f;
 
     return lowDamp * std::pow ((highDamp / lowDamp), dampParam->load());
+}
+
+float ResonantFilter::getD1Val() const noexcept
+{
+    return 4.9f * std::pow (tightParam->load(), 1.5f) + 0.1f;
+}
+
+float ResonantFilter::getD2Val() const noexcept
+{
+    return 4.9f * (tightParam->load()) + 0.1f;
+}
+
+float ResonantFilter::getD3Val() const noexcept
+{
+    auto dp = jmax (bounceParam->load(), tightParam->load());
+    return 4.9f * std::pow (dp, 2.0f) + 0.1f;
 }
 
 void ResonantFilter::calcCoefs (float freq, float Q, float G)
@@ -112,9 +138,9 @@ void ResonantFilter::processBlock (float* buffer, const int numSamples)
     freqSmooth.setTargetValue (getFrequencyHz());
     qSmooth.setTargetValue (*qParam);
     gSmooth.setTargetValue (getGVal());
-    d1Smooth.setTargetValue (*drive1Param);
-    d2Smooth.setTargetValue (*drive2Param);
-    d3Smooth.setTargetValue (*drive3Param);
+    d1Smooth.setTargetValue (getD1Val());
+    d2Smooth.setTargetValue (getD2Val());
+    d3Smooth.setTargetValue (getD3Val());
 
     if (freqSmooth.isSmoothing() || qSmooth.isSmoothing() || gSmooth.isSmoothing())
     {

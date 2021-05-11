@@ -55,6 +55,11 @@ void FilterViewer::paint (Graphics& g)
     float yPos = getYForMagnitude (traceMagnitude, height);
     tracePath.startNewSubPath (left, top + yPos);
 
+    Path tracePathNL;
+    float traceMagnitudeNL = resFilter.getMagForFreqNL (getFreqForX (0.0f));
+    float yPosNL = getYForMagnitude (traceMagnitudeNL, height);
+    tracePathNL.startNewSubPath (left, top + yPosNL);
+
     constexpr float xInc = 0.25f;
     bool beforeRes = false;
     for (float xPos = 1.0f; xPos < width; xPos += xInc)
@@ -63,17 +68,29 @@ void FilterViewer::paint (Graphics& g)
         yPos = getYForMagnitude (traceMagnitude, height);
         tracePath.lineTo (left + xPos, top + yPos);
 
+        traceMagnitudeNL = resFilter.getMagForFreqNL (getFreqForX (xPos / width));
+        yPosNL = getYForMagnitude (traceMagnitudeNL, height);
+        tracePathNL.lineTo (left + xPos, top + yPosNL);
+
         if (beforeRes && getFreqForX ((xPos + xInc) / width) >= resFilter.getFrequencyHz())
         {
             auto resFreq = resFilter.getFrequencyHz();
-            traceMagnitude = resFilter.getMagForFreq (resFreq);
             auto xP = width * getXForFreq (resFreq);
+            
+            traceMagnitude = resFilter.getMagForFreq (resFreq);
             yPos = getYForMagnitude (traceMagnitude, height);
             tracePath.lineTo (left + xP, top + yPos);
+
+            traceMagnitudeNL = resFilter.getMagForFreqNL (resFreq);
+            yPosNL = getYForMagnitude (traceMagnitudeNL, height);
+            tracePathNL.lineTo (left + xP, top + yPosNL);
 
             beforeRes = true;
         }
     }
+
+    g.setColour (Colours::red);
+    g.strokePath (tracePathNL, PathStrokeType (2.0f, PathStrokeType::JointStyle::curved));
 
     g.setColour (findColour (traceColour));
     g.strokePath (tracePath, PathStrokeType (2.0f, PathStrokeType::JointStyle::curved));
