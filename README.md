@@ -4,13 +4,11 @@
 [![License](https://img.shields.io/badge/License-BSD-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 TODO:
-UI:
-- Pulse vis
-- Filter vis?
-
-DSP:
-- More voices (4 voices with SSE)
-- More filter modes?
+- better output viz
+- makeup gain for filter NLs
+- 4 voices
+- presets
+- CI
 
 This repository contains template code for building a Chowdhury DSP
 audio plugin.
