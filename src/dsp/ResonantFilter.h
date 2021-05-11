@@ -7,7 +7,7 @@ namespace ResTags
     const String freqTag = "res_freq";
     const String linkTag = "res_link";
     const String qTag = "res_q";
-    const String gTag = "res_g";
+    const String dampTag = "res_damp";
     const String d1Tag = "res_d1";
     const String d2Tag = "res_d2";
     const String d3Tag = "res_d3";
@@ -25,6 +25,7 @@ public:
 
     void setFreqMult (float newMult) { freqMult = newMult; }
     float getFrequencyHz() const noexcept;
+    float getGVal() const noexcept;
 
     inline float processSample (float x, float d1, float d2, float d3) noexcept
     {
@@ -40,13 +41,24 @@ public:
         return std::tanh (x * drive) / drive;
     }
 
+    inline float getMagForFreq (float freq) const noexcept
+    {
+        std::complex<float> s (0, freq / freqParam->load()); // s = j (w / w0)
+        const auto gVal = getGVal();
+        const auto qVal = qParam->load();
+
+        auto numerator = s * s + s / qVal + 1.0f;
+        auto denominator = s * s * (gVal + 1.0f) + gVal * s / qVal + gVal + 1.0f;
+        return std::abs (numerator / denominator);
+    }
+
 private:
     const Trigger& trigger;
 
     std::atomic<float>* freqParam = nullptr;
     std::atomic<float>* linkParam = nullptr;
     std::atomic<float>* qParam    = nullptr;
-    std::atomic<float>* gParam    = nullptr;
+    std::atomic<float>* dampParam = nullptr;
     std::atomic<float>* drive1Param = nullptr; // state1
     std::atomic<float>* drive2Param = nullptr; // state2
     std::atomic<float>* drive3Param = nullptr; // FB

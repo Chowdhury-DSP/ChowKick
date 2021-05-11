@@ -1,5 +1,6 @@
 #include "ChowKick.h"
 #include "gui/PulseViewer.h"
+#include "gui/FilterViewer.h"
 #include "gui/CustomLNFs.h"
 
 ChowKick::ChowKick() :
@@ -60,10 +61,11 @@ AudioProcessorEditor* ChowKick::createEditor()
 {
     auto builder = chowdsp::createGUIBuilder (magicState);
     builder->registerFactory ("PulseViewer", &PulseViewerItem::factory);
+    builder->registerFactory ("FilterViewer", &FilterViewerItem::factory);
     builder->registerLookAndFeel ("SliderLNF", std::make_unique<SliderLNF>());
 
     auto editor = new foleys::MagicPluginEditor (magicState, BinaryData::gui_xml, BinaryData::gui_xmlSize, std::move (builder));
-    editor->setResizeLimits (10, 10, 1000, 1000);
+    editor->setResizeLimits (10, 10, 2000, 2000);
 
     return editor;
 }

@@ -35,8 +35,8 @@ void PulseViewer::paint (Graphics& g)
     trigger.processBlock (buffer, midiBuffer);
     shaper.processBlock (buffer.getWritePointer (0), nSamples);
 
-    const auto yScale = (float) getHeight() * 0.73f;
-    const auto yOff = (float) getHeight() * 0.27f;
+    const auto yScale = (float) getHeight() * 0.68f;
+    const auto yOff = (float) getHeight() * 0.3f;
 
     Path curvePath;
     bool started = false;

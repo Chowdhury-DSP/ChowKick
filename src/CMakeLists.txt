@@ -6,6 +6,7 @@ target_sources(ChowKick PRIVATE
     dsp/ResonantFilter.cpp
     dsp/Trigger.cpp
 
+    gui/FilterViewer.cpp
     gui/PulseViewer.cpp
 )
 
