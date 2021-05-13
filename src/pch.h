@@ -13,3 +13,4 @@
 
 // global definitions
 using Parameters = std::vector<std::unique_ptr<RangedAudioParameter>>;
+using Vec = dsp::SIMDRegister<float>;

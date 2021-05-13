@@ -20,7 +20,7 @@ public:
     static void addParameters (Parameters& params);
     void reset (double sampleRate);
     void calcCoefs (float freq, float Q, float G);
-    void processBlock (float* buffer, const int numSamples);
+    void processBlock (dsp::AudioBlock<Vec>& block, const int numSamples);
 
     void setFreqMult (float newMult) { freqMult = newMult; }
     float getFrequencyHz() const noexcept;
@@ -29,7 +29,7 @@ public:
     float getD2Val() const noexcept;
     float getD3Val() const noexcept;
 
-    inline float processSample (float x, float d1, float d2, float d3) noexcept
+    inline Vec processSample (Vec x, float d1, float d2, float d3) noexcept
     {
         auto y = z[1] + x * b[0];
         auto yDrive = drive (y, d3);
@@ -38,9 +38,10 @@ public:
         return y;
     }
 
-    inline float drive (float x, float drive) const noexcept
+    inline Vec drive (Vec x, float drive) const noexcept
     {
-        return std::tanh (x * drive) / drive;
+        using namespace chowdsp::SIMDUtils;
+        return tanhSIMD (x * drive) / drive;
     }
 
     friend class FilterViewHelper;
@@ -66,7 +67,7 @@ private:
     float fs = 44100.0f;
     float a[3] = { 1.0f, 0.0f, 0.0f };
     float b[3] = { 1.0f, 0.0f, 0.0f };
-    float z[3];
+    Vec z[3];
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ResonantFilter)
 };

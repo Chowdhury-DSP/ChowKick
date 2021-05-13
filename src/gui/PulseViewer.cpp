@@ -8,7 +8,8 @@ constexpr int offset = int (0.0001 * fs); // 0.1 millisecond
 }
 
 PulseViewer::PulseViewer (AudioProcessorValueTreeState& vts) : trigger(vts),
-                                                               shaper (vts, fs)
+                                                               shaper (vts, fs),
+                                                               block (blockData, 1, nSamples)
 {
     trigger.prepareToPlay (fs, nSamples);
     startTimerHz (35);
@@ -25,15 +26,13 @@ void PulseViewer::paint (Graphics& g)
 {
     g.fillAll (findColour (backgroundColour));
 
-    AudioBuffer<float> buffer (1, nSamples);
-    buffer.clear();
-    
+    block.clear();
     auto midiMessage = MidiMessage::noteOn (1, 64, (uint8) 127);
     MidiBuffer midiBuffer; 
     midiBuffer.addEvent (midiMessage, offset);
 
-    trigger.processBlock (buffer, midiBuffer);
-    shaper.processBlock (buffer.getWritePointer (0), nSamples);
+    trigger.processBlock (block, nSamples, midiBuffer);
+    shaper.processBlock (block, nSamples);
 
     const auto yScale = (float) getHeight() * 0.68f;
     const auto yOff = (float) getHeight() * 0.3f;
@@ -43,7 +42,7 @@ void PulseViewer::paint (Graphics& g)
     for (int n = 0; n < nSamples; ++n)
     {
         auto xDraw = ((float) n / (float) nSamples) * (float) getWidth();
-        auto yDraw = (float) getHeight() - (yScale * buffer.getSample (0, n) + yOff);
+        auto yDraw = (float) getHeight() - (yScale * block.getSample (0, n).get (0) + yOff);
 
         if (! started)
         {

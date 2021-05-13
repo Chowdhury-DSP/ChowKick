@@ -7,7 +7,7 @@ namespace
 }
 
 PulseShaper::PulseShaper (AudioProcessorValueTreeState& vts, double sampleRate) :
-    c40 (0.015e-6, sampleRate, 0.029)
+    c40 (0.015e-6f, (float) sampleRate, 0.029f)
 {
     d53.connectToNode (&P2);
 
@@ -35,7 +35,7 @@ void PulseShaper::addParameters (Parameters& params)
                                                   &stringToPercentVal));
 }
 
-void PulseShaper::processBlock (float* block, const int numSamples)
+void PulseShaper::processBlock (dsp::AudioBlock<Vec>& block, const int numSamples)
 {
     constexpr float r1Off = 5000.0f;
     constexpr float r1Scale = 500000.0f;
@@ -49,6 +49,7 @@ void PulseShaper::processBlock (float* block, const int numSamples)
     auto r2Val = r2Off + (decayVal * (r2Scale - r2Off));
     r162.setResistanceValue (r2Val);
 
+    auto* x = block.getChannelPointer (0);
     for (int n = 0; n < numSamples; ++n)
-        block[n] = processSample (block[n]);
+        x[n] = processSample (x[n]);
 }

@@ -21,6 +21,10 @@ public:
 private:
     AudioBuffer<float> monoBuffer;
 
+    HeapBlock<char> fourVoiceData;
+    dsp::AudioBlock<Vec> fourVoiceBuffer;
+    static_assert (Vec::size() == 4, "SIMD width must equal 4!");
+
     Trigger trigger;
     std::unique_ptr<PulseShaper> pulseShaper;
     ResonantFilter resFilter;

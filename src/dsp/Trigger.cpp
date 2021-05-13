@@ -43,13 +43,22 @@ void Trigger::prepareToPlay (double sampleRate, int /*samplesPerBlock*/)
     leftoverSamples = 0;
 }
 
-void Trigger::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midi)
+void fillBlock (dsp::AudioBlock<Vec>& block, float value, int start, int numToFill)
 {
+    auto* x = block.getChannelPointer (0);
+    for (int i = start; i < start + numToFill; ++i)
+        x[i] = value;
+}
+
+void Trigger::processBlock (dsp::AudioBlock<Vec>& block, const int numSamples, MidiBuffer& midi)
+{
+    jassert (block.getNumChannels() == 1); // only single-channel buffers!
+
     const auto pulseSamples = int (fs * (*widthParam / 1000.0f));
 
-    for (int ch = 0; ch < buffer.getNumChannels(); ++ch)
-        FloatVectorOperations::fill (buffer.getWritePointer (ch), ampParam->load(), leftoverSamples);
-    leftoverSamples = 0;
+    int samplesToFill = jmin (leftoverSamples, numSamples);
+    fillBlock (block, ampParam->load(), 0, samplesToFill);
+    leftoverSamples -= samplesToFill;
 
     for (const MidiMessageMetadata mm : midi)
     {
@@ -57,12 +66,11 @@ void Trigger::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midi)
         if (message.isNoteOn())
         {
             const auto samplePosition = mm.samplePosition;
-            int samplesToFill = jmin (pulseSamples, buffer.getNumSamples() - samplePosition);
+            samplesToFill = jmin (pulseSamples, numSamples - samplePosition);
             leftoverSamples = pulseSamples - samplesToFill;
 
-            for (int ch = 0; ch < buffer.getNumChannels(); ++ch)
-                FloatVectorOperations::fill (buffer.getWritePointer (ch) + samplePosition, ampParam->load(), samplesToFill);
-
+            fillBlock (block, ampParam->load(), samplePosition, samplesToFill);
+            
             curFreqHz = (float) MidiMessage::getMidiNoteInHertz (message.getNoteNumber());
         }
     }
