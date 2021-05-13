@@ -4,8 +4,7 @@ namespace
 {
     const String widthTag = "trig_width";
     const String ampTag   = "trig_amp";
-
-
+    const String voicesTag = "trig_voices";
 }
 
 Trigger::Trigger (AudioProcessorValueTreeState& vts)
@@ -35,6 +34,11 @@ void Trigger::addParameters (Parameters& params)
                                                   1.0f,
                                                   &percentValToString,
                                                   &stringToPercentVal));
+
+    params.push_back (std::make_unique<AudioParameterChoice> (voicesTag,
+                                                              "Voices",
+                                                              StringArray { "1", "2", "3", "4" },
+                                                              4));
 }
 
 void Trigger::prepareToPlay (double sampleRate, int /*samplesPerBlock*/)
