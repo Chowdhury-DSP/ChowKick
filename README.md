@@ -7,12 +7,18 @@ TODO:
 - better output viz
 - makeup gain for filter NLs
 - Other NL types... (hard clip?)
-- 4 voices
 - presets
 - CI
 
-This repository contains template code for building a Chowdhury DSP
-audio plugin.
+**ChowKick** is a kick drum synthesizer plugin based on 
+creative modelling of old-school drum machine circuits.
+MIDI input to the plugin triggers a pulse with a
+parameterized size and shape. The pulse is then passed
+into a resonant filter which can be tuned to a specific
+frequency, or matched to the frequency of the incoming
+MIDI notes.
+
+![](./manual/screenshots/full_gui.png)
 
 ## Building
 
@@ -30,6 +36,15 @@ $ git submodule update --init --recursive
 $ cmake -Bbuild
 $ cmake --build build --config Release
 ```
+
+## Credits
+
+- GUI Framework - [Plugin GUI Magic](https://github.com/ffAudio/PluginGUIMagic)
+- SIMD functions - [XSIMD](https://github.com/xtensor-stack/xsimd)
+
+This plugin was inspired by Kurt Werner's analysis and
+modelling of the TR-808 Kick Drum Circuit, discussed
+in his wonderful [PhD Dissertation](https://stacks.stanford.edu/file/druid:jy057cz8322/KurtJamesWernerDissertation-augmented.pdf).
 
 ## License
 
