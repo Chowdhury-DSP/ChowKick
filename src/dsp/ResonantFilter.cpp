@@ -133,7 +133,7 @@ void ResonantFilter::calcCoefs (float freq, float Q, float G)
     a[2] = ((G + 1.0f) - G * alpha) / a0;
 }
 
-void ResonantFilter::processBlock (float* buffer, const int numSamples)
+void ResonantFilter::processBlock (dsp::AudioBlock<Vec>& block, const int numSamples)
 {
     freqSmooth.setTargetValue (getFrequencyHz());
     qSmooth.setTargetValue (*qParam);
@@ -142,17 +142,18 @@ void ResonantFilter::processBlock (float* buffer, const int numSamples)
     d2Smooth.setTargetValue (getD2Val());
     d3Smooth.setTargetValue (getD3Val());
 
+    auto* x = block.getChannelPointer (0);
     if (freqSmooth.isSmoothing() || qSmooth.isSmoothing() || gSmooth.isSmoothing())
     {
         for (int n = 0; n < numSamples; ++n)
         {
             calcCoefs (freqSmooth.getNextValue(), qSmooth.getNextValue(), gSmooth.getNextValue());
-            buffer[n] = processSample (buffer[n], d1Smooth.getNextValue(), d2Smooth.getNextValue(), d3Smooth.getNextValue());
+            x[n] = processSample (x[n], d1Smooth.getNextValue(), d2Smooth.getNextValue(), d3Smooth.getNextValue());
         }
 
         return;
     }
 
     for (int n = 0; n < numSamples; ++n)
-        buffer[n] = processSample (buffer[n], d1Smooth.getNextValue(), d2Smooth.getNextValue(), d3Smooth.getNextValue());
+        x[n] = processSample (x[n], d1Smooth.getNextValue(), d2Smooth.getNextValue(), d3Smooth.getNextValue());
 }

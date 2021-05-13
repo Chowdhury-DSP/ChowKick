@@ -25,6 +25,9 @@ private:
     Trigger trigger;
     PulseShaper shaper;
 
+    HeapBlock<char> blockData;
+    dsp::AudioBlock<Vec> block;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PulseViewer)
 };
 

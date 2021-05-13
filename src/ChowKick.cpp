@@ -22,6 +22,8 @@ void ChowKick::addParameters (Parameters& params)
 void ChowKick::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     monoBuffer.setSize (1, samplesPerBlock);
+    fourVoiceBuffer = dsp::AudioBlock<Vec> (fourVoiceData, 1, (size_t) samplesPerBlock);
+
     pulseShaper = std::make_unique<PulseShaper> (vts, sampleRate);
     resFilter.reset (sampleRate);
     outFilter.reset (sampleRate);
@@ -33,6 +35,14 @@ void ChowKick::releaseResources()
 {
 }
 
+void reduceBlock (const dsp::AudioBlock<Vec>& block4, AudioBuffer<float>& buffer)
+{
+    auto* x = block4.getChannelPointer (0);
+    auto* y = buffer.getWritePointer (0);
+    for (int i = 0; i < buffer.getNumSamples(); ++i)
+        y[i] = x[i].get (0); // @TODO use sum instead!
+}
+
 void ChowKick::processSynth (AudioBuffer<float>& buffer, MidiBuffer& midi)
 {
     ScopedNoDenormals noDenormals;
@@ -42,12 +52,14 @@ void ChowKick::processSynth (AudioBuffer<float>& buffer, MidiBuffer& midi)
     buffer.clear();
     monoBuffer.setSize (1, numSamples, false, false, true);
     monoBuffer.clear();
+    fourVoiceBuffer.clear();
 
     magicState.processMidiBuffer (midi, numSamples);
 
-    trigger.processBlock (monoBuffer, midi);
-    pulseShaper->processBlock (monoBuffer.getWritePointer (0), numSamples);
-    resFilter.processBlock (monoBuffer.getWritePointer (0), numSamples);
+    trigger.processBlock (fourVoiceBuffer, numSamples, midi);
+    pulseShaper->processBlock (fourVoiceBuffer, numSamples);
+    resFilter.processBlock (fourVoiceBuffer, numSamples);
+    reduceBlock (fourVoiceBuffer, monoBuffer);
     outFilter.processBlock (monoBuffer.getWritePointer (0), numSamples);
 
     // copy monoBuffer to other channels
