@@ -7,10 +7,28 @@ namespace
     const String voicesTag = "trig_voices";
 }
 
-Trigger::Trigger (AudioProcessorValueTreeState& vts)
+Trigger::Trigger (AudioProcessorValueTreeState& vtState) : vts (vtState)
 {
     widthParam = vts.getRawParameterValue (widthTag);
     ampParam   = vts.getRawParameterValue (ampTag);
+
+    vts.addParameterListener (voicesTag, this);
+    parameterChanged (voicesTag, *vts.getRawParameterValue (voicesTag));
+}
+
+Trigger::~Trigger()
+{
+    vts.removeParameterListener (voicesTag, this);
+}
+
+void Trigger::parameterChanged (const String& paramID, float newValue)
+{
+    if (paramID != voicesTag)
+        return;
+
+    std::fill (leftoverSamples.begin(), leftoverSamples.end(), 0);
+    numVoices = (size_t) newValue + 1;
+    voiceIdx = 0;
 }
 
 void Trigger::addParameters (Parameters& params)
@@ -38,20 +56,20 @@ void Trigger::addParameters (Parameters& params)
     params.push_back (std::make_unique<AudioParameterChoice> (voicesTag,
                                                               "Voices",
                                                               StringArray { "1", "2", "3", "4" },
-                                                              4));
+                                                              3));
 }
 
 void Trigger::prepareToPlay (double sampleRate, int /*samplesPerBlock*/)
 {
     fs = (float) sampleRate;
-    leftoverSamples = 0;
+    std::fill (leftoverSamples.begin(), leftoverSamples.end(), 0);
 }
 
-void fillBlock (dsp::AudioBlock<Vec>& block, float value, int start, int numToFill)
+void fillBlock (dsp::AudioBlock<Vec>& block, float value, int start, int numToFill, size_t channel)
 {
     auto* x = block.getChannelPointer (0);
     for (int i = start; i < start + numToFill; ++i)
-        x[i] = value;
+        x[i].set (channel, value);
 }
 
 void Trigger::processBlock (dsp::AudioBlock<Vec>& block, const int numSamples, MidiBuffer& midi)
@@ -60,9 +78,12 @@ void Trigger::processBlock (dsp::AudioBlock<Vec>& block, const int numSamples, M
 
     const auto pulseSamples = int (fs * (*widthParam / 1000.0f));
 
-    int samplesToFill = jmin (leftoverSamples, numSamples);
-    fillBlock (block, ampParam->load(), 0, samplesToFill);
-    leftoverSamples -= samplesToFill;
+    for (size_t i = 0; i < numVoices; ++i)
+    {
+        int samplesToFill = jmin (leftoverSamples[i], numSamples);
+        fillBlock (block, ampParam->load(), 0, samplesToFill, i);
+        leftoverSamples[i] -= samplesToFill;
+    }
 
     for (const MidiMessageMetadata mm : midi)
     {
@@ -70,12 +91,13 @@ void Trigger::processBlock (dsp::AudioBlock<Vec>& block, const int numSamples, M
         if (message.isNoteOn())
         {
             const auto samplePosition = mm.samplePosition;
-            samplesToFill = jmin (pulseSamples, numSamples - samplePosition);
-            leftoverSamples = pulseSamples - samplesToFill;
+            auto samplesToFill = jmin (pulseSamples, numSamples - samplePosition);
+            leftoverSamples[voiceIdx] = pulseSamples - samplesToFill;
 
-            fillBlock (block, ampParam->load(), samplePosition, samplesToFill);
+            fillBlock (block, ampParam->load(), samplePosition, samplesToFill, voiceIdx);
+            voiceIdx = (voiceIdx + 1) % numVoices;
             
-            curFreqHz = (float) MidiMessage::getMidiNoteInHertz (message.getNoteNumber());
+            curFreqHz.set (voiceIdx, (float) MidiMessage::getMidiNoteInHertz (message.getNoteNumber()));
         }
     }
 

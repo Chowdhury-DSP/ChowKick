@@ -40,7 +40,7 @@ void reduceBlock (const dsp::AudioBlock<Vec>& block4, AudioBuffer<float>& buffer
     auto* x = block4.getChannelPointer (0);
     auto* y = buffer.getWritePointer (0);
     for (int i = 0; i < buffer.getNumSamples(); ++i)
-        y[i] = x[i].get (0); // @TODO use sum instead!
+        y[i] = x[i].sum();
 }
 
 void ChowKick::processSynth (AudioBuffer<float>& buffer, MidiBuffer& midi)

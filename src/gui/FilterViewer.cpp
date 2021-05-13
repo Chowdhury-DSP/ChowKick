@@ -52,6 +52,7 @@ void FilterViewer::paint (Graphics& g)
     const auto top = (float) getY();
 
     helper.prepare();
+    const auto resFreq = helper.getResFrequency();
 
     Path tracePath;
     float traceMagnitude = helper.getMagForFreq (getFreqForX (0.0f));
@@ -75,9 +76,8 @@ void FilterViewer::paint (Graphics& g)
         yPosNL = getYForMagnitude (traceMagnitudeNL, height);
         tracePathNL.lineTo (left + xPos, top + yPosNL);
 
-        if (beforeRes && getFreqForX ((xPos + xInc) / width) >= resFilter.getFrequencyHz())
+        if (beforeRes && getFreqForX ((xPos + xInc) / width) >= resFreq)
         {
-            auto resFreq = resFilter.getFrequencyHz();
             auto xP = width * getXForFreq (resFreq);
             
             traceMagnitude = helper.getMagForFreq (resFreq);

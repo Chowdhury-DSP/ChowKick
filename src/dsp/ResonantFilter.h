@@ -19,11 +19,11 @@ public:
 
     static void addParameters (Parameters& params);
     void reset (double sampleRate);
-    void calcCoefs (float freq, float Q, float G);
+    void calcCoefs (Vec freq, float Q, float G);
     void processBlock (dsp::AudioBlock<Vec>& block, const int numSamples);
 
     void setFreqMult (float newMult) { freqMult = newMult; }
-    float getFrequencyHz() const noexcept;
+    Vec getFrequencyHz() const noexcept;
     float getGVal() const noexcept;
     float getD1Val() const noexcept;
     float getD2Val() const noexcept;
@@ -57,7 +57,8 @@ private:
     std::atomic<float>* bounceParam = nullptr;
     float freqMult = 1.0f;
 
-    SmoothedValue<float, ValueSmoothingTypes::Multiplicative> freqSmooth;
+    using FreqSmooth = chowdsp::SIMDUtils::SIMDSmoothedValue<Vec::ElementType, ValueSmoothingTypes::Multiplicative>;
+    FreqSmooth freqSmooth;
     SmoothedValue<float, ValueSmoothingTypes::Multiplicative> qSmooth;
     SmoothedValue<float, ValueSmoothingTypes::Multiplicative> gSmooth;
     SmoothedValue<float, ValueSmoothingTypes::Multiplicative> d1Smooth;
@@ -65,8 +66,8 @@ private:
     SmoothedValue<float, ValueSmoothingTypes::Multiplicative> d3Smooth;
 
     float fs = 44100.0f;
-    float a[3] = { 1.0f, 0.0f, 0.0f };
-    float b[3] = { 1.0f, 0.0f, 0.0f };
+    Vec a[3] = { 1.0f, 0.0f, 0.0f };
+    Vec b[3] = { 1.0f, 0.0f, 0.0f };
     Vec z[3];
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ResonantFilter)

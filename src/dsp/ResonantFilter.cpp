@@ -88,9 +88,9 @@ void ResonantFilter::reset (double sampleRate)
     calcCoefs (freqSmooth.getTargetValue(), qSmooth.getTargetValue(), gSmooth.getTargetValue());
 }
 
-float ResonantFilter::getFrequencyHz() const noexcept
+Vec ResonantFilter::getFrequencyHz() const noexcept
 {
-    return freqMult * (bool (*linkParam) ? trigger.getFrequencyHz() : freqParam->load());
+    return (Vec) freqMult * (bool (*linkParam) ? trigger.getFrequencyHz() : (Vec) freqParam->load());
 }
 
 float ResonantFilter::getGVal() const noexcept
@@ -117,20 +117,22 @@ float ResonantFilter::getD3Val() const noexcept
     return 4.5f * std::pow (dp, 2.0f) + 0.5f;
 }
 
-void ResonantFilter::calcCoefs (float freq, float Q, float G)
+void ResonantFilter::calcCoefs (Vec freq, float Q, float G)
 {
-    const auto wc = MathConstants<float>::twoPi * freq / fs;
-    const auto wS = std::sin (wc);
-    const auto wC = std::cos (wc);
+    using namespace chowdsp::SIMDUtils;
+
+    const auto wc = freq * MathConstants<float>::twoPi / fs;
+    const auto wS = sinSIMD (wc);
+    const auto wC = cosSIMD (wc);
     const auto alpha = wS / (2.0f * Q);
 
-    const auto a0 = (G + 1.0f) + alpha * G;
-    b[0] = (1.0f + alpha) / a0;
-    b[1] = -2.0f * wC / a0;
-    b[2] = (1.0f - alpha) / a0;
+    const auto a0 = (Vec) (G + 1.0f) + alpha * G;
+    b[0] = (alpha + 1.0f) / a0;
+    b[1] = wC * -2.0f / a0;
+    b[2] = ((Vec) 1.0f - alpha) / a0;
     a[0] = 1.0f;
-    a[1] = -2.0f * wC * (G + 1.0f) / a0;
-    a[2] = ((G + 1.0f) - G * alpha) / a0;
+    a[1] = wC * -2.0f * (G + 1.0f) / a0;
+    a[2] = ((Vec) (G + 1.0f) - alpha * G) / a0;
 }
 
 void ResonantFilter::processBlock (dsp::AudioBlock<Vec>& block, const int numSamples)
