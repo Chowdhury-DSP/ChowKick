@@ -71,7 +71,14 @@
                   slider-text-highlight="00000000" slider-text-outline="00000000"
                   caption-color="C5D1D8"/>
         </View>
-        <View max-height="45" background-color="0x00000000"/>
+        <View max-height="45" background-color="0x00000000" margin="0" padding="0"
+              flex-justify-content="center">
+          <Label padding="0" margin="0" background-color="00000000" max-width="85"
+                 text="Voices:" justification="centred-right" font-size="22" lookAndFeel="MyLNF"/>
+          <ComboBox max-width="150" margin="5" padding="0" parameter="trig_voices"
+                    lookAndFeel="ComboBoxLNF" combo-outline="00000000" combo-background="1B2A33"
+                    combo-menu-background="1B2A33" combo-menu-background-highlight="FF425866"/>
+        </View>
       </View>
       <View flex-direction="column" background-color="FF425866" margin="3"
             padding="0">
