@@ -21,6 +21,8 @@ target_link_libraries(juce_plugin_modules
         warning_flags
 )
 
+target_include_directories(juce_plugin_modules PUBLIC xsimd/include)
+
 target_compile_definitions(juce_plugin_modules
     PUBLIC
         JUCE_DISPLAY_SPLASH_SCREEN=0
@@ -33,6 +35,7 @@ target_compile_definitions(juce_plugin_modules
         JucePlugin_Name="${CMAKE_PROJECT_NAME}"
         FOLEYS_SHOW_GUI_EDITOR_PALLETTE=0
         FOLEYS_ENABLE_BINARY_DATA=1
+        CHOWDSP_USE_XSIMD=1
     INTERFACE
         $<TARGET_PROPERTY:juce_plugin_modules,COMPILE_DEFINITIONS>
 )
