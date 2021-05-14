@@ -1,11 +1,11 @@
 [Setup]
-AppName=ChowMatrix
+AppName=ChowKick
 AppVersion=##APPVERSION##
 DisableWelcomePage=no
 DisableDirPage=yes
 DefaultDirName={commoncf64}
-DefaultGroupName=ChowMatrix
-OutputBaseFilename="ChowMatrix-Win-##APPVERSION##"
+DefaultGroupName=ChowKick
+OutputBaseFilename="ChowKick-Win-##APPVERSION##"
 OutputDir=.
 LicenseFile=../../LICENSE
 
@@ -21,10 +21,10 @@ Name: "VST_32"; Description: "VST Plugin 32-bit"; Types: full
 ; Name: "AAX"; Description: "AAX Plugin"; Types: full
 
 [Files]
-Source: "../../bin/Win64/ChowMatrix.vst3"; DestDir: "{code:GetDir|VST3_64}"; Components: VST3_64; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "../../bin/Win64/ChowMatrix.dll"; DestDir: "{code:GetDir|VST_64}"; Components: VST_64; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "../../bin/Win32/ChowMatrix.vst3"; DestDir: "{code:GetDir|VST3_32}"; Components: VST3_32; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "../../bin/Win32/ChowMatrix.dll"; DestDir: "{code:GetDir|VST_32}"; Components: VST_32; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "../../bin/Win64/ChowKick.vst3"; DestDir: "{code:GetDir|VST3_64}"; Components: VST3_64; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "../../bin/Win64/ChowKick.dll"; DestDir: "{code:GetDir|VST_64}"; Components: VST_64; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "../../bin/Win32/ChowKick.vst3"; DestDir: "{code:GetDir|VST3_32}"; Components: VST3_32; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "../../bin/Win32/ChowKick.dll"; DestDir: "{code:GetDir|VST_32}"; Components: VST_32; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Code]
 var

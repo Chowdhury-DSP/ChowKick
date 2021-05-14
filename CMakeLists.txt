@@ -5,7 +5,7 @@ project(ChowKick VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(modules)
 
-juce_set_vst2_sdk_path(/Users/jachowdhury/Developer/Plugin_SDKs/VST2_SDK/)
+# juce_set_vst2_sdk_path(C:/SDKs/VST_SDK/VST2_SDK)
 set(JUCE_FORMATS AU VST3 Standalone)
 
 # Build LV2 only on Linux
