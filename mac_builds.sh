@@ -4,8 +4,8 @@
 set -e
 
 # clean up old builds
-# rm -Rf build/
-# rm -Rf bin/*Mac*
+rm -Rf build/
+rm -Rf bin/*Mac*
 
 # set up build VST
 VST_PATH=~/Developer/Plugin_SDKs/VST2_SDK/
