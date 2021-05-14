@@ -33,7 +33,7 @@ FilterViewer::FilterViewer (AudioProcessorValueTreeState& vts) : trigger (vts),
     setColour (traceColour, Colours::lightblue);
 
     resFilter.reset (fs);
-    startTimerHz (29);
+    startTimerHz (25);
 }
 
 void FilterViewer::resized()

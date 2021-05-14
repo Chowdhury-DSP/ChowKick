@@ -29,6 +29,7 @@ private:
     std::unique_ptr<PulseShaper> pulseShaper;
     ResonantFilter resFilter;
     OutputFilter outFilter;
+    chowdsp::StateVariableFilter<float> dcBlocker;
 
     foleys::MagicPlotSource* scope = nullptr;
 

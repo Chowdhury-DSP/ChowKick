@@ -102,18 +102,18 @@ float ResonantFilter::getGVal() const noexcept
 
 float ResonantFilter::getD1Val() const noexcept
 {
-    return 4.9f * tightParam->load() + 0.1f;
+    return 4.9f * std::pow (tightParam->load(), 4.0f) + 0.1f;
 }
 
 float ResonantFilter::getD2Val() const noexcept
 {
-    return 4.9f * (tightParam->load()) + 0.1f;
+    return 4.9f * std::pow (tightParam->load(), 6.0f) + 0.1f;
 }
 
 float ResonantFilter::getD3Val() const noexcept
 {
-    auto dp = tightParam->load();
-    return 4.5f * std::pow (dp, 2.0f) + 0.5f;
+    auto dp = bounceParam->load();
+    return 4.75f * std::pow (dp, 3.0f) + 0.25f;
 }
 
 void ResonantFilter::calcCoefs (Vec freq, float Q, float G)

@@ -11,11 +11,7 @@ public:
     void reset (double sampleRate);
     void calcCoefs (float freq, float gain);
     void processBlock (float* buffer, const int numSamples);
-
-    float getGainFromParam() const
-    {
-        return Decibels::decibelsToGain (levelDBParam->load() + 20.0f);
-    }
+    float getGainFromParam() const;
 
     inline float processSample (float x) noexcept
     {
@@ -27,6 +23,7 @@ public:
 private:
     std::atomic<float>* toneParam = nullptr;
     std::atomic<float>* levelDBParam = nullptr;
+    std::atomic<float>* bounceParam = nullptr;
 
     SmoothedValue<float, ValueSmoothingTypes::Multiplicative> freqSmooth;
     SmoothedValue<float, ValueSmoothingTypes::Multiplicative> gainSmooth;

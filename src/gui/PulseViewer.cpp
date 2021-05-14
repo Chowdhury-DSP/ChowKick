@@ -12,7 +12,7 @@ PulseViewer::PulseViewer (AudioProcessorValueTreeState& vts) : trigger (vts),
                                                                block (blockData, 1, nSamples)
 {
     trigger.prepareToPlay (fs, nSamples);
-    startTimerHz (35);
+    startTimerHz (24);
 
     setColour (backgroundColour, Colours::black);
     setColour (traceColour, Colours::lightblue);

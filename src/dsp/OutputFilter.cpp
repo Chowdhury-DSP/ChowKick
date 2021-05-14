@@ -1,24 +1,26 @@
 #include "OutputFilter.h"
+#include "ResonantFilter.h"
 
 namespace
 {
 const String toneTag = "out_tone";
 const String levelTag = "out_level";
+
+static NormalisableRange<float> freqRange (300.0f, 7000.0f);
 } // namespace
 
 OutputFilter::OutputFilter (AudioProcessorValueTreeState& vts)
 {
     toneParam = vts.getRawParameterValue (toneTag);
     levelDBParam = vts.getRawParameterValue (levelTag);
+    bounceParam = vts.getRawParameterValue (ResTags::bounceTag);   
 }
 
 void OutputFilter::addParameters (Parameters& params)
 {
     using namespace chowdsp::ParamUtils;
 
-    NormalisableRange<float> freqRange (300.0f, 7000.0f);
     freqRange.setSkewForCentre (800.0f);
-
     params.push_back (std::make_unique<VTSParam> (toneTag,
                                                   "Tone",
                                                   String(),
@@ -34,6 +36,13 @@ void OutputFilter::addParameters (Parameters& params)
                                                   0.0f,
                                                   &gainValToString,
                                                   &stringToGainVal));
+}
+
+float OutputFilter::getGainFromParam() const
+{
+    const auto toneMakeupDB = (freqRange.convertTo0to1 (toneParam->load()) - 0.5f) * -6.0f;
+    const auto bounceMakeupDB = 14.0f * std::pow (bounceParam->load(), 2.5f);
+    return Decibels::decibelsToGain (levelDBParam->load() + bounceMakeupDB + toneMakeupDB + 3.5f);
 }
 
 void OutputFilter::reset (double sampleRate)

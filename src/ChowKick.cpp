@@ -27,6 +27,9 @@ void ChowKick::prepareToPlay (double sampleRate, int samplesPerBlock)
     resFilter.reset (sampleRate);
     outFilter.reset (sampleRate);
 
+    dcBlocker.prepare ({ sampleRate, (uint32) samplesPerBlock, 1 });
+    dcBlocker.setCutoffFrequency (10.0f);
+
     scope->prepareToPlay (sampleRate, samplesPerBlock);
 }
 
@@ -60,6 +63,10 @@ void ChowKick::processSynth (AudioBuffer<float>& buffer, MidiBuffer& midi)
     resFilter.processBlock (fourVoiceBuffer, numSamples);
     reduceBlock (fourVoiceBuffer, monoBuffer);
     outFilter.processBlock (monoBuffer.getWritePointer (0), numSamples);
+
+    dsp::AudioBlock<float> monoBlock (monoBuffer);
+    dsp::ProcessContextReplacing<float> monoContext (monoBlock);
+    dcBlocker.process<dsp::ProcessContextReplacing<float>, chowdsp::StateVariableFilterType::Highpass> (monoContext);
 
     // copy monoBuffer to other channels
     for (int ch = 0; ch < buffer.getNumChannels(); ++ch)
