@@ -1,6 +1,6 @@
 #!/bin/sh
 
-script_file=ChowMatrix_Install_Script.iss
+script_file=ChowKick_Install_Script.iss
 
 app_version=$(cut -f 2 -d '=' <<< "$(grep 'CMAKE_PROJECT_VERSION:STATIC' ../../build/CMakeCache.txt)")
 echo "Setting app version: $app_version..."
@@ -13,7 +13,7 @@ $"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" $script_file
 # reset version number
 sed -i "s/${app_version}/##APPVERSION##/g" $script_file
 
-exec="ChowMatrix-Win-$app_version.exe"
+exec="ChowKick-Win-$app_version.exe"
 direc=$PWD
 
 # sign
