@@ -5,8 +5,7 @@
 class FilterViewHelper
 {
 public:
-    FilterViewHelper (const ResonantFilter& filt) :
-        filter (filt)
+    FilterViewHelper (const ResonantFilter& filt) : filter (filt)
     {
     }
 

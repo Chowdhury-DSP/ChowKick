@@ -2,12 +2,11 @@
 
 namespace
 {
-    const String sustainTag = "pulse_sustain";
-    const String decayTag = "pulse_decay";
-}
+const String sustainTag = "pulse_sustain";
+const String decayTag = "pulse_decay";
+} // namespace
 
-PulseShaper::PulseShaper (AudioProcessorValueTreeState& vts, double sampleRate) :
-    c40 (0.015e-6f, (float) sampleRate, 0.029f)
+PulseShaper::PulseShaper (AudioProcessorValueTreeState& vts, double sampleRate) : c40 (0.015e-6f, (float) sampleRate, 0.029f)
 {
     d53.connectToNode (&P2);
 

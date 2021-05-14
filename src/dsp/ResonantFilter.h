@@ -4,13 +4,13 @@
 
 namespace ResTags
 {
-    const String freqTag = "res_freq";
-    const String linkTag = "res_link";
-    const String qTag = "res_q";
-    const String dampTag = "res_damp";
-    const String tightTag = "res_tight";
-    const String bounceTag = "res_bounce";
-}
+const String freqTag = "res_freq";
+const String linkTag = "res_link";
+const String qTag = "res_q";
+const String dampTag = "res_damp";
+const String tightTag = "res_tight";
+const String bounceTag = "res_bounce";
+} // namespace ResTags
 
 class ResonantFilter
 {
@@ -51,7 +51,7 @@ private:
 
     std::atomic<float>* freqParam = nullptr;
     std::atomic<float>* linkParam = nullptr;
-    std::atomic<float>* qParam    = nullptr;
+    std::atomic<float>* qParam = nullptr;
     std::atomic<float>* dampParam = nullptr;
     std::atomic<float>* tightParam = nullptr;
     std::atomic<float>* bounceParam = nullptr;

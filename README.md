@@ -3,12 +3,6 @@
 ![CI](https://github.com/Chowdhury-DSP/ChowKick/workflows/CI/badge.svg)
 [![License](https://img.shields.io/badge/License-BSD-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
-TODO:
-- better output viz
-- makeup gain for filter NLs
-- Other NL types... (hard clip?)
-- presets
-- CI
 
 **ChowKick** is a kick drum synthesizer plugin based on 
 creative modelling of old-school drum machine circuits.
@@ -36,6 +30,7 @@ $ git submodule update --init --recursive
 $ cmake -Bbuild
 $ cmake --build build --config Release
 ```
+The resulting builds can be found in `build/ChowKick_artefacts`.
 
 ## Credits
 

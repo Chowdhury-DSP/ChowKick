@@ -1,12 +1,11 @@
 #include "ChowKick.h"
-#include "gui/PulseViewer.h"
-#include "gui/FilterViewer.h"
 #include "gui/CustomLNFs.h"
+#include "gui/FilterViewer.h"
+#include "gui/PulseViewer.h"
 
-ChowKick::ChowKick() :
-    trigger (vts),
-    resFilter (vts, trigger),
-    outFilter (vts)
+ChowKick::ChowKick() : trigger (vts),
+                       resFilter (vts, trigger),
+                       outFilter (vts)
 {
     scope = magicState.createAndAddObject<foleys::MagicOscilloscope> ("scope");
 }

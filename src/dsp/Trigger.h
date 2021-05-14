@@ -18,7 +18,7 @@ public:
 
 private:
     std::atomic<float>* widthParam = nullptr;
-    std::atomic<float>* ampParam   = nullptr;
+    std::atomic<float>* ampParam = nullptr;
     AudioProcessorValueTreeState& vts;
 
     float fs = 44100.0f;
