@@ -2,13 +2,13 @@
 
 namespace
 {
-    const String toneTag = "out_tone";
-    const String levelTag = "out_level";
-}
+const String toneTag = "out_tone";
+const String levelTag = "out_level";
+} // namespace
 
 OutputFilter::OutputFilter (AudioProcessorValueTreeState& vts)
 {
-    toneParam    = vts.getRawParameterValue (toneTag);
+    toneParam = vts.getRawParameterValue (toneTag);
     levelDBParam = vts.getRawParameterValue (levelTag);
 }
 

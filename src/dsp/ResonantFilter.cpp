@@ -2,12 +2,11 @@
 
 using namespace ResTags;
 
-ResonantFilter::ResonantFilter (AudioProcessorValueTreeState& vts, const Trigger& trig) :
-    trigger (trig)
+ResonantFilter::ResonantFilter (AudioProcessorValueTreeState& vts, const Trigger& trig) : trigger (trig)
 {
     freqParam = vts.getRawParameterValue (freqTag);
     linkParam = vts.getRawParameterValue (linkTag);
-    qParam    = vts.getRawParameterValue (qTag);
+    qParam = vts.getRawParameterValue (qTag);
     dampParam = vts.getRawParameterValue (dampTag);
     tightParam = vts.getRawParameterValue (tightTag);
     bounceParam = vts.getRawParameterValue (bounceTag);
@@ -63,7 +62,7 @@ void ResonantFilter::addParameters (Parameters& params)
                                                   &percentValToString,
                                                   &stringToPercentVal));
 
-    params.push_back (std::make_unique<AudioParameterBool>  (linkTag, "Link", false));
+    params.push_back (std::make_unique<AudioParameterBool> (linkTag, "Link", false));
 }
 
 void ResonantFilter::reset (double sampleRate)
