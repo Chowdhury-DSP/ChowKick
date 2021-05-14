@@ -18,6 +18,7 @@ target_precompile_headers(ChowKick_headless PRIVATE ../pch.h)
 target_include_directories(ChowKick_headless PRIVATE ../)
 target_include_directories(ChowKick_headless PRIVATE ../../modules)
 target_include_directories(ChowKick_headless PRIVATE ../../modules/JUCE/modules)
+target_include_directories(ChowKick_headless PRIVATE ../../modules/xsimd/include)
 
 target_link_libraries(ChowKick_headless PUBLIC
     BinaryData
