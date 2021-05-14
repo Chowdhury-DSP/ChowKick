@@ -5,7 +5,7 @@ project(ChowKick VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(modules)
 
-# juce_set_vst2_sdk_path(C:/SDKs/VST_SDK/VST2_SDK/)
+juce_set_vst2_sdk_path(/Users/jachowdhury/Developer/Plugin_SDKs/VST2_SDK/)
 set(JUCE_FORMATS AU VST3 Standalone)
 
 # Build LV2 only on Linux
@@ -40,3 +40,11 @@ target_compile_definitions(ChowKick PUBLIC
 )
 
 target_link_libraries(ChowKick PRIVATE juce_plugin_modules)
+
+# we need these flags for notarization on MacOS
+option(MACOS_RELEASE "Set build flags for MacOS Release" OFF)
+if(MACOS_RELEASE)
+    message(STATUS "Setting MacOS release flags...")
+    set_target_properties(ChowKick_Standalone PROPERTIES
+        XCODE_ATTRIBUTE_ENABLE_HARDENED_RUNTIME YES)
+endif()

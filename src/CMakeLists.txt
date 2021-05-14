@@ -1,4 +1,6 @@
-add_subdirectory(headless)
+if(NOT MACOS_RELEASE)
+    add_subdirectory(headless)
+endif()
 
 target_sources(ChowKick PRIVATE
     ChowKick.cpp
