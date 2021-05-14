@@ -3,6 +3,9 @@
 ![CI](https://github.com/Chowdhury-DSP/ChowKick/workflows/CI/badge.svg)
 [![License](https://img.shields.io/badge/License-BSD-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
+**ChowKick is currently in pre-release. If you would like
+to try the pre-release builds, please see the [nightly
+builds page](https://chowdsp.com/nightly.html).**
 
 **ChowKick** is a kick drum synthesizer plugin based on 
 creative modelling of old-school drum machine circuits.
