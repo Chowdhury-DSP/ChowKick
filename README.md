@@ -30,6 +30,7 @@ $ git submodule update --init --recursive
 $ cmake -Bbuild
 $ cmake --build build --config Release
 ```
+The resulting builds can be found in `build/ChowKick_artefacts`.
 
 ## Credits
 
