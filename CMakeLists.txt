@@ -37,6 +37,7 @@ add_subdirectory(res)
 
 target_compile_definitions(ChowKick PUBLIC
     JUCE_VST3_CAN_REPLACE_VST2=0
+    JUCE_JACK=1
 )
 
 target_link_libraries(ChowKick PRIVATE juce_plugin_modules)
