@@ -1,8 +1,8 @@
 #pragma once
 
 #include "ChowKick.h"
-#include "dsp/Trigger.h"
 #include "dsp/PulseShaper.h"
+#include "dsp/Trigger.h"
 
 class PulseViewer : public Component,
                     private Timer

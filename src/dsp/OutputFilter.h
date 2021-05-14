@@ -25,7 +25,7 @@ public:
     }
 
 private:
-    std::atomic<float>* toneParam    = nullptr;
+    std::atomic<float>* toneParam = nullptr;
     std::atomic<float>* levelDBParam = nullptr;
 
     SmoothedValue<float, ValueSmoothingTypes::Multiplicative> freqSmooth;
