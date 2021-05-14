@@ -35,4 +35,5 @@ npx notarize-cli --file $pkg_dir/ChowKick-signed.pkg --bundle-id com.chowdsp.Cho
 
 echo "Building disk image..."
 vol_name=Install_ChowKick-$app_version
+rm -f "$vol_name"
 hdiutil create "$vol_name.dmg" -fs HFS+ -srcfolder $pkg_dir -format UDZO -volname "$vol_name"
