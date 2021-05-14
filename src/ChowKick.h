@@ -1,9 +1,9 @@
 #pragma once
 
-#include "dsp/Trigger.h"
+#include "dsp/OutputFilter.h"
 #include "dsp/PulseShaper.h"
 #include "dsp/ResonantFilter.h"
-#include "dsp/OutputFilter.h"
+#include "dsp/Trigger.h"
 
 class ChowKick : public chowdsp::SynthBase<ChowKick>
 {

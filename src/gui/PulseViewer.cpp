@@ -5,9 +5,9 @@ namespace
 constexpr double fs = 96000.0;
 constexpr int nSamples = int (0.0032 * fs); // 3.2 milliseconds
 constexpr int offset = int (0.0001 * fs); // 0.1 millisecond
-}
+} // namespace
 
-PulseViewer::PulseViewer (AudioProcessorValueTreeState& vts) : trigger(vts),
+PulseViewer::PulseViewer (AudioProcessorValueTreeState& vts) : trigger (vts),
                                                                shaper (vts, fs),
                                                                block (blockData, 1, nSamples)
 {
@@ -28,7 +28,7 @@ void PulseViewer::paint (Graphics& g)
 
     block.clear();
     auto midiMessage = MidiMessage::noteOn (1, 64, (uint8) 127);
-    MidiBuffer midiBuffer; 
+    MidiBuffer midiBuffer;
     midiBuffer.addEvent (midiMessage, offset);
 
     trigger.processBlock (block, nSamples, midiBuffer);

@@ -1,9 +1,13 @@
 add_subdirectory(JUCE)
+include(cmake/SubprojectVersion.cmake)
+subproject_version(JUCE juce_version)
+message(STATUS "VERSION for JUCE: ${juce_version}")
+
 juce_add_modules(foleys_gui_magic)
 juce_add_modules(chowdsp_utils)
 
+include(cmake/WarningFlags.cmake)
 add_library(juce_plugin_modules STATIC)
-
 target_link_libraries(juce_plugin_modules
     PRIVATE
         BinaryData
@@ -14,7 +18,7 @@ target_link_libraries(juce_plugin_modules
     PUBLIC
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
-        juce::juce_recommended_warning_flags
+        warning_flags
 )
 
 target_compile_definitions(juce_plugin_modules
@@ -23,6 +27,7 @@ target_compile_definitions(juce_plugin_modules
         JUCE_REPORT_APP_USAGE=0
         JUCE_WEB_BROWSER=0
         JUCE_USE_CURL=0
+        JUCE_JACK=1
         JucePlugin_Manufacturer="chowdsp"
         JucePlugin_VersionString="${CMAKE_PROJECT_VERSION}"
         JucePlugin_Name="${CMAKE_PROJECT_NAME}"

@@ -23,12 +23,11 @@ float getYForMagnitude (float mag, float height)
     auto normDB = magDB / dbRange;
     return height * (1.0f - 0.85f * normDB) - (height * 0.1f);
 }
-}
+} // namespace
 
-FilterViewer::FilterViewer (AudioProcessorValueTreeState& vts) :
-    trigger (vts),
-    resFilter (vts, trigger),
-    helper (resFilter)
+FilterViewer::FilterViewer (AudioProcessorValueTreeState& vts) : trigger (vts),
+                                                                 resFilter (vts, trigger),
+                                                                 helper (resFilter)
 {
     setColour (backgroundColour, Colours::black);
     setColour (traceColour, Colours::lightblue);
@@ -79,7 +78,7 @@ void FilterViewer::paint (Graphics& g)
         if (beforeRes && getFreqForX ((xPos + xInc) / width) >= resFreq)
         {
             auto xP = width * getXForFreq (resFreq);
-            
+
             traceMagnitude = helper.getMagForFreq (resFreq);
             yPos = getYForMagnitude (traceMagnitude, height);
             tracePath.lineTo (left + xP, top + yPos);

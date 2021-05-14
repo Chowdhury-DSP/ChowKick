@@ -2,15 +2,15 @@
 
 namespace
 {
-    const String widthTag = "trig_width";
-    const String ampTag   = "trig_amp";
-    const String voicesTag = "trig_voices";
-}
+const String widthTag = "trig_width";
+const String ampTag = "trig_amp";
+const String voicesTag = "trig_voices";
+} // namespace
 
 Trigger::Trigger (AudioProcessorValueTreeState& vtState) : vts (vtState)
 {
     widthParam = vts.getRawParameterValue (widthTag);
-    ampParam   = vts.getRawParameterValue (ampTag);
+    ampParam = vts.getRawParameterValue (ampTag);
 
     vts.addParameterListener (voicesTag, this);
     parameterChanged (voicesTag, *vts.getRawParameterValue (voicesTag));
@@ -96,7 +96,7 @@ void Trigger::processBlock (dsp::AudioBlock<Vec>& block, const int numSamples, M
 
             fillBlock (block, ampParam->load(), samplePosition, samplesToFill, voiceIdx);
             voiceIdx = (voiceIdx + 1) % numVoices;
-            
+
             curFreqHz.set (voiceIdx, (float) MidiMessage::getMidiNoteInHertz (message.getNoteNumber()));
         }
     }

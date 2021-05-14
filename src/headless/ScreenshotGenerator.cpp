@@ -26,7 +26,7 @@ void ScreenshotGenerator::takeScreenshots (const ArgumentList& args)
     buffer.clear();
     MidiBuffer midi;
     auto midiMessage = MidiMessage::noteOn (1, 64, (uint8) 127);
-    MidiBuffer midiBuffer; 
+    MidiBuffer midiBuffer;
     midiBuffer.addEvent (midiMessage, 0);
 
     plugin->prepareToPlay (48000.0, 1024);

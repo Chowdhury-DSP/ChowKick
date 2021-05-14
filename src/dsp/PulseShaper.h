@@ -30,11 +30,11 @@ private:
     using ResVs = chowdsp::WDF::ResistiveVoltageSource<Vec>;
 
     ResVs Vs;
-    Resistor r162 {   4700.0f };
+    Resistor r162 { 4700.0f };
     Resistor r163 { 100000.0f };
     Capacitor c40;
     chowdsp::WDF::Diode<Vec> d53 { 2.52e-9f, 25.85e-3f }; // 1N4148 diode
-    
+
     using P1Type = chowdsp::WDF::WDFParallelT<Vec, Capacitor, Resistor>;
     P1Type P1 { c40, r163 };
 
