@@ -1,6 +1,7 @@
 #include "ChowKick.h"
 #include "gui/CustomLNFs.h"
 #include "gui/FilterViewer.h"
+#include "gui/DisabledSlider.h"
 #include "gui/PulseViewer.h"
 
 ChowKick::ChowKick() : trigger (vts),
@@ -80,6 +81,7 @@ AudioProcessorEditor* ChowKick::createEditor()
     auto builder = chowdsp::createGUIBuilder (magicState);
     builder->registerFactory ("PulseViewer", &PulseViewerItem::factory);
     builder->registerFactory ("FilterViewer", &FilterViewerItem::factory);
+    builder->registerFactory ("DisabledSlider", &DisabledSlider::factory);
     builder->registerLookAndFeel ("SliderLNF", std::make_unique<SliderLNF>());
     builder->registerLookAndFeel ("ComboBoxLNF", std::make_unique<ComboBoxLNF>());
 
