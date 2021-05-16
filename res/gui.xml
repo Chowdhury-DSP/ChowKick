@@ -91,11 +91,11 @@
         <View margin="0" flex-direction="row" background-color="00000000" padding="0">
           <ToggleButton parameter="res_link" text="LINK" flex-grow="0.6" padding="0"
                         margin="0" background-color="00000000" lookAndFeel="MyLNF"/>
-          <Slider class="SliderClass" parameter="res_freq" caption="Frequency"
-                  lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
-                  slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
-                  slider-text-highlight="00000000" slider-text-outline="00000000"
-                  caption-color="C5D1D8"/>
+          <DisabledSlider class="SliderClass" parameter="res_freq" caption="Frequency"
+                          lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
+                          slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
+                          slider-text-highlight="00000000" slider-text-outline="00000000"
+                          caption-color="C5D1D8" disable-param="res_link" disable-when-on="1"/>
           <Slider class="SliderClass" parameter="res_q" caption="Q" lookAndFeel="SliderLNF"
                   margin="0" background-color="0x00000000" slider-thumb="FFFFB200"
                   slider-track="1B2A33" slider-text="FFFFFFFF" slider-text-highlight="00000000"
