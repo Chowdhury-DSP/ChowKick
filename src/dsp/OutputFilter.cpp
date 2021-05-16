@@ -13,7 +13,7 @@ OutputFilter::OutputFilter (AudioProcessorValueTreeState& vts)
 {
     toneParam = vts.getRawParameterValue (toneTag);
     levelDBParam = vts.getRawParameterValue (levelTag);
-    bounceParam = vts.getRawParameterValue (ResTags::bounceTag);   
+    bounceParam = vts.getRawParameterValue (ResTags::bounceTag);
 }
 
 void OutputFilter::addParameters (Parameters& params)
