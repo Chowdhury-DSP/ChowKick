@@ -28,6 +28,7 @@ juce_add_plugin(ChowKick
     NEEDS_MIDI_INPUT True
     FORMATS ${JUCE_FORMATS}
     ProductName "ChowKick"
+    ICON_BIG res/logo.png
 )
 
 juce_generate_juce_header(ChowKick)
