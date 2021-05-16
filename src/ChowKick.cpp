@@ -1,7 +1,7 @@
 #include "ChowKick.h"
 #include "gui/CustomLNFs.h"
-#include "gui/FilterViewer.h"
 #include "gui/DisabledSlider.h"
+#include "gui/FilterViewer.h"
 #include "gui/PulseViewer.h"
 
 ChowKick::ChowKick() : trigger (vts),

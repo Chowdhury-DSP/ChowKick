@@ -8,18 +8,18 @@ class DisabledSlider : public foleys::GuiItem,
 public:
     FOLEYS_DECLARE_GUI_FACTORY (DisabledSlider)
 
-    static const juce::Identifier  pSliderType;
+    static const juce::Identifier pSliderType;
     static const juce::StringArray pSliderTypes;
 
-    static const juce::Identifier  pSliderTextBox;
+    static const juce::Identifier pSliderTextBox;
     static const juce::StringArray pTextBoxPositions;
 
-    static const juce::Identifier  pValue;
-    static const juce::Identifier  pMinValue;
-    static const juce::Identifier  pMaxValue;
+    static const juce::Identifier pValue;
+    static const juce::Identifier pMinValue;
+    static const juce::Identifier pMaxValue;
 
-    static const juce::Identifier  pDisableParam;
-    static const juce::Identifier  pDisableWhenOn;
+    static const juce::Identifier pDisableParam;
+    static const juce::Identifier pDisableWhenOn;
 
     DisabledSlider (foleys::MagicGUIBuilder& builder, const juce::ValueTree& node);
     ~DisabledSlider() override;
