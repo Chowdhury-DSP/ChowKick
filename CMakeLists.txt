@@ -6,7 +6,12 @@ set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(modules)
 
 # juce_set_vst2_sdk_path(C:/SDKs/VST_SDK/VST2_SDK)
-set(JUCE_FORMATS AU VST3 Standalone)
+# set default plugin formats to build
+if(IOS)
+    set(JUCE_FORMATS Standalone AUv3)
+else()
+    set(JUCE_FORMATS AU VST3 Standalone)
+endif()
 
 # Build LV2 only on Linux
 if(UNIX AND NOT APPLE)
@@ -29,6 +34,8 @@ juce_add_plugin(ChowKick
     FORMATS ${JUCE_FORMATS}
     ProductName "ChowKick"
     ICON_BIG res/logo.png
+    IPHONE_SCREEN_ORIENTATIONS UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+    IPAD_SCREEN_ORIENTATIONS UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
 )
 
 juce_generate_juce_header(ChowKick)
@@ -48,4 +55,26 @@ if(MACOS_RELEASE)
     message(STATUS "Setting MacOS release flags...")
     set_target_properties(ChowKick_Standalone PROPERTIES
         XCODE_ATTRIBUTE_ENABLE_HARDENED_RUNTIME YES)
+endif()
+
+if(IOS)
+    message(STATUS "Setting iOS-specific properties...")
+
+    foreach(target IN ITEMS BinaryData juce_plugin_modules ChowKick ChowKick_Standalone ChowKick_AUv3)
+        set_target_properties(${target}
+            PROPERTIES
+                RUNTIME_OUTPUT_DIRECTORY "./"
+                ARCHIVE_OUTPUT_DIRECTORY "./"
+                LIBRARY_OUTPUT_DIRECTORY "./")
+    endforeach()
+
+    set_target_properties(ChowKick_Standalone PROPERTIES
+            XCODE_ATTRIBUTE_INSTALL_PATH "$(LOCAL_APPS_DIR)"
+            XCODE_ATTRIBUTE_SKIP_INSTALL "NO"
+            XCODE_ATTRIBUTE_ENABLE_IN_APP_PURCHASE "YES")
+
+    set_target_properties(ChowKick_AUv3 PROPERTIES
+            XCODE_ATTRIBUTE_INSTALL_PATH "$(LOCAL_APPS_DIR)/ChowKick.app/PlugIns"
+            XCODE_ATTRIBUTE_SKIP_INSTALL "NO"
+            XCODE_ATTRIBUTE_ENABLE_IN_APP_PURCHASE "YES")
 endif()
