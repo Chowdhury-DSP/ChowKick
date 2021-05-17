@@ -19,7 +19,6 @@ on:
     - 'sim/**'
     - '*.sh'
     - '*.md'
-
   workflow_dispatch:
 
 jobs:
