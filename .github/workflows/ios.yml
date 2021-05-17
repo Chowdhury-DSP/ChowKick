@@ -38,7 +38,7 @@ jobs:
 
     - uses: Apple-Actions/import-codesign-certs@v1
       with:
-        p12-file-base64: ${{ secrets.MAC_CERTIFICATES_BASE64 }}
+        p12-file-base64: ${{ secrets.IOS_CERTIFICATES_BASE64 }}
         p12-password: ${{ secrets.MAC_CERTIFICATES_PASS }}
 
     - uses: Apple-Actions/download-provisioning-profiles@v1
