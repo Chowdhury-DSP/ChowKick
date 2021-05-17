@@ -1,4 +1,4 @@
-if(NOT MACOS_RELEASE)
+if(NOT (IOS OR MACOS_RELEASE))
     add_subdirectory(headless)
 endif()
 
