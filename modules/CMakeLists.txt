@@ -30,6 +30,7 @@ target_compile_definitions(juce_plugin_modules
         JUCE_WEB_BROWSER=0
         JUCE_USE_CURL=0
         JUCE_JACK=1
+        JUCE_ALSA=1
         JucePlugin_Manufacturer="chowdsp"
         JucePlugin_VersionString="${CMAKE_PROJECT_VERSION}"
         JucePlugin_Name="${CMAKE_PROJECT_NAME}"
