@@ -35,6 +35,7 @@ juce_add_plugin(ChowKick
     ProductName "ChowKick"
     ICON_BIG res/logo.png
     LV2_URI https://github.com/Chowdhury-DSP/ChowKick
+    REQUIRES_FULL_SCREEN TRUE
     IPHONE_SCREEN_ORIENTATIONS UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
     IPAD_SCREEN_ORIENTATIONS UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
 )
