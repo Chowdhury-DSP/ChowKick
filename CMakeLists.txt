@@ -34,6 +34,7 @@ juce_add_plugin(ChowKick
     FORMATS ${JUCE_FORMATS}
     ProductName "ChowKick"
     ICON_BIG res/logo.png
+    LV2_URI https://github.com/Chowdhury-DSP/ChowKick
     IPHONE_SCREEN_ORIENTATIONS UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
     IPAD_SCREEN_ORIENTATIONS UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
 )
