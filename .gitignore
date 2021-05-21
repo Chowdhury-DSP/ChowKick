@@ -10,3 +10,9 @@ bin/*[!.zip]
 
 # Mac extras
 .DS_Store
+
+# tex artifacts
+*.log
+*.aux
+*.out
+*.synctex*

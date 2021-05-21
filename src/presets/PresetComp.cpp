@@ -152,7 +152,7 @@ void PresetComp::paint (Graphics& g)
     presetBox.setColour (PopupMenu::ColourIds::backgroundColourId, findColour (backgroundColourId));
     g.setColour (findColour (backgroundColourId));
 
-    g.fillRoundedRectangle (getLocalBounds().reduced (arrowWidth + arrowPad, 0.0f).toFloat(), cornerSize);
+    g.fillRoundedRectangle (getLocalBounds().reduced (arrowWidth + arrowPad, 0).toFloat(), cornerSize);
 }
 
 void PresetComp::resized()
