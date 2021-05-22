@@ -42,7 +42,7 @@ void PulseViewer::paint (Graphics& g)
     for (int n = 0; n < nSamples; ++n)
     {
         auto xDraw = ((float) n / (float) nSamples) * (float) getWidth();
-        auto yDraw = (float) getHeight() - (yScale * block.getSample (0, n).sum() + yOff);
+        auto yDraw = (float) getHeight() - (yScale * block.getSample (0, n).sum() + yOff) + 4.0f;
 
         if (! started)
         {

@@ -45,6 +45,7 @@ void Trigger::addParameters (Parameters& params)
                                                   1.0f,
                                                   &timeMsValToString,
                                                   &stringToTimeMsVal));
+    
     params.push_back (std::make_unique<VTSParam> (ampTag,
                                                   "Pulse Amp",
                                                   String(),
@@ -56,7 +57,7 @@ void Trigger::addParameters (Parameters& params)
     params.push_back (std::make_unique<AudioParameterChoice> (voicesTag,
                                                               "Voices",
                                                               StringArray { "1", "2", "3", "4" },
-                                                              3));
+                                                              0));
 }
 
 void Trigger::prepareToPlay (double sampleRate, int /*samplesPerBlock*/)
