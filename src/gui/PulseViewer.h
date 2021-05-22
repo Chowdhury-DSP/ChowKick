@@ -5,6 +5,7 @@
 #include "dsp/Trigger.h"
 
 class PulseViewer : public Component,
+                    public SettableTooltipClient,
                     private Timer
 {
 public:

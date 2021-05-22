@@ -3,6 +3,7 @@
 #include "gui/DisabledSlider.h"
 #include "gui/FilterViewer.h"
 #include "gui/PulseViewer.h"
+#include "presets/PresetComp.h"
 
 ChowKick::ChowKick() : trigger (vts),
                        resFilter (vts, trigger),
@@ -82,7 +83,9 @@ AudioProcessorEditor* ChowKick::createEditor()
     builder->registerFactory ("PulseViewer", &PulseViewerItem::factory);
     builder->registerFactory ("FilterViewer", &FilterViewerItem::factory);
     builder->registerFactory ("DisabledSlider", &DisabledSlider::factory);
+    builder->registerFactory ("PresetComp", &PresetComponentItem::factory);
     builder->registerLookAndFeel ("SliderLNF", std::make_unique<SliderLNF>());
+    builder->registerLookAndFeel ("BottomBarLNF", std::make_unique<BottomBarLNF>());
     builder->registerLookAndFeel ("ComboBoxLNF", std::make_unique<ComboBoxLNF>());
 
     auto editor = new foleys::MagicPluginEditor (magicState, BinaryData::gui_xml, BinaryData::gui_xmlSize, std::move (builder));

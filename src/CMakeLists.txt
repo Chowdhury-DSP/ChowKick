@@ -13,6 +13,9 @@ target_sources(ChowKick PRIVATE
     gui/DisabledSlider.cpp
     gui/FilterViewer.cpp
     gui/PulseViewer.cpp
+
+    presets/PresetComp.cpp
+    presets/PresetManager.cpp
 )
 
 target_precompile_headers(ChowKick PRIVATE pch.h)

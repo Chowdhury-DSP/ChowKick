@@ -4,6 +4,7 @@
 #include "FilterViewHelper.h"
 
 class FilterViewer : public Component,
+                     public SettableTooltipClient,
                      private Timer
 {
 public:
