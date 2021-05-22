@@ -89,7 +89,13 @@ AudioProcessorEditor* ChowKick::createEditor()
     builder->registerLookAndFeel ("BottomBarLNF", std::make_unique<BottomBarLNF>());
     builder->registerLookAndFeel ("ComboBoxLNF", std::make_unique<ComboBoxLNF>());
 
+#if JUCE_IOS
+    auto editor = new foleys::MagicPluginEditor (magicState, BinaryData::gui_ios_xml, BinaryData::gui_ios_xmlSize, std::move (builder));
+#else
     auto editor = new foleys::MagicPluginEditor (magicState, BinaryData::gui_xml, BinaryData::gui_xmlSize, std::move (builder));
+#endif
+
+    // we need to set resize limits for StandalonePluginHolder
     editor->setResizeLimits (10, 10, 2000, 2000);
 
     return editor;

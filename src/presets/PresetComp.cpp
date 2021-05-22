@@ -1,5 +1,16 @@
 #include "PresetComp.h"
 
+namespace
+{
+#if JUCE_IOS
+    constexpr int arrowWidth = 32;
+    constexpr int arrowPad = 4;
+#else
+    constexpr int arrowWidth = 20;
+    constexpr int arrowPad = 2;
+#endif
+}
+
 PresetComp::PresetComp (ChowKick& proc, PresetManager& manager) : proc (proc),
                                                                   manager (manager),
                                                                   presetsLeft ("", DrawableButton::ImageOnButtonBackground),
@@ -141,16 +152,16 @@ void PresetComp::paint (Graphics& g)
     presetBox.setColour (PopupMenu::ColourIds::backgroundColourId, findColour (backgroundColourId));
     g.setColour (findColour (backgroundColourId));
 
-    g.fillRoundedRectangle (getLocalBounds().toFloat().reduced (22.0f, 0.0f), cornerSize);
+    g.fillRoundedRectangle (getLocalBounds().reduced (arrowWidth + arrowPad, 0.0f).toFloat(), cornerSize);
 }
 
 void PresetComp::resized()
 {
     auto b = getLocalBounds();
-    presetsLeft.setBounds (b.removeFromLeft (20));
-    presetsRight.setBounds (b.removeFromRight (20));
+    presetsLeft.setBounds (b.removeFromLeft (arrowWidth));
+    presetsRight.setBounds (b.removeFromRight (arrowWidth));
 
-    Rectangle<int> presetsBound { 22, 0, getWidth() - 44, getHeight() };
+    Rectangle<int> presetsBound (b.reduced (arrowPad, 0));
     presetBox.setBounds (presetsBound);
     presetNameEditor.setBounds (presetsBound);
     repaint();
