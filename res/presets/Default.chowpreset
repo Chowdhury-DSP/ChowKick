@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Preset name="Default" plugin="ChowKick">
+  <Parameters>
+    <PARAM id="out_level" value="0.0"/>
+    <PARAM id="out_tone" value="800.0"/>
+    <PARAM id="pulse_decay" value="1.0"/>
+    <PARAM id="pulse_sustain" value="0.5"/>
+    <PARAM id="res_bounce" value="0.0"/>
+    <PARAM id="res_damp" value="0.5"/>
+    <PARAM id="res_freq" value="80.0"/>
+    <PARAM id="res_link" value="0.0"/>
+    <PARAM id="res_portamento" value="0.5"/>
+    <PARAM id="res_q" value="0.5"/>
+    <PARAM id="res_tight" value="0.5"/>
+    <PARAM id="trig_amp" value="1.0"/>
+    <PARAM id="trig_voices" value="0.0"/>
+    <PARAM id="trig_width" value="1.0"/>
+    <PARAM id="preset" value="0"/>
+  </Parameters>
+</Preset>

@@ -44,6 +44,8 @@ public:
     void addListener (Listener* l) { listeners.add (l); }
     void removeListener (Listener* l) { listeners.remove (l); }
 
+    constexpr static int maxNumPresets() { return 999; }
+
 private:
     File getUserPresetConfigFile() const;
     void updateUserPresets();

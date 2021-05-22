@@ -18,6 +18,7 @@ void ChowKick::addParameters (Parameters& params)
     PulseShaper::addParameters (params);
     ResonantFilter::addParameters (params);
     OutputFilter::addParameters (params);
+    params.push_back (std::make_unique<AudioParameterInt> ("preset", "Preset", 0, PresetManager::maxNumPresets(), 0));
 }
 
 void ChowKick::prepareToPlay (double sampleRate, int samplesPerBlock)
@@ -92,6 +93,65 @@ AudioProcessorEditor* ChowKick::createEditor()
     editor->setResizeLimits (10, 10, 2000, 2000);
 
     return editor;
+}
+
+//==============================================================================
+int ChowKick::getNumPrograms()
+{
+    return presetManager.getNumPresets();
+}
+
+int ChowKick::getCurrentProgram()
+{
+    return (int) *vts.getRawParameterValue ("preset");
+}
+
+void ChowKick::setCurrentProgram (int index)
+{
+    if (index > presetManager.maxNumPresets())
+        return;
+
+    auto& presetParam = *vts.getRawParameterValue ("preset");
+    if ((int) presetParam == index)
+        return;
+
+    if (presetManager.setPreset (vts, index))
+    {
+        presetParam = (float) index;
+        presetManager.presetUpdated();
+        updateHostDisplay (AudioProcessorListener::ChangeDetails().withProgramChanged (true));
+    }
+}
+
+const String ChowKick::getProgramName (int index)
+{
+    return presetManager.getPresetName (index);
+}
+
+void ChowKick::getStateInformation (MemoryBlock& destData)
+{
+#if JUCE_IOS
+    auto state = vts.copyState();
+    std::unique_ptr<XmlElement> xml (state.createXml());
+    copyXmlToBinary (*xml, destData);
+#else
+    magicState.getStateInformation (destData);
+#endif
+}
+
+void ChowKick::setStateInformation (const void* data, int sizeInBytes)
+{
+#if JUCE_IOS
+    std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+
+    if (xmlState.get() != nullptr)
+        if (xmlState->hasTagName (vts.state.getType()))
+            vts.replaceState (juce::ValueTree::fromXml (*xmlState));
+#else
+    MessageManagerLock mml;
+    magicState.setStateInformation (data, sizeInBytes, getActiveEditor());
+#endif
+    presetManager.presetUpdated();
 }
 
 // This creates new instances of the plugin

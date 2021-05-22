@@ -4,6 +4,7 @@ juce_add_binary_data(BinaryData SOURCES
     RightArrow.svg
 
     presets/Default.chowpreset
+    presets/Wonky_Synth.chowpreset
 )
 
 # Need to build BinaryData with -fPIC flag on Linux

@@ -19,7 +19,14 @@ public:
     AudioProcessorEditor* createEditor() override;
     AudioProcessorValueTreeState& getVTS() { return vts; }
 
+    int getNumPrograms() override;
+    int getCurrentProgram() override;
+    void setCurrentProgram (int index) override;
+    const String getProgramName (int index) override;
     PresetManager& getPresetManager() { return presetManager; }
+
+    void getStateInformation (MemoryBlock& destData) override;
+    void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
     AudioBuffer<float> monoBuffer;

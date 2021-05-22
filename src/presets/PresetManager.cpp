@@ -36,7 +36,7 @@ void Preset::initialise (const ValueTree& parentTree)
     if (name.isEmpty())
         return;
 
-    auto plugin = parentTree.getProperty ("name").toString();
+    auto plugin = parentTree.getProperty ("plugin").toString();
     if (plugin != "ChowKick")
         return;
 
@@ -83,10 +83,12 @@ void PresetManager::loadPresets()
 {
     // load factory presets
     presets.add (std::make_unique<Preset> ("Default.chowpreset"));
+    presets.add (std::make_unique<Preset> ("Wonky_Synth.chowpreset"));
     numFactoryPresets = presets.size();
 
     for (auto* p : presets)
     {
+        jassert (p->isValid); // factory presets should always be valid
         jassert (! presetMap.contains (p->index)); // no two presets can have the same index
         presetMap.set (p->index, p);
         maxIdx = jmax (maxIdx, p->index);

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Preset name="Wonky Synth" plugin="ChowKick">
+  <Parameters>
+    <PARAM id="out_level" value="0.0"/>
+    <PARAM id="out_tone" value="800.0"/>
+    <PARAM id="pulse_decay" value="0.8"/>
+    <PARAM id="pulse_sustain" value="0.6"/>
+    <PARAM id="res_bounce" value="0.36"/>
+    <PARAM id="res_damp" value="0.145"/>
+    <PARAM id="res_freq" value="80.0"/>
+    <PARAM id="res_link" value="1.0"/>
+    <PARAM id="res_q" value="1.41"/>
+    <PARAM id="res_tight" value="0.0"/>
+    <PARAM id="trig_amp" value="1.0"/>
+    <PARAM id="trig_voices" value="3.0"/>
+    <PARAM id="trig_width" value="0.25"/>
+    <PARAM id="preset" value="1"/>
+  </Parameters>
+</Preset>
