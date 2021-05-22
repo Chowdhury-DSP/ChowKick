@@ -33,7 +33,12 @@ Preset::Preset (const File& presetFile)
 void Preset::initialise (const ValueTree& parentTree)
 {
     name = parentTree.getProperty ("name").toString();
-    jassert (name.isNotEmpty()); // Preset name not found!!
+    if (name.isEmpty())
+        return;
+
+    auto plugin = parentTree.getProperty ("name").toString();
+    if (plugin != "ChowKick")
+        return;
 
     state = parentTree.getChildWithName ("Parameters");
     for (int i = 0; i < state.getNumChildren(); ++i)
@@ -42,6 +47,8 @@ void Preset::initialise (const ValueTree& parentTree)
         if (child.getProperty ("id").toString() == "preset")
             index = (int) child.getProperty ("value");
     }
+
+    isValid = true;
 }
 
 //====================================================
@@ -75,22 +82,7 @@ StringArray PresetManager::getPresetChoices()
 void PresetManager::loadPresets()
 {
     // load factory presets
-    // presets.add (std::make_unique<Preset> ("Default.chowpreset"));
-    // presets.add (std::make_unique<Preset> ("TC260.chowpreset"));
-    // presets.add (std::make_unique<Preset> ("LoFi.chowpreset"));
-    // presets.add (std::make_unique<Preset> ("WoozyChorus.chowpreset"));
-    // presets.add (std::make_unique<Preset> ("OldTape.chowpreset"));
-    // presets.add (std::make_unique<Preset> ("Underbiased.chowpreset"));
-    // presets.add (std::make_unique<Preset> ("SNK_BassPusher.chowpreset"));
-    // presets.add (std::make_unique<Preset> ("SNK_Chorus2.chowpreset"));
-    // presets.add (std::make_unique<Preset> ("SNK_Chorus3.chowpreset"));
-    // presets.add (std::make_unique<Preset> ("SNK_Chorus4.chowpreset"));
-    // presets.add (std::make_unique<Preset> ("SNK_CleanFat.chowpreset"));
-    // presets.add (std::make_unique<Preset> ("SNK_Fat2.chowpreset"));
-    // presets.add (std::make_unique<Preset> ("SNK_Gritty.chowpreset"));
-    // presets.add (std::make_unique<Preset> ("SNK_Gritty2.chowpreset"));
-    // presets.add (std::make_unique<Preset> ("SNK_lofi.chowpreset"));
-    // presets.add (std::make_unique<Preset> ("SNK_SlightlyWobbly.chowpreset"));
+    presets.add (std::make_unique<Preset> ("Default.chowpreset"));
     numFactoryPresets = presets.size();
 
     for (auto* p : presets)
@@ -158,6 +150,7 @@ bool PresetManager::saveUserPreset (const String& name, const AudioProcessorValu
     // create preset XML
     auto presetXml = std::make_unique<XmlElement> ("Preset");
     presetXml->setAttribute ("name", "User_" + name);
+    presetXml->setAttribute ("plugin", "ChowKick");
 
     auto xmlParameters = std::make_unique<XmlElement> ("Parameters");
 
@@ -220,6 +213,12 @@ void PresetManager::loadPresetFolder (PopupMenu& menu, File& directory)
     {
         auto relativePath = userPreset.getRelativePathFrom (userPresetFolder);
         auto newPreset = presets.add (std::make_unique<Preset> (userPreset));
+        if (! newPreset->isValid)
+        {
+            presets.removeObject (newPreset);
+            continue;
+        }
+
         newPreset->index = maxIdx;
         presetMap.set (newPreset->index, newPreset);
         menu.addItem (newPreset->index + 1, newPreset->name.fromFirstOccurrenceOf ("User_", false, false));

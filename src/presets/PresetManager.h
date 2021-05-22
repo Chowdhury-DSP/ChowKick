@@ -11,6 +11,7 @@ struct Preset
     String name;
     ValueTree state;
     int index;
+    bool isValid = false;
 };
 
 //====================================================
