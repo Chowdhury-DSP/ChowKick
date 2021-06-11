@@ -56,3 +56,9 @@ set_target_properties(juce_plugin_modules PROPERTIES
     C_VISBILITY_PRESET hidden
     CXX_VISIBILITY_PRESET hidden
 )
+
+if(ASIOSDK_DIR)
+    message(STATUS "Using ASIO SDK from ${ASIOSDK_DIR}")
+    target_include_directories(juce_plugin_modules PUBLIC ${ASIOSDK_DIR}/common)
+    target_compile_definitions(juce_plugin_modules PUBLIC JUCE_ASIO=1)
+endif()
