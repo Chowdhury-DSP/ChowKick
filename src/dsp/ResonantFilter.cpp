@@ -10,6 +10,7 @@ ResonantFilter::ResonantFilter (AudioProcessorValueTreeState& vts, const Trigger
     dampParam = vts.getRawParameterValue (dampTag);
     tightParam = vts.getRawParameterValue (tightTag);
     bounceParam = vts.getRawParameterValue (bounceTag);
+    modeParam = vts.getRawParameterValue (modeTag);
 }
 
 void ResonantFilter::addParameters (Parameters& params)
@@ -63,6 +64,11 @@ void ResonantFilter::addParameters (Parameters& params)
                                                   &stringToPercentVal));
 
     params.push_back (std::make_unique<AudioParameterBool> (linkTag, "Link", false));
+
+    params.push_back (std::make_unique<AudioParameterChoice> (modeTag,
+                                                              "Res. Mode",
+                                                              StringArray { "Basic", "Dummy" },
+                                                              0));
 }
 
 void ResonantFilter::reset (double sampleRate)
@@ -134,14 +140,13 @@ void ResonantFilter::calcCoefs (Vec freq, float Q, float G)
     a[2] = ((Vec) (G + 1.0f) - alpha * G) / a0;
 }
 
-void ResonantFilter::processBlock (dsp::AudioBlock<Vec>& block, const int numSamples)
+template <typename ProcType>
+void ResonantFilter::processBlockInternal (dsp::AudioBlock<Vec>& block, const int numSamples, const ProcType& proc)
 {
-    freqSmooth.setTargetValue (getFrequencyHz());
-    qSmooth.setTargetValue (*qParam);
-    gSmooth.setTargetValue (getGVal());
-    d1Smooth.setTargetValue (getD1Val());
-    d2Smooth.setTargetValue (getD2Val());
-    d3Smooth.setTargetValue (getD3Val());
+    auto [d1, d2, d3] = proc.getDriveValues (tightParam->load(), bounceParam->load());
+    d1Smooth.setTargetValue (d1);
+    d2Smooth.setTargetValue (d2);
+    d3Smooth.setTargetValue (d3);
 
     auto* x = block.getChannelPointer (0);
     if (freqSmooth.isSmoothing() || qSmooth.isSmoothing() || gSmooth.isSmoothing())
@@ -149,12 +154,29 @@ void ResonantFilter::processBlock (dsp::AudioBlock<Vec>& block, const int numSam
         for (int n = 0; n < numSamples; ++n)
         {
             calcCoefs (freqSmooth.getNextValue(), qSmooth.getNextValue(), gSmooth.getNextValue());
-            x[n] = processSample (x[n], d1Smooth.getNextValue(), d2Smooth.getNextValue(), d3Smooth.getNextValue());
+            x[n] = proc (x[n], a, b, z, d1Smooth.getNextValue(), d2Smooth.getNextValue(), d3Smooth.getNextValue());
         }
 
         return;
     }
 
     for (int n = 0; n < numSamples; ++n)
-        x[n] = processSample (x[n], d1Smooth.getNextValue(), d2Smooth.getNextValue(), d3Smooth.getNextValue());
+        x[n] = proc (x[n], a, b, z, d1Smooth.getNextValue(), d2Smooth.getNextValue(), d3Smooth.getNextValue());
+}
+
+void ResonantFilter::processBlock (dsp::AudioBlock<Vec>& block, const int numSamples)
+{
+    freqSmooth.setTargetValue (getFrequencyHz());
+    qSmooth.setTargetValue (*qParam);
+    gSmooth.setTargetValue (getGVal());
+
+    auto curMode = static_cast<int> (modeParam->load());
+    switch (curMode)
+    {
+    case 0: // Basic
+        processBlockInternal (block, numSamples, baseProc);
+        break;
+    default:
+        break;
+    };
 }

@@ -21,16 +21,14 @@ public:
         freqVal = (bool) filter.linkParam->load() ? 100.0f : filter.freqParam->load();
         gVal = filter.getGVal();
         qVal = filter.qParam->load();
-
         T = 1.0f / filter.fs;
-        g1 = drive_deriv (filter.getD1Val());
-        g2 = drive_deriv (filter.getD2Val());
-        g3 = drive_deriv (filter.getD3Val());
 
         b1 = filter.b[1].get (0);
         b2 = filter.b[2].get (0);
         a1 = filter.a[1].get (0);
         a2 = filter.a[2].get (0);
+
+        std::tie (b0Corr, b1Corr, b2Corr, a0Corr, a1Corr, a2Corr) = filter.getNLCorrections (b1, b2, a1, a2, T);
     }
 
     inline float getMagForFreq (float freq) const noexcept
@@ -46,17 +44,15 @@ public:
         std::complex<float> s (0, freq / freqVal); // s = j (w / w0)
 
         // corrected for nonlinearities!
-        auto b0Corr = 1.0f - b1 - b2 + g1 * b1 + g1 * g2 * b2;
-        auto b1Corr = (s / qVal) + (b2 - g1 * g2 * b2) * s * T;
-        auto b2Corr = (s * s) + (s * s * T / 4.0f) * (g1 * g2 * b2 - g1 * b1 - b2 + b1);
+        auto b0Coeff = 1.0f + b0Corr;
+        auto b1Coeff = (s / qVal) + s * b1Corr;
+        auto b2Coeff = (s * s) + (s * s * b2Corr);
 
-        auto a0Corr = (gVal + 1.0f) - a1 - a2 + g1 * g3 * a1 + g1 * g2 * g3 * a2;
-        auto a1Corr = (gVal * s / qVal) + (a2 - g1 * g2 * g3 * a2) * s * T;
-        auto a2Corr = (s * s * (gVal + 1.0f)) + (s * s * T / 4.0f) * (g1 * g2 * g3 * a2 - g1 * g3 * a1 - a2 + a1);
+        auto a0Coeff = (gVal + 1.0f) + a0Corr;
+        auto a1Coeff = (gVal * s / qVal) + s * a1Corr;
+        auto a2Coeff = (s * s * (gVal + 1.0f)) + (s * s * a2Corr);
 
-        auto numerator = b2Corr + b1Corr + b0Corr;
-        auto denominator = a2Corr + a1Corr + a0Corr;
-        return std::abs (numerator / denominator);
+        return std::abs ((b2Coeff + b1Coeff + b0Coeff) / (a2Coeff + a1Coeff + a0Coeff));
     }
 
 private:
@@ -64,7 +60,8 @@ private:
 
     float freqVal, qVal, gVal;
     float T;
-    float g1, g2, g3;
+    float b0Corr, b1Corr, b2Corr;
+    float a0Corr, a1Corr, a2Corr;
     float b1, b2, a1, a2;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilterViewHelper)

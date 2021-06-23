@@ -149,6 +149,10 @@
                 combo-menu-background="1B2A33" combo-menu-background-highlight="FF425866"
                 background-color="00000000" name="Voices" tooltip="Selects how many polyphonic voices the kick drum can have"/>
       <View flex-grow="0.5" background-color="00000000"/>
+      <ComboBox combo-background="1B2A33" parameter="res_mode" name="Res. Mode"
+                margin="0" padding="0" background-color="00000000" lookAndFeel="ComboBoxLNF"
+                tooltip="Selects the mode used by the resonance filter"/>
+      <View flex-grow="0.5" background-color="00000000"/>
     </View>
   </View>
 </magic>
