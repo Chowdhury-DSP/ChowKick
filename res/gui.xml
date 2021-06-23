@@ -150,7 +150,7 @@
       <View flex-grow="0.5" background-color="00000000"/>
       <ComboBox combo-background="1B2A33" parameter="res_mode" name="Res. Mode"
                 margin="0" padding="0" background-color="00000000" lookAndFeel="ComboBoxLNF"
-                tooltip="Selects the mode used by the resonance filter"/>
+                tooltip="Selects the mode used by the resonance filter" flex-grow="1.25"/>
       <View flex-grow="0.5" background-color="00000000"/>
       <PresetComp flex-grow="1.5" margin="0" padding="2" background-color="00000000"
                   presets-background="FF425866" lookAndFeel="BottomBarLNF" name="Presets"

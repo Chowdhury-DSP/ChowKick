@@ -114,16 +114,16 @@
                   name="Damping"/>
         </View>
         <View margin="0" padding="0" background-color="00000000">
-          <Slider class="SliderClass" parameter="res_tight" caption="Tight" background-color="0x00000000"
-                  lookAndFeel="SliderLNF" slider-thumb="FFFFB200" slider-track="1B2A33"
-                  slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
-                  caption-color="C5D1D8" tooltip="Controls nonlinear behaviour of the filter resonance"
-                  name="Tight"/>
-          <Slider class="SliderClass" parameter="res_bounce" caption="Bounce" background-color="0x00000000"
-                  lookAndFeel="SliderLNF" slider-thumb="FFFFB200" slider-track="1B2A33"
-                  slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
-                  caption-color="C5D1D8" tooltip="Controls nonlinear behaviour of the filter frequency"
-                  name="Bounce"/>
+          <DisabledSlider class="SliderClass" parameter="res_tight" caption="Tight" background-color="0x00000000"
+                          lookAndFeel="SliderLNF" slider-thumb="FFFFB200" slider-track="1B2A33"
+                          slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
+                          caption-color="C5D1D8" tooltip="Controls nonlinear behaviour of the filter resonance"
+                          name="Tight" disable-param="res_mode" disable-for-val="0"/>
+          <DisabledSlider class="SliderClass" parameter="res_bounce" caption="Bounce" background-color="0x00000000"
+                          lookAndFeel="SliderLNF" slider-thumb="FFFFB200" slider-track="1B2A33"
+                          slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
+                          caption-color="C5D1D8" tooltip="Controls nonlinear behaviour of the filter frequency"
+                          name="Bounce" disable-param="res_mode" disable-for-val="0"/>
           <Slider class="SliderClass" parameter="out_tone" caption="Tone" background-color="0x00000000"
                   lookAndFeel="SliderLNF" slider-thumb="FFFFB200" slider-track="1B2A33"
                   slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
