@@ -67,8 +67,8 @@ void ResonantFilter::addParameters (Parameters& params)
 
     params.push_back (std::make_unique<AudioParameterChoice> (modeTag,
                                                               "Res. Mode",
-                                                              StringArray { "Basic", "Dummy" },
-                                                              0));
+                                                              StringArray { "Linear", "Basic" },
+                                                              1));
 }
 
 void ResonantFilter::reset (double sampleRate)
@@ -86,9 +86,23 @@ void ResonantFilter::reset (double sampleRate)
     freqSmooth.setCurrentAndTargetValue (getFrequencyHz());
     qSmooth.setCurrentAndTargetValue (*qParam);
     gSmooth.setCurrentAndTargetValue (getGVal());
-    d1Smooth.setCurrentAndTargetValue (getD1Val());
-    d2Smooth.setCurrentAndTargetValue (getD2Val());
-    d3Smooth.setCurrentAndTargetValue (getD3Val());
+
+    auto curMode = static_cast<int> (modeParam->load());
+    float d1 = 0.0f, d2 = 0.0f, d3 = 0.0f;
+    switch (curMode)
+    {
+    case 0: // Linear
+        std::tie (d1, d2, d3) = linProc.getDriveValues (tightParam->load(), bounceParam->load());
+        break;
+    case 1: // Basic
+        std::tie (d1, d2, d3) = baseProc.getDriveValues (tightParam->load(), bounceParam->load());
+        break;
+    default:
+        break;
+    };
+    d1Smooth.setCurrentAndTargetValue (d1);
+    d2Smooth.setCurrentAndTargetValue (d2);
+    d3Smooth.setCurrentAndTargetValue (d3);
 
     calcCoefs (freqSmooth.getTargetValue(), qSmooth.getTargetValue(), gSmooth.getTargetValue());
 }
@@ -104,22 +118,6 @@ float ResonantFilter::getGVal() const noexcept
     constexpr float highDamp = 0.5f;
 
     return lowDamp * std::pow ((highDamp / lowDamp), dampParam->load());
-}
-
-float ResonantFilter::getD1Val() const noexcept
-{
-    return 4.9f * std::pow (tightParam->load(), 4.0f) + 0.1f;
-}
-
-float ResonantFilter::getD2Val() const noexcept
-{
-    return 4.9f * std::pow (tightParam->load(), 6.0f) + 0.1f;
-}
-
-float ResonantFilter::getD3Val() const noexcept
-{
-    auto dp = bounceParam->load();
-    return 4.75f * std::pow (dp, 3.0f) + 0.25f;
 }
 
 void ResonantFilter::calcCoefs (Vec freq, float Q, float G)
@@ -154,14 +152,22 @@ void ResonantFilter::processBlockInternal (dsp::AudioBlock<Vec>& block, const in
         for (int n = 0; n < numSamples; ++n)
         {
             calcCoefs (freqSmooth.getNextValue(), qSmooth.getNextValue(), gSmooth.getNextValue());
-            x[n] = proc (x[n], a, b, z, d1Smooth.getNextValue(), d2Smooth.getNextValue(), d3Smooth.getNextValue());
+            x[n] = proc (x[n], b, a, z, d1Smooth.getNextValue(), d2Smooth.getNextValue(), d3Smooth.getNextValue());
         }
 
         return;
     }
 
+    if (d1Smooth.isSmoothing() || d2Smooth.isSmoothing() || d3Smooth.isSmoothing())
+    {
+        for (int n = 0; n < numSamples; ++n)
+            x[n] = proc (x[n], b, a, z, d1Smooth.getNextValue(), d2Smooth.getNextValue(), d3Smooth.getNextValue());    
+
+        return;
+    }
+
     for (int n = 0; n < numSamples; ++n)
-        x[n] = proc (x[n], a, b, z, d1Smooth.getNextValue(), d2Smooth.getNextValue(), d3Smooth.getNextValue());
+        x[n] = proc (x[n], b, a, z, d1, d2, d3);
 }
 
 void ResonantFilter::processBlock (dsp::AudioBlock<Vec>& block, const int numSamples)
@@ -173,7 +179,10 @@ void ResonantFilter::processBlock (dsp::AudioBlock<Vec>& block, const int numSam
     auto curMode = static_cast<int> (modeParam->load());
     switch (curMode)
     {
-    case 0: // Basic
+    case 0: // Linear
+        processBlockInternal (block, numSamples, linProc);
+        break;
+    case 1: // Basic
         processBlockInternal (block, numSamples, baseProc);
         break;
     default:

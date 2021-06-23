@@ -19,7 +19,7 @@ public:
     static const juce::Identifier pMaxValue;
 
     static const juce::Identifier pDisableParam;
-    static const juce::Identifier pDisableWhenOn;
+    static const juce::Identifier pDisableForVal;
 
     DisabledSlider (foleys::MagicGUIBuilder& builder, const juce::ValueTree& node);
     ~DisabledSlider() override;

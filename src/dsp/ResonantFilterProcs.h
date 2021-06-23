@@ -51,3 +51,25 @@ struct BasicFilterProc
         return std::make_tuple (b0Corr, b1Corr, b2Corr, a0Corr, a1Corr, a2Corr);
     }
 };
+
+struct LinearFilterProc
+{
+    inline Vec operator() (Vec x, const Vec (&b)[3], const Vec (&a)[3],
+                           Vec (&z)[3], float /*d1*/, float /*d2*/, float /*d3*/) const
+    {
+        auto y = (z[1] + x * b[0]) * 0.999999f;
+        z[1] = z[2] + x * b[1] - y * a[1];
+        z[2] = x * b[2] - y * a[2];
+        return y * 0.15f;
+    }
+
+    static auto getDriveValues (float /*tightParam*/, float /*bounceParam*/)
+    {
+        return std::make_tuple (1.0f, 1.0f, 1.0f);
+    };
+
+    static auto getNLFilterCorrections (float, float, float, float, float, float, float)
+    {
+        return std::make_tuple (0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+    }
+};

@@ -28,10 +28,10 @@ void DisabledSlider::parameterChanged (const String& paramID, float newValue)
     if (paramID != paramListening)
         return;
 
-    bool parameterOn = newValue > 0.5f;
-    auto disableWhenOn = (bool) getProperty (pDisableWhenOn);
+    const auto parameterVal = (int) newValue;
+    auto disableVal = (int) getProperty (pDisableForVal);
 
-    slider.setEnabled (parameterOn != disableWhenOn);
+    slider.setEnabled (! (parameterVal == disableVal));
 }
 
 void DisabledSlider::update()
@@ -85,6 +85,8 @@ void DisabledSlider::update()
 
         vts.addParameterListener (newParamListening, this);
         paramListening = newParamListening;
+
+        parameterChanged (paramListening, vts.getRawParameterValue (paramListening)->load());
     }
 }
 
@@ -100,7 +102,7 @@ std::vector<foleys::SettableProperty> DisabledSlider::getSettableProperties() co
     props.push_back ({ configNode, pMinValue, SettableProperty::Number, 0.0f, {} });
     props.push_back ({ configNode, pMaxValue, SettableProperty::Number, 2.0f, {} });
     props.push_back ({ configNode, pDisableParam, SettableProperty::Choice, {}, magicBuilder.createParameterMenuLambda() });
-    props.push_back ({ configNode, pDisableWhenOn, SettableProperty::Toggle, {}, {} });
+    props.push_back ({ configNode, pDisableForVal, SettableProperty::Toggle, {}, {} });
 
     return props;
 }
@@ -123,4 +125,4 @@ const juce::Identifier DisabledSlider::pValue { "value" };
 const juce::Identifier DisabledSlider::pMinValue { "min-value" };
 const juce::Identifier DisabledSlider::pMaxValue { "max-value" };
 const juce::Identifier DisabledSlider::pDisableParam { "disable-param" };
-const juce::Identifier DisabledSlider::pDisableWhenOn { "disable-when-on" };
+const juce::Identifier DisabledSlider::pDisableForVal { "disable-for-val" };

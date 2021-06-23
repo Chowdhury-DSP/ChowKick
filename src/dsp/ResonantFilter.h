@@ -27,16 +27,15 @@ public:
     void setFreqMult (float newMult) { freqMult = newMult; }
     Vec getFrequencyHz() const noexcept;
     float getGVal() const noexcept;
-    float getD1Val() const noexcept;
-    float getD2Val() const noexcept;
-    float getD3Val() const noexcept;
 
     auto getNLCorrections (float b1, float b2, float a1, float a2, float T) const
     {
         auto curMode = static_cast<int> (modeParam->load());
         switch (curMode)
         {
-        case 0: // Basic
+        case 0: // Linear
+            return linProc.getNLFilterCorrections (*tightParam, *bounceParam, b1, b2, a1, a2, T);
+        case 1: // Basic
             return baseProc.getNLFilterCorrections (*tightParam, *bounceParam, b1, b2, a1, a2, T);
         default:
             return std::make_tuple (0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
@@ -73,6 +72,7 @@ private:
     Vec b[3] = { 1.0f, 0.0f, 0.0f };
     Vec z[3];
 
+    LinearFilterProc linProc;
     BasicFilterProc baseProc;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ResonantFilter)
