@@ -37,6 +37,8 @@ public:
             return linProc.getNLFilterCorrections (*tightParam, *bounceParam, b1, b2, a1, a2, T);
         case 1: // Basic
             return baseProc.getNLFilterCorrections (*tightParam, *bounceParam, b1, b2, a1, a2, T);
+        case 2: // Bouncy
+            return bouncyProc.getNLFilterCorrections (*tightParam, *bounceParam, b1, b2, a1, a2, T);
         default:
             return std::make_tuple (0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
         };
@@ -74,6 +76,7 @@ private:
 
     LinearFilterProc linProc;
     BasicFilterProc baseProc;
+    BouncyFilterProc bouncyProc;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ResonantFilter)
 };

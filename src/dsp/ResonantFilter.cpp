@@ -67,7 +67,7 @@ void ResonantFilter::addParameters (Parameters& params)
 
     params.push_back (std::make_unique<AudioParameterChoice> (modeTag,
                                                               "Res. Mode",
-                                                              StringArray { "Linear", "Basic" },
+                                                              StringArray { "Linear", "Basic", "Bouncy" },
                                                               1));
 }
 
@@ -96,6 +96,9 @@ void ResonantFilter::reset (double sampleRate)
         break;
     case 1: // Basic
         std::tie (d1, d2, d3) = baseProc.getDriveValues (tightParam->load(), bounceParam->load());
+        break;
+    case 2: // Bouncy
+        std::tie (d1, d2, d3) = bouncyProc.getDriveValues (tightParam->load(), bounceParam->load());
         break;
     default:
         break;
@@ -184,6 +187,9 @@ void ResonantFilter::processBlock (dsp::AudioBlock<Vec>& block, const int numSam
         break;
     case 1: // Basic
         processBlockInternal (block, numSamples, baseProc);
+        break;
+    case 2: // Bouncy
+        processBlockInternal (block, numSamples, bouncyProc);
         break;
     default:
         break;
