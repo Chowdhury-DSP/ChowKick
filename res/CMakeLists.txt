@@ -4,7 +4,10 @@ juce_add_binary_data(BinaryData SOURCES
     LeftArrow.svg
     RightArrow.svg
 
+    presets/Bouncy.chowpreset
     presets/Default.chowpreset
+    presets/Tight.chowpreset
+    presets/Tonal.chowpreset
     presets/Wonky_Synth.chowpreset
 )
 

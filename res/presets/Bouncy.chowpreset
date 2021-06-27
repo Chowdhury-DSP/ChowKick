@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Preset name="Bouncy" plugin="ChowKick">
+  <Parameters>
+    <PARAM id="out_level" value="0.0"/>
+    <PARAM id="out_tone" value="450.0"/>
+    <PARAM id="pulse_decay" value="1.0"/>
+    <PARAM id="pulse_sustain" value="0.5"/>
+    <PARAM id="res_bounce" value="0.6000000238418579"/>
+    <PARAM id="res_damp" value="0.550000011920929"/>
+    <PARAM id="res_freq" value="80.0"/>
+    <PARAM id="res_link" value="0.0"/>
+    <PARAM id="res_portamento" value="0.5"/>
+    <PARAM id="res_q" value="1.0"/>
+    <PARAM id="res_tight" value="0.2000000029802322"/>
+    <PARAM id="trig_amp" value="1.0"/>
+    <PARAM id="trig_voices" value="0.0"/>
+    <PARAM id="trig_width" value="1.49999988079071"/>
+    <PARAM id="preset" value="2"/>
+    <PARAM id="res_mode" value="2.0"/>
+    <PARAM id="preset" value="1"/>
+  </Parameters>
+</Preset>

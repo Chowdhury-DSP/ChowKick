@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Preset name="Tight" plugin="ChowKick">
+  <Parameters>
+    <PARAM id="out_level" value="0.0"/>
+    <PARAM id="out_tone" value="330.0"/>
+    <PARAM id="pulse_decay" value="0.25"/>
+    <PARAM id="pulse_sustain" value="0.05000000074505806"/>
+    <PARAM id="res_bounce" value="0.0"/>
+    <PARAM id="res_damp" value="0.75"/>
+    <PARAM id="res_freq" value="60.00000381469727"/>
+    <PARAM id="res_link" value="0.0"/>
+    <PARAM id="res_portamento" value="0.5"/>
+    <PARAM id="res_q" value="1.399999976158142"/>
+    <PARAM id="res_tight" value="0.5"/>
+    <PARAM id="trig_amp" value="1.0"/>
+    <PARAM id="trig_voices" value="0.0"/>
+    <PARAM id="trig_width" value="2.5"/>
+    <PARAM id="preset" value="2"/>
+    <PARAM id="res_mode" value="2.0"/>
+    <PARAM id="preset" value="2"/>
+  </Parameters>
+</Preset>

@@ -83,6 +83,9 @@ void PresetManager::loadPresets()
 {
     // load factory presets
     presets.add (std::make_unique<Preset> ("Default.chowpreset"));
+    presets.add (std::make_unique<Preset> ("Bouncy.chowpreset"));
+    presets.add (std::make_unique<Preset> ("Tight.chowpreset"));
+    presets.add (std::make_unique<Preset> ("Tonal.chowpreset"));
     presets.add (std::make_unique<Preset> ("Wonky_Synth.chowpreset"));
     numFactoryPresets = presets.size();
 

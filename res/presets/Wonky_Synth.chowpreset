@@ -15,6 +15,7 @@
     <PARAM id="trig_amp" value="1.0"/>
     <PARAM id="trig_voices" value="3.0"/>
     <PARAM id="trig_width" value="0.25"/>
-    <PARAM id="preset" value="1"/>
+    <PARAM id="res_mode" value="1.0"/>
+    <PARAM id="preset" value="4"/>
   </Parameters>
 </Preset>
