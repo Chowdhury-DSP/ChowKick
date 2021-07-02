@@ -18,5 +18,11 @@ target_sources(ChowKick PRIVATE
     presets/PresetManager.cpp
 )
 
+if(IOS)
+    target_sources(ChowKick PRIVATE
+        gui/TipJar.cpp
+    )
+endif()
+
 target_precompile_headers(ChowKick PRIVATE pch.h)
     

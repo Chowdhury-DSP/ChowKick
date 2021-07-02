@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 set(CMAKE_OSX_DEPLOYMENT_TARGET "10.12" CACHE STRING "Minimum OS X deployment target")
-project(ChowKick VERSION 0.3.0)
+project(ChowKick VERSION 0.4.0)
 
 set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(modules)
@@ -35,6 +35,7 @@ juce_add_plugin(ChowKick
     ProductName "ChowKick"
     ICON_BIG res/logo.png
     LV2_URI https://github.com/Chowdhury-DSP/ChowKick
+    NEEDS_STORE_KIT TRUE
     REQUIRES_FULL_SCREEN TRUE
     IPHONE_SCREEN_ORIENTATIONS UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
     IPAD_SCREEN_ORIENTATIONS UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight

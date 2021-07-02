@@ -5,6 +5,10 @@
 #include "gui/PulseViewer.h"
 #include "presets/PresetComp.h"
 
+#if JUCE_IOS
+#include "gui/TipJar.h"
+#endif
+
 ChowKick::ChowKick() : trigger (vts),
                        resFilter (vts, trigger),
                        outFilter (vts)
@@ -90,6 +94,7 @@ AudioProcessorEditor* ChowKick::createEditor()
     builder->registerLookAndFeel ("ComboBoxLNF", std::make_unique<ComboBoxLNF>());
 
 #if JUCE_IOS
+    builder->registerFactory ("TipJar", &TipJarItem::factory);
     auto editor = new foleys::MagicPluginEditor (magicState, BinaryData::gui_ios_xml, BinaryData::gui_ios_xmlSize, std::move (builder));
 #else
     auto editor = new foleys::MagicPluginEditor (magicState, BinaryData::gui_xml, BinaryData::gui_xmlSize, std::move (builder));

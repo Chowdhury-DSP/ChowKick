@@ -153,6 +153,10 @@
                 margin="0" padding="0" background-color="00000000" lookAndFeel="ComboBoxLNF"
                 tooltip="Selects the mode used by the resonance filter"/>
       <View flex-grow="0.5" background-color="00000000"/>
+      <TipJar max-height="35" margin="0" padding="0" lookAndFeel="ComboBoxLNF" combo-outline="00000000"
+              combo-background="00000000" combo-menu-background="1B2A33"
+              combo-menu-background-highlight="FF425866"/>
+      <View flex-grow="0.5" background-color="00000000"/>
     </View>
   </View>
 </magic>
