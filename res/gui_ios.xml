@@ -100,7 +100,7 @@
                           lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
                           slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
                           slider-text-highlight="00000000" slider-text-outline="00000000"
-                          caption-color="C5D1D8" disable-param="res_link" disable-when-on="1"
+                          caption-color="C5D1D8" disable-param="res_link" disable-for-val="1"
                           name="Frequency" tooltip="Controls the frequency of the filter when not in link mode"/>
           <Slider class="SliderClass" parameter="res_q" caption="Q" lookAndFeel="SliderLNF"
                   margin="0" background-color="0x00000000" slider-thumb="FFFFB200"
