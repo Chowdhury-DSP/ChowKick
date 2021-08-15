@@ -19,7 +19,6 @@ jobs:
     
     steps:
     - name: Install Linux Deps
-    - name: Install Linux Deps
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
