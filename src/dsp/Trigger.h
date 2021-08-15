@@ -10,7 +10,7 @@ public:
 
     static void addParameters (Parameters& params);
     void prepareToPlay (double sampleRate, int samplesPerBlock);
-    void processBlock (dsp::AudioBlock<Vec>& block, const int numSamples, MidiBuffer& midi);
+    void processBlock (dsp::AudioBlock<Vec>& block, int numSamples, MidiBuffer& midi);
 
     void parameterChanged (const String& paramID, float newValue) override;
 

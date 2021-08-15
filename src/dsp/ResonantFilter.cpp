@@ -88,7 +88,7 @@ void ResonantFilter::reset (double sampleRate)
     gSmooth.setCurrentAndTargetValue (getGVal());
 
     auto curMode = static_cast<int> (modeParam->load());
-    float d1 = 0.0f, d2 = 0.0f, d3 = 0.0f;
+    float d1 = 0.0f, d2 = 0.0f, d3 = 0.0f; // NOLINT
     switch (curMode)
     {
     case 0: // Linear

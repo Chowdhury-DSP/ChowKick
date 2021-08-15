@@ -37,7 +37,7 @@ public:
 
     struct Listener
     {
-        virtual ~Listener() {}
+        virtual ~Listener() = default;
         virtual void presetUpdated() {}
     };
 
