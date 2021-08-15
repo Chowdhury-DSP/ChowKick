@@ -45,7 +45,7 @@ void Trigger::addParameters (Parameters& params)
                                                   1.0f,
                                                   &timeMsValToString,
                                                   &stringToTimeMsVal));
-    
+
     params.push_back (std::make_unique<VTSParam> (ampTag,
                                                   "Pulse Amp",
                                                   String(),
