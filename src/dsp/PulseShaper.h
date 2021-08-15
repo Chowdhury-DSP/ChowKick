@@ -8,7 +8,7 @@ public:
     PulseShaper (AudioProcessorValueTreeState& vts, double sampleRate);
 
     static void addParameters (Parameters& params);
-    void processBlock (dsp::AudioBlock<Vec>& block, const int numSamples);
+    void processBlock (dsp::AudioBlock<Vec>& block, int numSamples);
 
     inline Vec processSample (Vec x) noexcept
     {

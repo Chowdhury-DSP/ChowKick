@@ -88,20 +88,20 @@ void ResonantFilter::reset (double sampleRate)
     gSmooth.setCurrentAndTargetValue (getGVal());
 
     auto curMode = static_cast<int> (modeParam->load());
-    float d1 = 0.0f, d2 = 0.0f, d3 = 0.0f;
+    float d1 = 0.0f, d2 = 0.0f, d3 = 0.0f; // NOLINT
     switch (curMode)
     {
-    case 0: // Linear
-        std::tie (d1, d2, d3) = linProc.getDriveValues (tightParam->load(), bounceParam->load());
-        break;
-    case 1: // Basic
-        std::tie (d1, d2, d3) = baseProc.getDriveValues (tightParam->load(), bounceParam->load());
-        break;
-    case 2: // Bouncy
-        std::tie (d1, d2, d3) = bouncyProc.getDriveValues (tightParam->load(), bounceParam->load());
-        break;
-    default:
-        break;
+        case 0: // Linear
+            std::tie (d1, d2, d3) = linProc.getDriveValues (tightParam->load(), bounceParam->load());
+            break;
+        case 1: // Basic
+            std::tie (d1, d2, d3) = baseProc.getDriveValues (tightParam->load(), bounceParam->load());
+            break;
+        case 2: // Bouncy
+            std::tie (d1, d2, d3) = bouncyProc.getDriveValues (tightParam->load(), bounceParam->load());
+            break;
+        default:
+            break;
     };
     d1Smooth.setCurrentAndTargetValue (d1);
     d2Smooth.setCurrentAndTargetValue (d2);
@@ -164,7 +164,7 @@ void ResonantFilter::processBlockInternal (dsp::AudioBlock<Vec>& block, const in
     if (d1Smooth.isSmoothing() || d2Smooth.isSmoothing() || d3Smooth.isSmoothing())
     {
         for (int n = 0; n < numSamples; ++n)
-            x[n] = proc (x[n], b, a, z, d1Smooth.getNextValue(), d2Smooth.getNextValue(), d3Smooth.getNextValue());    
+            x[n] = proc (x[n], b, a, z, d1Smooth.getNextValue(), d2Smooth.getNextValue(), d3Smooth.getNextValue());
 
         return;
     }
@@ -182,16 +182,16 @@ void ResonantFilter::processBlock (dsp::AudioBlock<Vec>& block, const int numSam
     auto curMode = static_cast<int> (modeParam->load());
     switch (curMode)
     {
-    case 0: // Linear
-        processBlockInternal (block, numSamples, linProc);
-        break;
-    case 1: // Basic
-        processBlockInternal (block, numSamples, baseProc);
-        break;
-    case 2: // Bouncy
-        processBlockInternal (block, numSamples, bouncyProc);
-        break;
-    default:
-        break;
+        case 0: // Linear
+            processBlockInternal (block, numSamples, linProc);
+            break;
+        case 1: // Basic
+            processBlockInternal (block, numSamples, baseProc);
+            break;
+        case 2: // Bouncy
+            processBlockInternal (block, numSamples, bouncyProc);
+            break;
+        default:
+            break;
     };
 }

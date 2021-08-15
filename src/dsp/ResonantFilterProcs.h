@@ -4,8 +4,7 @@
 
 struct BasicFilterProc
 {
-    inline Vec operator() (Vec x, const Vec (&b)[3], const Vec (&a)[3],
-                           Vec (&z)[3], float d1, float d2, float d3) const
+    inline Vec operator() (Vec x, const Vec (&b)[3], const Vec (&a)[3], Vec (&z)[3], float d1, float d2, float d3) const
     {
         auto y = z[1] + x * b[0];
         auto yDrive = drive (y, d3);
@@ -40,7 +39,7 @@ struct BasicFilterProc
         auto g2 = drive_deriv (d2);
         auto g3 = drive_deriv (d3);
 
-        auto b0Corr = -b1 - b2 + g1 * b1 + g1 * g2 * b2 ;
+        auto b0Corr = -b1 - b2 + g1 * b1 + g1 * g2 * b2;
         auto b1Corr = (b2 - g1 * g2 * b2) * T;
         auto b2Corr = (T / 4.0f) * (g1 * g2 * b2 - g1 * b1 - b2 + b1);
 
@@ -54,8 +53,7 @@ struct BasicFilterProc
 
 struct LinearFilterProc
 {
-    inline Vec operator() (Vec x, const Vec (&b)[3], const Vec (&a)[3],
-                           Vec (&z)[3], float /*d1*/, float /*d2*/, float /*d3*/) const
+    inline Vec operator() (Vec x, const Vec (&b)[3], const Vec (&a)[3], Vec (&z)[3], float /*d1*/, float /*d2*/, float /*d3*/) const
     {
         auto y = (z[1] + x * b[0]) * 0.999999f;
         z[1] = z[2] + x * b[1] - y * a[1];
@@ -76,8 +74,7 @@ struct LinearFilterProc
 
 struct BouncyFilterProc
 {
-    inline Vec operator() (Vec x, const Vec (&b)[3], const Vec (&a)[3],
-                           Vec (&z)[3], float d1, float d2, float d3) const
+    inline Vec operator() (Vec x, const Vec (&b)[3], const Vec (&a)[3], Vec (&z)[3], float d1, float d2, float d3) const
     {
         auto y = z[1] + x * b[0];
         auto yDrive = drive (y, d3);
@@ -100,7 +97,7 @@ struct BouncyFilterProc
     static auto getDriveValues (float tightParam, float bounceParam)
     {
         auto d1 = 4.9f * std::pow (tightParam, 4.0f) + 0.1f;
-        
+
         auto bounceScale = 0.7f * tightParam + 0.3f;
         auto d3 = std::pow (bounceScale * bounceParam, 2.0f) + 0.1f;
 
@@ -116,7 +113,7 @@ struct BouncyFilterProc
         auto g2 = drive_deriv (d2);
         auto g3 = drive_deriv (d3);
 
-        auto b0Corr = -b1 - b2 + g1 * b1 + g1 * g2 * b2 ;
+        auto b0Corr = -b1 - b2 + g1 * b1 + g1 * g2 * b2;
         auto b1Corr = (b2 - g1 * g2 * b2) * T;
         auto b2Corr = (T / 4.0f) * (g1 * g2 * b2 - g1 * b1 - b2 + b1);
 

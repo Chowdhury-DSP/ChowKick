@@ -6,7 +6,7 @@ namespace
 const String toneTag = "out_tone";
 const String levelTag = "out_level";
 
-static NormalisableRange<float> freqRange (300.0f, 7000.0f);
+NormalisableRange<float> freqRange (300.0f, 7000.0f);
 } // namespace
 
 OutputFilter::OutputFilter (AudioProcessorValueTreeState& vts)

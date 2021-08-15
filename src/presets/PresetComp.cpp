@@ -3,13 +3,13 @@
 namespace
 {
 #if JUCE_IOS
-    constexpr int arrowWidth = 32;
-    constexpr int arrowPad = 4;
+constexpr int arrowWidth = 32;
+constexpr int arrowPad = 4;
 #else
-    constexpr int arrowWidth = 20;
-    constexpr int arrowPad = 2;
+constexpr int arrowWidth = 20;
+constexpr int arrowPad = 2;
 #endif
-}
+} // namespace
 
 PresetComp::PresetComp (ChowKick& proc, PresetManager& manager) : proc (proc),
                                                                   manager (manager),
@@ -44,13 +44,15 @@ PresetComp::PresetComp (ChowKick& proc, PresetManager& manager) : proc (proc),
     presetNameEditor.setMultiLine (false, false);
     presetNameEditor.setJustification (Justification::centred);
 
-    auto setupButton = [=, &manager] (DrawableButton& button, Drawable* image, int presetOffset) {
+    auto setupButton = [=, &manager] (DrawableButton& button, Drawable* image, int presetOffset)
+    {
         addAndMakeVisible (button);
         button.setImages (image, image, image);
         button.setWantsKeyboardFocus (false);
         button.setColour (ComboBox::outlineColourId, Colours::transparentBlack);
         button.setColour (TextButton::buttonColourId, Colours::transparentBlack);
-        button.onClick = [=, &manager] {
+        button.onClick = [=, &manager]
+        {
             auto idx = presetBox.getSelectedId() + presetOffset;
             while (idx <= 0)
                 idx += manager.getNumPresets();
@@ -69,7 +71,8 @@ PresetComp::PresetComp (ChowKick& proc, PresetManager& manager) : proc (proc),
     setupButton (presetsRight, rightImage.get(), 1);
 
     presetUpdated();
-    presetBox.onChange = [=, &proc] {
+    presetBox.onChange = [=, &proc]
+    {
         const auto selectedId = presetBox.getSelectedId();
         if (selectedId >= 1000 || selectedId <= 0)
             return;
@@ -122,13 +125,15 @@ void PresetComp::addPresetOptions()
 
     PopupMenu::Item saveItem { "Save" };
     saveItem.itemID = 1001;
-    saveItem.action = [=] { saveUserPreset(); };
+    saveItem.action = [=]
+    { saveUserPreset(); };
     menu->addItem (saveItem);
 
 #if ! JUCE_IOS
     PopupMenu::Item goToFolderItem { "Go to Preset folder..." };
     goToFolderItem.itemID = 1002;
-    goToFolderItem.action = [=] {
+    goToFolderItem.action = [=]
+    {
         presetUpdated();
         auto folder = manager.getUserPresetFolder();
         if (folder.isDirectory())
@@ -140,7 +145,11 @@ void PresetComp::addPresetOptions()
 
     PopupMenu::Item chooseFolderItem { "Choose Preset folder..." };
     chooseFolderItem.itemID = 1003;
-    chooseFolderItem.action = [=] { presetUpdated(); manager.chooseUserPresetFolder(); };
+    chooseFolderItem.action = [=]
+    {
+        presetUpdated();
+        manager.chooseUserPresetFolder();
+    };
     menu->addItem (chooseFolderItem);
 #endif
 }
@@ -179,7 +188,8 @@ void PresetComp::saveUserPreset()
     presetNameEditor.setText ("MyPreset");
     presetNameEditor.setHighlightedRegion ({ 0, 10 });
 
-    presetNameEditor.onReturnKey = [=] {
+    presetNameEditor.onReturnKey = [=]
+    {
         auto presetName = presetNameEditor.getText();
         presetNameEditor.setVisible (false);
 

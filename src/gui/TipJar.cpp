@@ -58,7 +58,8 @@ void TipJar::productsInfoReturned (const Array<InAppPurchases::Product>& product
         {
             if (info.second == products[i].identifier)
             {
-                rootMenu->addItem (info.first, [=] { doTipPurchase (info.second); });
+                rootMenu->addItem (info.first, [=]
+                                   { doTipPurchase (info.second); });
                 break;
             }
         }
