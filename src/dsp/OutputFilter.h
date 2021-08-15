@@ -10,7 +10,7 @@ public:
     static void addParameters (Parameters& params);
     void reset (double sampleRate);
     void calcCoefs (float freq, float gain);
-    void processBlock (float* buffer, const int numSamples);
+    void processBlock (float* buffer, int numSamples);
     float getGainFromParam() const;
 
     inline float processSample (float x) noexcept

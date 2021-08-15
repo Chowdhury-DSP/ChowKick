@@ -22,7 +22,7 @@ public:
     static void addParameters (Parameters& params);
     void reset (double sampleRate);
     void calcCoefs (Vec freq, float Q, float G);
-    void processBlock (dsp::AudioBlock<Vec>& block, const int numSamples);
+    void processBlock (dsp::AudioBlock<Vec>& block, int numSamples);
 
     void setFreqMult (float newMult) { freqMult = newMult; }
     Vec getFrequencyHz() const noexcept;
@@ -48,7 +48,7 @@ public:
 
 private:
     template <typename ProcType>
-    void processBlockInternal (dsp::AudioBlock<Vec>& block, const int numSamples, const ProcType& proc);
+    void processBlockInternal (dsp::AudioBlock<Vec>& block, int numSamples, const ProcType& proc);
 
     const Trigger& trigger;
 
