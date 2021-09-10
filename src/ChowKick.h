@@ -28,6 +28,8 @@ public:
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    Trigger& getTrigger() { return trigger; }
+
 private:
     AudioBuffer<float> monoBuffer;
 
