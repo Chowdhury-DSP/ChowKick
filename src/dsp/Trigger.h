@@ -16,6 +16,25 @@ public:
 
     Vec getFrequencyHz() const noexcept { return curFreqHz; }
 
+    void resetTuning();
+    void setScaleFile (const File& scaleFile);
+    void setMappingFile (const File& mappingFile);
+
+    String getScaleName() const noexcept { return scaleName; }
+    String getMappingName() const noexcept { return mappingName; }
+
+    void getTuningState (XmlElement* xml);
+    void setTuningState (XmlElement* xml);
+
+    struct Listener
+    {
+        virtual ~Listener() = default;
+        virtual void tuningChanged() {}
+    };
+
+    void addListener (Listener* l) { tuningListeners.add (l); }
+    void removeListener (Listener* l) { tuningListeners.remove (l); }
+
 private:
     std::atomic<float>* widthParam = nullptr;
     std::atomic<float>* ampParam = nullptr;
@@ -27,6 +46,13 @@ private:
     size_t voiceIdx = 0;
     size_t numVoices;
     std::array<int, Vec::size()> leftoverSamples { 0 };
+
+    Tunings::Tuning tuning;
+    ListenerList<Listener> tuningListeners;
+    String scaleName;
+    std::string scaleData;
+    String mappingName;
+    std::string mappingData;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Trigger)
 };

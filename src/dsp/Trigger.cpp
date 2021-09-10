@@ -98,9 +98,87 @@ void Trigger::processBlock (dsp::AudioBlock<Vec>& block, const int numSamples, M
             fillBlock (block, ampParam->load(), samplePosition, samplesToFill, voiceIdx);
             voiceIdx = (voiceIdx + 1) % numVoices;
 
-            curFreqHz.set (voiceIdx, (float) MidiMessage::getMidiNoteInHertz (message.getNoteNumber()));
+            curFreqHz.set (voiceIdx, (float) tuning.frequencyForMidiNote (message.getNoteNumber()));
         }
     }
 
     midi.clear();
+}
+
+void Trigger::resetTuning()
+{
+    tuning = Tunings::Tuning();
+    scaleData = {};
+    scaleName = {};
+    mappingData = {};
+    mappingName = {};
+
+    tuningListeners.call (&Listener::tuningChanged);
+}
+
+void Trigger::setScaleFile (const File& scaleFile)
+{
+    if (! scaleFile.existsAsFile())
+        return;
+    
+    scaleData = scaleFile.loadFileAsString().toStdString();
+    scaleName = scaleFile.getFileNameWithoutExtension();
+
+    try
+    {   
+       tuning = Tunings::Tuning (Tunings::parseSCLData (scaleData), Tunings::parseKBMData (mappingData));
+    }
+    catch (Tunings::TuningError& e)
+    {
+       tuning = Tunings::Tuning();
+    }
+    
+    tuningListeners.call (&Listener::tuningChanged);
+}
+
+void Trigger::setMappingFile (const File& mappingFile)
+{
+    if (! mappingFile.existsAsFile())
+        return;
+    
+    mappingData = mappingFile.loadFileAsString().toStdString();
+    mappingName = mappingFile.getFileNameWithoutExtension();
+
+    try
+    {   
+       tuning = Tunings::Tuning (Tunings::parseSCLData (scaleData), Tunings::parseKBMData (mappingData));
+    }
+    catch (Tunings::TuningError& e)
+    {
+       tuning = Tunings::Tuning();
+    }
+
+    tuningListeners.call (&Listener::tuningChanged);
+}
+
+void Trigger::getTuningState (XmlElement* xml)
+{
+    xml->setAttribute ("scale_name", scaleName);
+    xml->setAttribute ("scale_data", String (scaleData));
+    xml->setAttribute ("mapping_name", mappingName);
+    xml->setAttribute ("mapping_data", String (mappingData));
+}
+
+void Trigger::setTuningState (XmlElement* xml)
+{
+    scaleName = xml->getStringAttribute ("scale_name");
+    scaleData = xml->getStringAttribute ("scale_data").toStdString();
+    mappingName = xml->getStringAttribute ("mapping_name");
+    mappingData = xml->getStringAttribute ("mapping_data").toStdString();
+
+    try
+    {   
+       tuning = Tunings::Tuning (Tunings::parseSCLData (scaleData), Tunings::parseKBMData (mappingData));
+    }
+    catch (Tunings::TuningError& e)
+    {
+       tuning = Tunings::Tuning();
+    }
+
+    tuningListeners.call (&Listener::tuningChanged);
 }

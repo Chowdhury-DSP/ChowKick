@@ -143,27 +143,33 @@ const String ChowKick::getProgramName (int index)
 
 void ChowKick::getStateInformation (MemoryBlock& destData)
 {
-#if JUCE_IOS
     auto state = vts.copyState();
     std::unique_ptr<XmlElement> xml (state.createXml());
+
+    auto tuningXml = std::make_unique<XmlElement> ("tuning_data");
+    trigger.getTuningState (tuningXml.get());
+    xml->addChildElement (tuningXml.release());
+
     copyXmlToBinary (*xml, destData);
-#else
-    magicState.getStateInformation (destData);
-#endif
 }
 
 void ChowKick::setStateInformation (const void* data, int sizeInBytes)
 {
-#if JUCE_IOS
     std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
 
     if (xmlState.get() != nullptr)
+    {
         if (xmlState->hasTagName (vts.state.getType()))
+        {
+            if (auto* tuningXml = xmlState->getChildByName ("tuning_data"))
+                trigger.setTuningState (tuningXml);
+            else
+                trigger.resetTuning();
+
             vts.replaceState (juce::ValueTree::fromXml (*xmlState));
-#else
-    MessageManagerLock mml;
-    magicState.setStateInformation (data, sizeInBytes, getActiveEditor());
-#endif
+        }
+    }
+
     presetManager.presetUpdated();
 }
 

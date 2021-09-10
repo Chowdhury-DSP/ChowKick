@@ -2,31 +2,15 @@
 
 #include "ChowKick.h"
 
-class TuningMenu : public ComboBox
+class TuningMenu : public ComboBox,
+                   private Trigger::Listener
 {
 public:
-    TuningMenu (Trigger& trig) : trigger (trig)
-    {
-        onChange = [=] { refreshMenu(); };
+    TuningMenu (Trigger& trig);
+    ~TuningMenu();
 
-        refreshMenu();
-
-        setColour (ComboBox::backgroundColourId, Colours::transparentBlack);
-        setJustificationType (Justification::centred);
-    }
-
-    void refreshMenu()
-    {
-        auto* rootMenu = getRootMenu();
-        rootMenu->clear();
-
-        // @baconpaul
-        rootMenu->addItem ("Select SCL", [] {});
-        rootMenu->addItem ("Select KBM", [] {});
-        rootMenu->addItem ("Reset to 12TET", [] {});
-
-        setText ("Tuning", dontSendNotification);
-    }
+    void tuningChanged() override { refreshMenu(); }
+    void refreshMenu();
 
 private:
     Trigger& trigger;
