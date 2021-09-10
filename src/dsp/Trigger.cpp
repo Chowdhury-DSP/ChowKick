@@ -107,11 +107,38 @@ void Trigger::processBlock (dsp::AudioBlock<Vec>& block, const int numSamples, M
 
 void Trigger::resetTuning()
 {
-    tuning = Tunings::Tuning();
     scaleData = {};
     scaleName = {};
     mappingData = {};
     mappingName = {};
+
+    setTuningFromScaleAndMappingData();
+    tuningListeners.call (&Listener::tuningChanged);
+}
+
+void Trigger::setTuningFromScaleAndMappingData()
+{
+    auto scale = Tunings::evenTemperament12NoteScale();
+    auto mapping = Tunings::tuneA69To(440.0);
+
+    // Each of the scale and mapping can be set independently so parse them independently
+    try
+    {
+        auto parseScale = Tunings::parseSCLData(scaleData);
+        scale = parseScale;
+        scaleName = scale.description;
+    }
+    catch (Tunings::TuningError &e) {}
+
+    try
+    {
+        auto parseMapping = Tunings::parseKBMData(mappingData);
+        mapping = parseMapping;
+    }
+    catch (Tunings::TuningError &e) {}
+
+    // Then retune to those objects. This is a non throwing operation
+    tuning = Tunings::Tuning (scale, mapping );
 
     tuningListeners.call (&Listener::tuningChanged);
 }
@@ -124,16 +151,7 @@ void Trigger::setScaleFile (const File& scaleFile)
     scaleData = scaleFile.loadFileAsString().toStdString();
     scaleName = scaleFile.getFileNameWithoutExtension();
 
-    try
-    {   
-       tuning = Tunings::Tuning (Tunings::parseSCLData (scaleData), Tunings::parseKBMData (mappingData));
-    }
-    catch (Tunings::TuningError& e)
-    {
-       tuning = Tunings::Tuning();
-    }
-    
-    tuningListeners.call (&Listener::tuningChanged);
+    setTuningFromScaleAndMappingData();
 }
 
 void Trigger::setMappingFile (const File& mappingFile)
@@ -144,16 +162,7 @@ void Trigger::setMappingFile (const File& mappingFile)
     mappingData = mappingFile.loadFileAsString().toStdString();
     mappingName = mappingFile.getFileNameWithoutExtension();
 
-    try
-    {   
-       tuning = Tunings::Tuning (Tunings::parseSCLData (scaleData), Tunings::parseKBMData (mappingData));
-    }
-    catch (Tunings::TuningError& e)
-    {
-       tuning = Tunings::Tuning();
-    }
-
-    tuningListeners.call (&Listener::tuningChanged);
+    setTuningFromScaleAndMappingData();
 }
 
 void Trigger::getTuningState (XmlElement* xml)
