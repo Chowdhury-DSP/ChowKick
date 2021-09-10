@@ -119,7 +119,7 @@ void Trigger::resetTuning()
 void Trigger::setTuningFromScaleAndMappingData()
 {
     auto scale = Tunings::evenTemperament12NoteScale();
-    auto mapping = Tunings::tuneA69To(440.0);
+    auto mapping = Tunings::startScaleOnAndTuneNoteTo(60, 60, Tunings::MIDI_0_FREQ * 32);
 
     // Each of the scale and mapping can be set independently so parse them independently
     try
