@@ -25,20 +25,18 @@ void TuningMenu::refreshMenu()
     auto scaleOption = "Select SCL" + (sclName.isEmpty() ? "" : " (" + sclName + ")");
     rootMenu->addItem (scaleOption, [=] {
         resetMenuText();
-        fileChooser = std::make_unique<FileChooser> ("Choose Scale", File(), "*.scl");
-        fileChooser->launchAsync (fileChooserFlags, [=] (const FileChooser& fc) {
-            trigger.setScaleFile (fc.getResult());
-        });
+        FileChooser chooser ("Choose Scale", File(), "*.scl");
+        if (chooser.browseForFileToOpen())
+            trigger.setScaleFile (chooser.getResult());
     });
 
     auto kbmName = trigger.getMappingName();
     auto mappingOption = "Select KBM" + (kbmName.isEmpty() ? "" : " (" + kbmName + ")");
     rootMenu->addItem (mappingOption, [=] {
         resetMenuText();
-        fileChooser = std::make_unique<FileChooser> ("Choose Mapping", File(), "*.kbm");
-        fileChooser->launchAsync (fileChooserFlags, [=] (const FileChooser& fc) {
-            trigger.setMappingFile (fc.getResult());
-        });
+        FileChooser chooser ("Choose Mapping", File(), "*.kbm");
+        if (chooser.browseForFileToOpen())
+            trigger.setMappingFile (chooser.getResult());
     });
 
     rootMenu->addItem ("Reset to 12TET", [=] {

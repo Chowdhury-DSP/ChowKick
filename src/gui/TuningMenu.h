@@ -18,8 +18,6 @@ public:
 private:
     Trigger& trigger;
 
-    std::unique_ptr<FileChooser> fileChooser;
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TuningMenu)
 };
 

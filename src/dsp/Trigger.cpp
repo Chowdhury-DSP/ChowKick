@@ -204,14 +204,5 @@ void Trigger::setTuningState (XmlElement* xml)
     mappingName = xml->getStringAttribute ("mapping_name");
     mappingData = xml->getStringAttribute ("mapping_data").toStdString();
 
-    try
-    {   
-       tuning = Tunings::Tuning (Tunings::parseSCLData (scaleData), Tunings::parseKBMData (mappingData));
-    }
-    catch (Tunings::TuningError& e)
-    {
-       tuning = Tunings::Tuning();
-    }
-
-    tuningListeners.call (&Listener::tuningChanged);
+    setTuningFromScaleAndMappingData();
 }

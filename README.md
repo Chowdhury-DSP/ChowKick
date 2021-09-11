@@ -42,6 +42,7 @@ The resulting builds can be found in `build/ChowKick_artefacts`.
 
 - GUI Framework - [Plugin GUI Magic](https://github.com/ffAudio/PluginGUIMagic)
 - SIMD functions - [XSIMD](https://github.com/xtensor-stack/xsimd)
+- Tuning Support - [Tuning Library](https://github.com/surge-synthesizer/tuning-library) from the [Surge Synthesizer Team](https://surge-synthesizer.github.io/)
 
 This plugin was inspired by Kurt Werner's analysis and
 modelling of the TR-808 Kick Drum Circuit, discussed
