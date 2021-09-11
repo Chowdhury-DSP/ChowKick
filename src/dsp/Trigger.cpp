@@ -137,9 +137,16 @@ void Trigger::setTuningFromScaleAndMappingData()
     }
     catch (Tunings::TuningError &e) {}
 
-    // Then retune to those objects. This is a non throwing operation
-    tuning = Tunings::Tuning (scale, mapping );
-
+    // Then retune to those objects.
+    try
+    {
+        tuning = Tunings::Tuning (scale, mapping);
+    }
+    catch(const std::exception& e)
+    {
+        tuning = Tunings::Tuning();
+    }
+    
     tuningListeners.call (&Listener::tuningChanged);
 }
 
