@@ -19,7 +19,7 @@ public:
     void resetTuning();
     void setScaleFile (const File& scaleFile);
     void setMappingFile (const File& mappingFile);
-    void setTuningFromScaleAndMappingData ();
+    void setTuningFromScaleAndMappingData();
 
     String getScaleName() const noexcept { return scaleName; }
     String getMappingName() const noexcept { return mappingName; }

@@ -119,19 +119,19 @@ void Trigger::resetTuning()
 void Trigger::setTuningFromScaleAndMappingData()
 {
     auto scale = Tunings::evenTemperament12NoteScale();
-    auto mapping = Tunings::startScaleOnAndTuneNoteTo(60, 60, Tunings::MIDI_0_FREQ * 32);
+    auto mapping = Tunings::startScaleOnAndTuneNoteTo (60, 60, Tunings::MIDI_0_FREQ * 32);
 
     // Each of the scale and mapping can be set independently so parse them independently
     try
     {
         if (scaleName.isNotEmpty())
         {
-            auto parseScale = Tunings::parseSCLData(scaleData);
+            auto parseScale = Tunings::parseSCLData (scaleData);
             scale = parseScale;
             scaleName = scale.description;
         }
     }
-    catch (Tunings::TuningError &e)
+    catch (Tunings::TuningError& e)
     {
         scaleName = {};
         scaleData = {};
@@ -142,11 +142,11 @@ void Trigger::setTuningFromScaleAndMappingData()
     {
         if (mappingName.isNotEmpty())
         {
-            auto parseMapping = Tunings::parseKBMData(mappingData);
+            auto parseMapping = Tunings::parseKBMData (mappingData);
             mapping = parseMapping;
         }
     }
-    catch (Tunings::TuningError &e)
+    catch (Tunings::TuningError& e)
     {
         mappingName = {};
         mappingData = {};
@@ -158,12 +158,12 @@ void Trigger::setTuningFromScaleAndMappingData()
     {
         tuning = Tunings::Tuning (scale, mapping);
     }
-    catch (Tunings::TuningError &e)
+    catch (Tunings::TuningError& e)
     {
         tuning = Tunings::Tuning();
         tuningListeners.call (&Listener::tuningLoadError, e.what());
     }
-    
+
     tuningListeners.call (&Listener::tuningChanged);
 }
 
@@ -171,7 +171,7 @@ void Trigger::setScaleFile (const File& scaleFile)
 {
     if (! scaleFile.existsAsFile())
         return;
-    
+
     scaleData = scaleFile.loadFileAsString().toStdString();
     scaleName = scaleFile.getFileNameWithoutExtension();
 
@@ -182,7 +182,7 @@ void Trigger::setMappingFile (const File& mappingFile)
 {
     if (! mappingFile.existsAsFile())
         return;
-    
+
     mappingData = mappingFile.loadFileAsString().toStdString();
     mappingName = mappingFile.getFileNameWithoutExtension();
 

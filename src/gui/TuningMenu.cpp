@@ -23,25 +23,26 @@ void TuningMenu::refreshMenu()
 
     auto sclName = trigger.getScaleName();
     auto scaleOption = "Select SCL" + (sclName.isEmpty() ? "" : " (" + sclName + ")");
-    rootMenu->addItem (scaleOption, [=] {
-        resetMenuText();
-        FileChooser chooser ("Choose Scale", File(), "*.scl");
-        if (chooser.browseForFileToOpen())
-            trigger.setScaleFile (chooser.getResult());
-    });
+    rootMenu->addItem (scaleOption, [=]
+                       {
+                           resetMenuText();
+                           FileChooser chooser ("Choose Scale", File(), "*.scl");
+                           if (chooser.browseForFileToOpen())
+                               trigger.setScaleFile (chooser.getResult());
+                       });
 
     auto kbmName = trigger.getMappingName();
     auto mappingOption = "Select KBM" + (kbmName.isEmpty() ? "" : " (" + kbmName + ")");
-    rootMenu->addItem (mappingOption, [=] {
-        resetMenuText();
-        FileChooser chooser ("Choose Mapping", File(), "*.kbm");
-        if (chooser.browseForFileToOpen())
-            trigger.setMappingFile (chooser.getResult());
-    });
+    rootMenu->addItem (mappingOption, [=]
+                       {
+                           resetMenuText();
+                           FileChooser chooser ("Choose Mapping", File(), "*.kbm");
+                           if (chooser.browseForFileToOpen())
+                               trigger.setMappingFile (chooser.getResult());
+                       });
 
-    rootMenu->addItem ("Reset to 12TET", [=] {
-        trigger.resetTuning();
-    });
+    rootMenu->addItem ("Reset to 12TET", [=]
+                       { trigger.resetTuning(); });
 
     resetMenuText();
 }
