@@ -98,9 +98,111 @@ void Trigger::processBlock (dsp::AudioBlock<Vec>& block, const int numSamples, M
             fillBlock (block, ampParam->load(), samplePosition, samplesToFill, voiceIdx);
             voiceIdx = (voiceIdx + 1) % numVoices;
 
-            curFreqHz.set (voiceIdx, (float) MidiMessage::getMidiNoteInHertz (message.getNoteNumber()));
+            curFreqHz.set (voiceIdx, (float) tuning.frequencyForMidiNote (message.getNoteNumber()));
         }
     }
 
     midi.clear();
+}
+
+void Trigger::resetTuning()
+{
+    scaleData = {};
+    scaleName = {};
+    mappingData = {};
+    mappingName = {};
+
+    setTuningFromScaleAndMappingData();
+    tuningListeners.call (&Listener::tuningChanged);
+}
+
+void Trigger::setTuningFromScaleAndMappingData()
+{
+    auto scale = Tunings::evenTemperament12NoteScale();
+    auto mapping = Tunings::startScaleOnAndTuneNoteTo (60, 60, Tunings::MIDI_0_FREQ * 32);
+
+    // Each of the scale and mapping can be set independently so parse them independently
+    try
+    {
+        if (scaleName.isNotEmpty())
+        {
+            auto parseScale = Tunings::parseSCLData (scaleData);
+            scale = parseScale;
+            scaleName = scale.description;
+        }
+    }
+    catch (Tunings::TuningError& e)
+    {
+        scaleName = {};
+        scaleData = {};
+        tuningListeners.call (&Listener::tuningLoadError, e.what());
+    }
+
+    try
+    {
+        if (mappingName.isNotEmpty())
+        {
+            auto parseMapping = Tunings::parseKBMData (mappingData);
+            mapping = parseMapping;
+        }
+    }
+    catch (Tunings::TuningError& e)
+    {
+        mappingName = {};
+        mappingData = {};
+        tuningListeners.call (&Listener::tuningLoadError, e.what());
+    }
+
+    // Then retune to those objects.
+    try
+    {
+        tuning = Tunings::Tuning (scale, mapping);
+    }
+    catch (Tunings::TuningError& e)
+    {
+        tuning = Tunings::Tuning();
+        tuningListeners.call (&Listener::tuningLoadError, e.what());
+    }
+
+    tuningListeners.call (&Listener::tuningChanged);
+}
+
+void Trigger::setScaleFile (const File& scaleFile)
+{
+    if (! scaleFile.existsAsFile())
+        return;
+
+    scaleData = scaleFile.loadFileAsString().toStdString();
+    scaleName = scaleFile.getFileNameWithoutExtension();
+
+    setTuningFromScaleAndMappingData();
+}
+
+void Trigger::setMappingFile (const File& mappingFile)
+{
+    if (! mappingFile.existsAsFile())
+        return;
+
+    mappingData = mappingFile.loadFileAsString().toStdString();
+    mappingName = mappingFile.getFileNameWithoutExtension();
+
+    setTuningFromScaleAndMappingData();
+}
+
+void Trigger::getTuningState (XmlElement* xml)
+{
+    xml->setAttribute ("scale_name", scaleName);
+    xml->setAttribute ("scale_data", String (scaleData));
+    xml->setAttribute ("mapping_name", mappingName);
+    xml->setAttribute ("mapping_data", String (mappingData));
+}
+
+void Trigger::setTuningState (XmlElement* xml)
+{
+    scaleName = xml->getStringAttribute ("scale_name");
+    scaleData = xml->getStringAttribute ("scale_data").toStdString();
+    mappingName = xml->getStringAttribute ("mapping_name");
+    mappingData = xml->getStringAttribute ("mapping_data").toStdString();
+
+    setTuningFromScaleAndMappingData();
 }

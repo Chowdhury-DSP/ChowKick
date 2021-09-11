@@ -142,16 +142,19 @@
     <KeyboardComponent padding="0" margin="0" flex-grow="0.4"/>
     <View margin="0" max-height="30" background-color="1B2A33" flex-grow="0.1"
           lookAndFeel="MyLNF" padding="0">
-      <View background-color="00000000" flex-grow="0.5"/>
+      <View background-color="00000000" flex-grow="0.3"/>
       <ComboBox max-width="100" margin="0" padding="0" parameter="trig_voices"
                 lookAndFeel="ComboBoxLNF" combo-outline="00000000" combo-background="1B2A33"
                 combo-menu-background="1B2A33" combo-menu-background-highlight="FF425866"
                 background-color="00000000" name="Voices" tooltip="Selects how many polyphonic voices the kick drum can have"/>
-      <View flex-grow="0.5" background-color="00000000"/>
+      <View background-color="00000000" flex-grow="0.1"/>
+      <TuningMenu margin="0" padding="0" background-color="00000000" lookAndFeel="TuningMenuLNF"
+                  name="Tuning Menu" tooltip="Select a custom scale or keyboard mapping"/>
+      <View flex-grow="0.01" background-color="00000000"/>
       <ComboBox combo-background="1B2A33" parameter="res_mode" name="Res. Mode"
                 margin="0" padding="0" background-color="00000000" lookAndFeel="ComboBoxLNF"
-                tooltip="Selects the mode used by the resonance filter" flex-grow="1.25"/>
-      <View flex-grow="0.5" background-color="00000000"/>
+                tooltip="Selects the mode used by the resonance filter" flex-grow="1.0"/>
+      <View flex-grow="0.3" background-color="00000000"/>
       <PresetComp flex-grow="1.5" margin="0" padding="2" background-color="00000000"
                   presets-background="FF425866" lookAndFeel="BottomBarLNF" name="Presets"
                   tooltip="Load and save plugin presets"/>
