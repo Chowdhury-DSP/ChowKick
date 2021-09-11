@@ -148,7 +148,8 @@
                 combo-menu-background="1B2A33" combo-menu-background-highlight="FF425866"
                 background-color="00000000" name="Voices" tooltip="Selects how many polyphonic voices the kick drum can have"/>
       <View background-color="00000000" flex-grow="0.1"/>
-      <TuningMenu margin="0" padding="0" background-color="00000000" lookAndFeel="ComboBoxLNF"/>
+      <TuningMenu margin="0" padding="0" background-color="00000000" lookAndFeel="TuningMenuLNF"
+                  name="Tuning Menu" tooltip="Select a custom scale or keyboard mapping"/>
       <View flex-grow="0.01" background-color="00000000"/>
       <ComboBox combo-background="1B2A33" parameter="res_mode" name="Res. Mode"
                 margin="0" padding="0" background-color="00000000" lookAndFeel="ComboBoxLNF"

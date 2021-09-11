@@ -31,6 +31,7 @@ public:
     {
         virtual ~Listener() = default;
         virtual void tuningChanged() {}
+        virtual void tuningLoadError (const String& /*message*/) {}
     };
 
     void addListener (Listener* l) { tuningListeners.add (l); }

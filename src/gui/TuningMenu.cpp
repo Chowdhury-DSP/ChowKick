@@ -24,6 +24,7 @@ void TuningMenu::refreshMenu()
     auto sclName = trigger.getScaleName();
     auto scaleOption = "Select SCL" + (sclName.isEmpty() ? "" : " (" + sclName + ")");
     rootMenu->addItem (scaleOption, [=] {
+        resetMenuText();
         fileChooser = std::make_unique<FileChooser> ("Choose Scale", File(), "*.scl");
         fileChooser->launchAsync (fileChooserFlags, [=] (const FileChooser& fc) {
             trigger.setScaleFile (fc.getResult());
@@ -33,6 +34,7 @@ void TuningMenu::refreshMenu()
     auto kbmName = trigger.getMappingName();
     auto mappingOption = "Select KBM" + (kbmName.isEmpty() ? "" : " (" + kbmName + ")");
     rootMenu->addItem (mappingOption, [=] {
+        resetMenuText();
         fileChooser = std::make_unique<FileChooser> ("Choose Mapping", File(), "*.kbm");
         fileChooser->launchAsync (fileChooserFlags, [=] (const FileChooser& fc) {
             trigger.setMappingFile (fc.getResult());
@@ -43,5 +45,14 @@ void TuningMenu::refreshMenu()
         trigger.resetTuning();
     });
 
-    setText ("Tuning", dontSendNotification);
+    resetMenuText();
+}
+
+void TuningMenu::tuningLoadError (const String& message)
+{
+#if JUCE_IOS
+    NativeMessageBox::showMessageBoxAsync (AlertWindow::WarningIcon, "Tuning Error", message);
+#else
+    AlertWindow::showMessageBoxAsync (AlertWindow::WarningIcon, "Tuning Error", message);
+#endif
 }

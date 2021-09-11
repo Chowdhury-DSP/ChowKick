@@ -124,27 +124,44 @@ void Trigger::setTuningFromScaleAndMappingData()
     // Each of the scale and mapping can be set independently so parse them independently
     try
     {
-        auto parseScale = Tunings::parseSCLData(scaleData);
-        scale = parseScale;
-        scaleName = scale.description;
+        if (scaleName.isNotEmpty())
+        {
+            auto parseScale = Tunings::parseSCLData(scaleData);
+            scale = parseScale;
+            scaleName = scale.description;
+        }
     }
-    catch (Tunings::TuningError &e) {}
+    catch (Tunings::TuningError &e)
+    {
+        scaleName = {};
+        scaleData = {};
+        tuningListeners.call (&Listener::tuningLoadError, e.what());
+    }
 
     try
     {
-        auto parseMapping = Tunings::parseKBMData(mappingData);
-        mapping = parseMapping;
+        if (mappingName.isNotEmpty())
+        {
+            auto parseMapping = Tunings::parseKBMData(mappingData);
+            mapping = parseMapping;
+        }
     }
-    catch (Tunings::TuningError &e) {}
+    catch (Tunings::TuningError &e)
+    {
+        mappingName = {};
+        mappingData = {};
+        tuningListeners.call (&Listener::tuningLoadError, e.what());
+    }
 
     // Then retune to those objects.
     try
     {
         tuning = Tunings::Tuning (scale, mapping);
     }
-    catch(const std::exception& e)
+    catch (Tunings::TuningError &e)
     {
         tuning = Tunings::Tuning();
+        tuningListeners.call (&Listener::tuningLoadError, e.what());
     }
     
     tuningListeners.call (&Listener::tuningChanged);

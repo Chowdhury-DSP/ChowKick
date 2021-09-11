@@ -94,6 +94,7 @@ AudioProcessorEditor* ChowKick::createEditor()
     builder->registerLookAndFeel ("SliderLNF", std::make_unique<SliderLNF>());
     builder->registerLookAndFeel ("BottomBarLNF", std::make_unique<BottomBarLNF>());
     builder->registerLookAndFeel ("ComboBoxLNF", std::make_unique<ComboBoxLNF>());
+    builder->registerLookAndFeel ("TuningMenuLNF", std::make_unique<TuningMenuLNF>());
 
 #if JUCE_IOS
     builder->registerFactory ("TipJar", &TipJarItem::factory);

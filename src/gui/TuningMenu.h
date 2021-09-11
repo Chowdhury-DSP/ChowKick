@@ -10,7 +10,10 @@ public:
     ~TuningMenu();
 
     void tuningChanged() override { refreshMenu(); }
+    void tuningLoadError (const String& message) override;
+
     void refreshMenu();
+    void resetMenuText() { setText ("Tuning", dontSendNotification); }
 
 private:
     Trigger& trigger;
