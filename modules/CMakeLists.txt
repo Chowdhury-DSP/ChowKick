@@ -6,6 +6,8 @@ message(STATUS "VERSION for JUCE: ${juce_version}")
 juce_add_modules(foleys_gui_magic)
 juce_add_modules(chowdsp_utils)
 
+add_subdirectory(tuning-library EXCLUDE_FROM_ALL)
+
 include(cmake/WarningFlags.cmake)
 add_library(juce_plugin_modules STATIC)
 target_link_libraries(juce_plugin_modules
@@ -15,6 +17,7 @@ target_link_libraries(juce_plugin_modules
         juce::juce_audio_plugin_client
         foleys_gui_magic
         chowdsp_utils
+        tuning-library
     PUBLIC
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
@@ -42,6 +45,8 @@ target_compile_definitions(juce_plugin_modules
 )
 
 target_include_directories(juce_plugin_modules
+    PUBLIC
+        tuning-library/include
     INTERFACE
         $<TARGET_PROPERTY:juce_plugin_modules,INCLUDE_DIRECTORIES>
 )

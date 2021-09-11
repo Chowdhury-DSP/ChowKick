@@ -3,6 +3,7 @@
 #include "gui/DisabledSlider.h"
 #include "gui/FilterViewer.h"
 #include "gui/PulseViewer.h"
+#include "gui/TuningMenu.h"
 #include "presets/PresetComp.h"
 
 #if JUCE_IOS
@@ -89,9 +90,11 @@ AudioProcessorEditor* ChowKick::createEditor()
     builder->registerFactory ("FilterViewer", &FilterViewerItem::factory);
     builder->registerFactory ("DisabledSlider", &DisabledSlider::factory);
     builder->registerFactory ("PresetComp", &PresetComponentItem::factory);
+    builder->registerFactory ("TuningMenu", &TuningMenuItem::factory);
     builder->registerLookAndFeel ("SliderLNF", std::make_unique<SliderLNF>());
     builder->registerLookAndFeel ("BottomBarLNF", std::make_unique<BottomBarLNF>());
     builder->registerLookAndFeel ("ComboBoxLNF", std::make_unique<ComboBoxLNF>());
+    builder->registerLookAndFeel ("TuningMenuLNF", std::make_unique<TuningMenuLNF>());
 
 #if JUCE_IOS
     builder->registerFactory ("TipJar", &TipJarItem::factory);
@@ -141,27 +144,33 @@ const String ChowKick::getProgramName (int index)
 
 void ChowKick::getStateInformation (MemoryBlock& destData)
 {
-#if JUCE_IOS
     auto state = vts.copyState();
     std::unique_ptr<XmlElement> xml (state.createXml());
+
+    auto tuningXml = std::make_unique<XmlElement> ("tuning_data");
+    trigger.getTuningState (tuningXml.get());
+    xml->addChildElement (tuningXml.release());
+
     copyXmlToBinary (*xml, destData);
-#else
-    magicState.getStateInformation (destData);
-#endif
 }
 
 void ChowKick::setStateInformation (const void* data, int sizeInBytes)
 {
-#if JUCE_IOS
     std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
 
     if (xmlState.get() != nullptr)
+    {
         if (xmlState->hasTagName (vts.state.getType()))
+        {
+            if (auto* tuningXml = xmlState->getChildByName ("tuning_data"))
+                trigger.setTuningState (tuningXml);
+            else
+                trigger.resetTuning();
+
             vts.replaceState (juce::ValueTree::fromXml (*xmlState));
-#else
-    MessageManagerLock mml;
-    magicState.setStateInformation (data, sizeInBytes, getActiveEditor());
-#endif
+        }
+    }
+
     presetManager.presetUpdated();
 }
 

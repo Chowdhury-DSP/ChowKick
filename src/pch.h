@@ -10,6 +10,7 @@
 #include <JuceHeader.h>
 
 // Any other widely used headers that don't change...
+#include <Tunings.h>
 
 // global definitions
 using Parameters = std::vector<std::unique_ptr<RangedAudioParameter>>;

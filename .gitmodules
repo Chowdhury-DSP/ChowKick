@@ -10,3 +10,6 @@
 [submodule "modules/xsimd"]
 	path = modules/xsimd
 	url = https://github.com/xtensor-stack/xsimd
+[submodule "modules/tuning-library"]
+	path = modules/tuning-library
+	url = https://github.com/surge-synthesizer/tuning-library
