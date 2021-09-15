@@ -36,7 +36,7 @@ File getFactoryTuningLibrary()
     return File();
 #endif
 }
-}
+} // namespace
 
 TuningMenu::TuningMenu (Trigger& trig) : trigger (trig)
 {
