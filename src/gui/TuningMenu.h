@@ -7,7 +7,7 @@ class TuningMenu : public ComboBox,
 {
 public:
     TuningMenu (Trigger& trig);
-    ~TuningMenu();
+    ~TuningMenu() override;
 
     void tuningChanged() override { refreshMenu(); }
     void tuningLoadError (const String& message) override;
