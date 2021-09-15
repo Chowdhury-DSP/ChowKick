@@ -19,9 +19,11 @@ Name: "VST_64"; Description: "VST Plugin 64-bit"; Types: full
 Name: "VST3_32"; Description: "VST3 Plugin 32-bit"; Types: full
 Name: "VST_32"; Description: "VST Plugin 32-bit"; Types: full
 Name: "Standalone"; Description: "Standalone Plugin"; Types: full
+Name: Data; Description: "Data Files"; Types: full custom; Flags: fixed
 ; Name: "AAX"; Description: "AAX Plugin"; Types: full
 
 [Files]
+Source: "../../res/tuning_library/*"; DestDir: {commonappdata}\ChowKick\tuning_library; Components: Data; Flags: recursesubdirs; Excludes: "*.git,windows.wt,configuration.xml,paramdocumentation.xml";
 Source: "../../bin/Win64/ChowKick.vst3"; DestDir: "{code:GetDir|VST3_64}"; Components: VST3_64; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "../../bin/Win64/ChowKick.dll"; DestDir: "{code:GetDir|VST_64}"; Components: VST_64; Flags: ignoreversion
 Source: "../../bin/Win32/ChowKick.vst3"; DestDir: "{code:GetDir|VST3_32}"; Components: VST3_32; Flags: ignoreversion recursesubdirs createallsubdirs

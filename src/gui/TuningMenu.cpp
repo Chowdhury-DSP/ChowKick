@@ -18,9 +18,9 @@ File getFactoryTuningLibrary()
     };
 
 #if JUCE_WINDOWS
-    const String libraryPath = "Library/Application Support/ChowKick/tuning_library";
-    const auto rootPath = File ("/");
-    const auto usrPath = File::getSpecialLocation (File::userHomeDirectory);
+    const String libraryPath = "ChowKick/tuning_library";
+    const auto rootPath = File::getSpecialLocation (File::commonApplicationDataDirectory);
+    const auto usrPath = File::getSpecialLocation (File::userApplicationDataDirectory);
     return getLibraryPath (rootPath, usrPath, libraryPath);
 #elif JUCE_MAC
     const String libraryPath = "Library/Application Support/ChowKick/tuning_library";
