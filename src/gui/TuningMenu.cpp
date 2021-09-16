@@ -2,6 +2,8 @@
 
 namespace
 {
+const String userLibraryPath = "ChowdhuryDSP/ChowKick/UserTuningLibrary.txt";
+
 File getFactoryTuningLibrary()
 {
     auto getLibraryPath = [] (const File& rootPath, const File& usrPath, const String& libPath)
@@ -36,6 +38,34 @@ File getFactoryTuningLibrary()
     return File();
 #endif
 }
+
+File getUserLibraryConfigFile()
+{
+    File updatePresetFile = File::getSpecialLocation (File::userApplicationDataDirectory);
+    return updatePresetFile.getChildFile (userLibraryPath);
+}
+
+void chooseUserTuningLibraryPath()
+{
+    FileChooser chooser ("Choose tuning library folder");
+    if (chooser.browseForDirectory())
+    {
+        auto result = chooser.getResult();
+        auto config = getUserLibraryConfigFile();
+        config.deleteFile();
+        config.create();
+        config.replaceWithText (result.getFullPathName());
+    }
+}
+
+File getUserTuningLibraryPath()
+{
+    auto config = getUserLibraryConfigFile();
+    if (config.existsAsFile())
+        return File (config.loadFileAsString());
+    
+    return File();
+}
 } // namespace
 
 TuningMenu::TuningMenu (Trigger& trig) : trigger (trig)
@@ -58,14 +88,16 @@ void TuningMenu::refreshMenu()
     auto* rootMenu = getRootMenu();
     rootMenu->clear();
 
+    auto userTuningPath = getUserTuningLibraryPath();
     auto factoryTuningPath = getFactoryTuningLibrary();
+    auto defaultTuningPath = userTuningPath != File() ? userTuningPath : factoryTuningPath;
 
     auto sclName = trigger.getScaleName();
     auto scaleOption = "Select SCL" + (sclName.isEmpty() ? "" : " (" + sclName + ")");
     rootMenu->addItem (scaleOption, [=]
                        {
                            resetMenuText();
-                           FileChooser chooser ("Choose Scale", factoryTuningPath, "*.scl");
+                           FileChooser chooser ("Choose Scale", defaultTuningPath, "*.scl");
                            if (chooser.browseForFileToOpen())
                                trigger.setScaleFile (chooser.getResult());
                        });
@@ -75,7 +107,7 @@ void TuningMenu::refreshMenu()
     rootMenu->addItem (mappingOption, [=]
                        {
                            resetMenuText();
-                           FileChooser chooser ("Choose Keyboard Mapping", factoryTuningPath, "*.kbm");
+                           FileChooser chooser ("Choose Keyboard Mapping", defaultTuningPath, "*.kbm");
                            if (chooser.browseForFileToOpen())
                                trigger.setMappingFile (chooser.getResult());
                        });
@@ -83,11 +115,21 @@ void TuningMenu::refreshMenu()
     rootMenu->addItem ("Reset to Standard (12TET)", [=]
                        { trigger.resetTuning(); });
 
+    rootMenu->addItem ("Select user tuning directory", [=] {
+        chooseUserTuningLibraryPath();
+        refreshMenu();
+    });
+
     rootMenu->addSeparator();
     if (factoryTuningPath != File())
     {
         rootMenu->addItem ("Open Factory Tuning Directory", [=]
                            { factoryTuningPath.startAsProcess(); });
+    }
+    if (userTuningPath != File())
+    {
+        rootMenu->addItem ("Open User Tuning Directory", [=]
+                           { userTuningPath.startAsProcess(); });
     }
 
     resetMenuText();
