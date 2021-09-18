@@ -45,17 +45,20 @@ File getUserLibraryConfigFile()
     return updatePresetFile.getChildFile (userLibraryPath);
 }
 
-void chooseUserTuningLibraryPath()
+template <typename Callback>
+void chooseUserTuningLibraryPath (std::shared_ptr<FileChooser>& fileChooser, Callback&& callback)
 {
-    FileChooser chooser ("Choose tuning library folder");
-    if (chooser.browseForDirectory())
-    {
-        auto result = chooser.getResult();
-        auto config = getUserLibraryConfigFile();
-        config.deleteFile();
-        config.create();
-        config.replaceWithText (result.getFullPathName());
-    }
+    constexpr auto flags = FileBrowserComponent::openMode | FileBrowserComponent::canSelectDirectories;
+    fileChooser = std::make_shared<FileChooser> ("Choose tuning library folder");
+    fileChooser->launchAsync (flags, [=] (const FileChooser& fc)
+                              {
+                                  auto result = fc.getResult();
+                                  auto config = getUserLibraryConfigFile();
+                                  config.deleteFile();
+                                  config.create();
+                                  config.replaceWithText (result.getFullPathName());
+                                  callback();
+                              });
 }
 
 File getUserTuningLibraryPath()
@@ -63,7 +66,7 @@ File getUserTuningLibraryPath()
     auto config = getUserLibraryConfigFile();
     if (config.existsAsFile())
         return File (config.loadFileAsString());
-    
+
     return File();
 }
 } // namespace
@@ -84,7 +87,7 @@ TuningMenu::~TuningMenu()
 
 void TuningMenu::refreshMenu()
 {
-    // constexpr auto fileChooserFlags = FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles;
+    constexpr auto fileChooserFlags = FileBrowserComponent::openMode | FileBrowserComponent::canSelectFiles;
     auto* rootMenu = getRootMenu();
     rootMenu->clear();
 
@@ -97,9 +100,9 @@ void TuningMenu::refreshMenu()
     rootMenu->addItem (scaleOption, [=]
                        {
                            resetMenuText();
-                           FileChooser chooser ("Choose Scale", defaultTuningPath, "*.scl");
-                           if (chooser.browseForFileToOpen())
-                               trigger.setScaleFile (chooser.getResult());
+                           fileChooser = std::make_shared<FileChooser> ("Choose Scale", factoryTuningPath, "*.scl");
+                           fileChooser->launchAsync (fileChooserFlags, [=] (const FileChooser& fc)
+                                                     { trigger.setScaleFile (fc.getResult()); });
                        });
 
     auto kbmName = trigger.getMappingName();
@@ -107,29 +110,37 @@ void TuningMenu::refreshMenu()
     rootMenu->addItem (mappingOption, [=]
                        {
                            resetMenuText();
-                           FileChooser chooser ("Choose Keyboard Mapping", defaultTuningPath, "*.kbm");
-                           if (chooser.browseForFileToOpen())
-                               trigger.setMappingFile (chooser.getResult());
+                           fileChooser = std::make_shared<FileChooser> ("Choose Keyboard Mapping", factoryTuningPath, "*.kbm");
+                           fileChooser->launchAsync (fileChooserFlags, [=] (const FileChooser& fc)
+                                                     { trigger.setMappingFile (fc.getResult()); });
                        });
 
     rootMenu->addItem ("Reset to Standard (12TET)", [=]
                        { trigger.resetTuning(); });
 
-    rootMenu->addItem ("Select user tuning directory", [=] {
-        chooseUserTuningLibraryPath();
-        refreshMenu();
-    });
+    rootMenu->addItem ("Select user tuning directory", [=]
+                       {
+                           resetMenuText();
+                           chooseUserTuningLibraryPath (fileChooser, [=]
+                                                        { refreshMenu(); });
+                       });
 
     rootMenu->addSeparator();
     if (factoryTuningPath != File())
     {
         rootMenu->addItem ("Open Factory Tuning Directory", [=]
-                           { factoryTuningPath.startAsProcess(); });
+                           {
+                               resetMenuText();
+                               factoryTuningPath.startAsProcess();
+                           });
     }
     if (userTuningPath != File())
     {
         rootMenu->addItem ("Open User Tuning Directory", [=]
-                           { userTuningPath.startAsProcess(); });
+                           {
+                               resetMenuText();
+                               userTuningPath.startAsProcess();
+                           });
     }
 
     resetMenuText();
