@@ -22,7 +22,6 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
     Trigger& getTrigger() { return trigger; }
-    auto& getPresetManager() { return *presetManager; }
 
 private:
     AudioBuffer<float> monoBuffer;

@@ -13,7 +13,7 @@ public:
     void tuningLoadError (const String& message) override;
 
     void refreshMenu();
-    void resetMenuText() { setText ("Tuning", dontSendNotification); }
+    void resetMenuText();
 
 private:
     Trigger& trigger;

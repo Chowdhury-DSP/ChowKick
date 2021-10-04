@@ -96,6 +96,8 @@ AudioProcessorEditor* ChowKick::createEditor()
     builder->registerLookAndFeel ("ComboBoxLNF", std::make_unique<ComboBoxLNF>());
     builder->registerLookAndFeel ("TuningMenuLNF", std::make_unique<TuningMenuLNF>());
 
+    builder->registerFactory ("PresetComp2", chowdsp::PresetsItem<ChowKick>::factory);
+
 #if JUCE_IOS
     builder->registerFactory ("TipJar", &TipJarItem::factory);
     auto editor = new foleys::MagicPluginEditor (magicState, BinaryData::gui_ios_xml, BinaryData::gui_ios_xmlSize, std::move (builder));
