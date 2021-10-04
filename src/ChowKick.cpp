@@ -12,9 +12,9 @@
 
 ChowKick::ChowKick() : trigger (vts),
                        resFilter (vts, trigger),
-                       outFilter (vts),
-                       presetManager (vts)
+                       outFilter (vts)
 {
+    presetManager = std::make_unique<PresetManager> (vts);
     scope = magicState.createAndAddObject<foleys::MagicOscilloscope> ("scope");
 }
 
@@ -110,26 +110,6 @@ AudioProcessorEditor* ChowKick::createEditor()
 }
 
 //==============================================================================
-int ChowKick::getNumPrograms()
-{
-    return presetManager.getNumPresets();
-}
-
-int ChowKick::getCurrentProgram()
-{
-    return presetManager.getCurrentPresetIndex();
-}
-
-void ChowKick::setCurrentProgram (int index)
-{
-    presetManager.loadPresetFromIndex (index);
-}
-
-const String ChowKick::getProgramName (int index)
-{
-    return presetManager.getPresetName (index);
-}
-
 void ChowKick::getStateInformation (MemoryBlock& destData)
 {
     auto state = vts.copyState();
@@ -138,7 +118,7 @@ void ChowKick::getStateInformation (MemoryBlock& destData)
     auto tuningXml = std::make_unique<XmlElement> ("tuning_data");
     trigger.getTuningState (tuningXml.get());
     xml->addChildElement (tuningXml.release());
-    xml->addChildElement (presetManager.saveXmlState().release());
+    xml->addChildElement (presetManager->saveXmlState().release());
 
     copyXmlToBinary (*xml, destData);
 }
@@ -158,7 +138,7 @@ void ChowKick::setStateInformation (const void* data, int sizeInBytes)
 
             vts.replaceState (ValueTree::fromXml (*xmlState));
 
-            presetManager.loadXmlState (xmlState->getChildByName (chowdsp::PresetManager::presetStateTag));
+            presetManager->loadXmlState (xmlState->getChildByName (chowdsp::PresetManager::presetStateTag));
         }
     }
 }
