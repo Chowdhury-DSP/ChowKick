@@ -12,7 +12,8 @@
 
 ChowKick::ChowKick() : trigger (vts),
                        resFilter (vts, trigger),
-                       outFilter (vts)
+                       outFilter (vts),
+                       presetManager (vts)
 {
     scope = magicState.createAndAddObject<foleys::MagicOscilloscope> ("scope");
 }
@@ -23,7 +24,6 @@ void ChowKick::addParameters (Parameters& params)
     PulseShaper::addParameters (params);
     ResonantFilter::addParameters (params);
     OutputFilter::addParameters (params);
-    params.push_back (std::make_unique<AudioParameterInt> ("preset", "Preset", 0, PresetManager::maxNumPresets(), 0));
 }
 
 void ChowKick::prepareToPlay (double sampleRate, int samplesPerBlock)
@@ -117,24 +117,12 @@ int ChowKick::getNumPrograms()
 
 int ChowKick::getCurrentProgram()
 {
-    return (int) *vts.getRawParameterValue ("preset");
+    return presetManager.getCurrentPresetIndex();
 }
 
 void ChowKick::setCurrentProgram (int index)
 {
-    if (index > presetManager.maxNumPresets())
-        return;
-
-    auto& presetParam = *vts.getRawParameterValue ("preset");
-    if ((int) presetParam == index)
-        return;
-
-    if (presetManager.setPreset (vts, index))
-    {
-        presetParam = (float) index;
-        presetManager.presetUpdated();
-        updateHostDisplay (AudioProcessorListener::ChangeDetails().withProgramChanged (true));
-    }
+    presetManager.loadPresetFromIndex (index);
 }
 
 const String ChowKick::getProgramName (int index)
@@ -150,13 +138,14 @@ void ChowKick::getStateInformation (MemoryBlock& destData)
     auto tuningXml = std::make_unique<XmlElement> ("tuning_data");
     trigger.getTuningState (tuningXml.get());
     xml->addChildElement (tuningXml.release());
+    xml->addChildElement (presetManager.saveXmlState().release());
 
     copyXmlToBinary (*xml, destData);
 }
 
 void ChowKick::setStateInformation (const void* data, int sizeInBytes)
 {
-    std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+    std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
 
     if (xmlState.get() != nullptr)
     {
@@ -167,11 +156,11 @@ void ChowKick::setStateInformation (const void* data, int sizeInBytes)
             else
                 trigger.resetTuning();
 
-            vts.replaceState (juce::ValueTree::fromXml (*xmlState));
+            vts.replaceState (ValueTree::fromXml (*xmlState));
+
+            presetManager.loadXmlState (xmlState->getChildByName (chowdsp::PresetManager::presetStateTag));
         }
     }
-
-    presetManager.presetUpdated();
 }
 
 // This creates new instances of the plugin

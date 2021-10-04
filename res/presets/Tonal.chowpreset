@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<Preset name="Tonal" plugin="ChowKick">
+<Preset name="Tonal" plugin="ChowKick" vendor="CHOW" category="" version="1.1.0">
   <Parameters>
     <PARAM id="out_level" value="0.0"/>
     <PARAM id="out_tone" value="800.0"/>

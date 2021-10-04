@@ -9,12 +9,14 @@ constexpr int arrowPad = 4;
 constexpr int arrowWidth = 20;
 constexpr int arrowPad = 2;
 #endif
+
+const String presetExt = ".chowpreset";
 } // namespace
 
-PresetComp::PresetComp (ChowKick& proc, PresetManager& manager) : proc (proc),
-                                                                  manager (manager),
-                                                                  presetsLeft ("", DrawableButton::ImageOnButtonBackground),
-                                                                  presetsRight ("", DrawableButton::ImageOnButtonBackground)
+PresetComp::PresetComp (ChowKick& proc, chowdsp::PresetManager& manager) : proc (proc),
+                                                                           manager (manager),
+                                                                           presetsLeft ("", DrawableButton::ImageOnButtonBackground),
+                                                                           presetsRight ("", DrawableButton::ImageOnButtonBackground)
 {
     manager.addListener (this);
 
@@ -33,7 +35,7 @@ PresetComp::PresetComp (ChowKick& proc, PresetManager& manager) : proc (proc),
     presetBox.setColour (ComboBox::outlineColourId, Colours::transparentWhite);
     presetBox.setJustificationType (Justification::centred);
     presetBox.setTextWhenNothingSelected ("No Preset selected...");
-    loadPresetChoices();
+    presetListUpdated();
 
     addChildComponent (presetNameEditor);
     presetNameEditor.setColour (TextEditor::backgroundColourId, Colour (0xFF595C6B));
@@ -70,15 +72,7 @@ PresetComp::PresetComp (ChowKick& proc, PresetManager& manager) : proc (proc),
     setupButton (presetsLeft, leftImage.get(), -1);
     setupButton (presetsRight, rightImage.get(), 1);
 
-    presetUpdated();
-    presetBox.onChange = [=, &proc]
-    {
-        const auto selectedId = presetBox.getSelectedId();
-        if (selectedId >= 1000 || selectedId <= 0)
-            return;
-
-        proc.setCurrentProgram (presetBox.getSelectedId() - 1);
-    };
+    updatePresetBoxText();
 }
 
 PresetComp::~PresetComp()
@@ -86,72 +80,130 @@ PresetComp::~PresetComp()
     manager.removeListener (this);
 }
 
-void PresetComp::loadPresetChoices()
+void PresetComp::presetListUpdated()
 {
     presetBox.getRootMenu()->clear();
 
-    const auto& presetChoices = manager.getPresetChoices();
-    std::map<String, PopupMenu> presetChoicesMap;
-    for (int i = 0; i < presetChoices.size(); ++i)
+    std::map<String, PopupMenu> presetMapItems;
+    int optionID = 0;
+    for (const auto& presetIDPair : manager.getPresetMap())
     {
-        const String& choice = presetChoices[i];
-        String category = choice.upToFirstOccurrenceOf ("_", false, false);
-        if (category == "User") // user presets are treated specially
-            continue;
-        category = (category == choice) ? "CHOW" : category;
-        String presetName = choice.fromLastOccurrenceOf ("_", false, false);
+        const auto presetID = presetIDPair.first;
+        const auto& preset = presetIDPair.second;
 
-        if (presetChoicesMap.find (category) == presetChoicesMap.end())
-            presetChoicesMap[category] = PopupMenu();
+        PopupMenu::Item presetItem { preset.getName() };
+        presetItem.itemID = presetID + 1;
+        presetItem.action = [=, &preset]
+        {
+            updatePresetBoxText();
+            manager.loadPreset (preset);
+        };
 
-        presetChoicesMap[category].addItem (i + 1, presetName);
+        presetMapItems[preset.getVendor()].addItem (presetItem);
+
+        optionID = jmax (optionID, presetItem.itemID);
     }
 
-    for (auto& presetGroup : presetChoicesMap)
-        presetBox.getRootMenu()->addSubMenu (presetGroup.first, presetGroup.second);
+    for (auto& [vendorName, menu] : presetMapItems)
+        presetBox.getRootMenu()->addSubMenu (vendorName, menu);
 
-    // add user presets
-    auto& userPresetMenu = manager.getUserPresetMenu();
-    if (userPresetMenu.containsAnyActiveItems())
-        presetBox.getRootMenu()->addSubMenu ("User", userPresetMenu);
-
-    addPresetOptions();
+    addPresetOptions (optionID);
 }
 
-void PresetComp::addPresetOptions()
+void PresetComp::addPresetOptions (int optionID)
 {
     auto menu = presetBox.getRootMenu();
     menu->addSeparator();
 
-    PopupMenu::Item saveItem { "Save" };
-    saveItem.itemID = 1001;
+    PopupMenu::Item saveItem { "Save Preset" };
+    saveItem.itemID = ++optionID;
     saveItem.action = [=]
-    { saveUserPreset(); };
+    {
+        updatePresetBoxText();
+        saveUserPreset();
+    };
     menu->addItem (saveItem);
 
 #if ! JUCE_IOS
     PopupMenu::Item goToFolderItem { "Go to Preset folder..." };
-    goToFolderItem.itemID = 1002;
+    goToFolderItem.itemID = ++optionID;
     goToFolderItem.action = [=]
     {
-        presetUpdated();
-        auto folder = manager.getUserPresetFolder();
+        updatePresetBoxText();
+        auto folder = manager.getUserPresetPath();
         if (folder.isDirectory())
             folder.startAsProcess();
         else
-            manager.chooseUserPresetFolder();
+            chooseUserPresetFolder();
     };
     menu->addItem (goToFolderItem);
 
     PopupMenu::Item chooseFolderItem { "Choose Preset folder..." };
-    chooseFolderItem.itemID = 1003;
+    chooseFolderItem.itemID = ++optionID;
     chooseFolderItem.action = [=]
     {
-        presetUpdated();
-        manager.chooseUserPresetFolder();
+        updatePresetBoxText();
+        chooseUserPresetFolder();
     };
     menu->addItem (chooseFolderItem);
 #endif
+}
+
+void PresetComp::chooseUserPresetFolder()
+{
+    constexpr auto folderChooserFlags = FileBrowserComponent::openMode | FileBrowserComponent::canSelectDirectories;
+    fileChooser = std::make_shared<FileChooser> ("Choose User Preset Folder");
+    MessageManager::callAsync ([=]
+                               {
+                                   fileChooser->launchAsync (folderChooserFlags, [=] (const FileChooser& chooser)
+                                                             {
+                                                                 manager.setUserPresetPath (chooser.getResult());
+                                                                 waiter.signal();
+                                                             });
+                               });
+}
+
+void PresetComp::saveUserPreset()
+{
+    presetNameEditor.setVisible (true);
+    presetNameEditor.toFront (true);
+    presetNameEditor.setText ("MyPreset");
+    presetNameEditor.setHighlightedRegion ({ 0, 10 });
+
+    presetNameEditor.onReturnKey = [=]
+    {
+        presetNameEditor.setVisible (false);
+
+        Thread::launch ([=]
+                        {
+                            auto presetName = presetNameEditor.getText();
+                            auto presetPath = manager.getUserPresetPath();
+                            if (presetPath == File() || ! presetPath.isDirectory())
+                            {
+                                presetPath.deleteRecursively();
+                                chooseUserPresetFolder();
+                                waiter.wait();
+
+                                presetPath = manager.getUserPresetPath();
+                            }
+
+                            if (presetPath == File() || ! presetPath.isDirectory())
+                                return;
+
+                            manager.saveUserPreset (presetPath.getChildFile (presetName + presetExt));
+                        });
+    };
+}
+
+void PresetComp::updatePresetBoxText()
+{
+    auto* currentPreset = manager.getCurrentPreset();
+    auto name = currentPreset == nullptr ? String() : manager.getCurrentPreset()->getName();
+    if (manager.getIsDirty())
+        name += "*";
+
+    MessageManagerLock mml;
+    presetBox.setText (name, dontSendNotification);
 }
 
 void PresetComp::paint (Graphics& g)
@@ -174,33 +226,4 @@ void PresetComp::resized()
     presetBox.setBounds (presetsBound);
     presetNameEditor.setBounds (presetsBound);
     repaint();
-}
-
-void PresetComp::presetUpdated()
-{
-    presetBox.setSelectedId (proc.getCurrentProgram() + 1, dontSendNotification);
-}
-
-void PresetComp::saveUserPreset()
-{
-    presetNameEditor.setVisible (true);
-    presetNameEditor.toFront (true);
-    presetNameEditor.setText ("MyPreset");
-    presetNameEditor.setHighlightedRegion ({ 0, 10 });
-
-    presetNameEditor.onReturnKey = [=]
-    {
-        auto presetName = presetNameEditor.getText();
-        presetNameEditor.setVisible (false);
-
-        if (manager.saveUserPreset (presetName, proc.getVTS()))
-        {
-            loadPresetChoices();
-            proc.setCurrentProgram (manager.getNumPresets() - 1);
-        }
-        else
-        {
-            presetUpdated();
-        }
-    };
 }

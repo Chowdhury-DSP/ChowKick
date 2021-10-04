@@ -23,12 +23,12 @@ public:
     int getCurrentProgram() override;
     void setCurrentProgram (int index) override;
     const String getProgramName (int index) override;
-    PresetManager& getPresetManager() { return presetManager; }
 
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
     Trigger& getTrigger() { return trigger; }
+    auto& getPresetManager() { return presetManager; }
 
 private:
     AudioBuffer<float> monoBuffer;
@@ -44,6 +44,7 @@ private:
     chowdsp::StateVariableFilter<float> dcBlocker;
 
     foleys::MagicPlotSource* scope = nullptr;
+
     PresetManager presetManager;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChowKick)

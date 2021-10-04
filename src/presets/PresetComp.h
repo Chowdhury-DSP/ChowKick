@@ -4,7 +4,7 @@
 #include "PresetManager.h"
 
 class PresetComp : public Component,
-                   private PresetManager::Listener
+                   private chowdsp::PresetManager::Listener
 {
 public:
     enum ColourIDs
@@ -13,25 +13,32 @@ public:
         textColourId,
     };
 
-    PresetComp (ChowKick& proc, PresetManager& manager);
+    PresetComp (ChowKick& proc, chowdsp::PresetManager& manager);
     ~PresetComp() override;
 
     void paint (Graphics& g) override;
     void resized() override;
-    void presetUpdated() override;
+
+    void presetListUpdated() override;
+    void presetDirtyStatusChanged() override { updatePresetBoxText(); }
+    void selectedPresetChanged() override { updatePresetBoxText(); }
 
 private:
-    void loadPresetChoices();
-    void addPresetOptions();
+    void chooseUserPresetFolder();
+    void addPresetOptions (int optionID);
     void saveUserPreset();
+    void updatePresetBoxText();
 
     ChowKick& proc;
-    PresetManager& manager;
+    chowdsp::PresetManager& manager;
 
     ComboBox presetBox;
     TextEditor presetNameEditor;
 
     DrawableButton presetsLeft, presetsRight;
+
+    WaitableEvent waiter;
+    std::shared_ptr<FileChooser> fileChooser;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PresetComp)
 };
