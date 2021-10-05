@@ -4,7 +4,7 @@
 #include "gui/FilterViewer.h"
 #include "gui/PulseViewer.h"
 #include "gui/TuningMenu.h"
-#include "presets/PresetComp.h"
+#include "presets/PresetManager.h"
 
 #if JUCE_IOS
 #include "gui/TipJar.h"
@@ -89,14 +89,12 @@ AudioProcessorEditor* ChowKick::createEditor()
     builder->registerFactory ("PulseViewer", &PulseViewerItem::factory);
     builder->registerFactory ("FilterViewer", &FilterViewerItem::factory);
     builder->registerFactory ("DisabledSlider", &DisabledSlider::factory);
-    builder->registerFactory ("PresetComp", &PresetComponentItem::factory);
+    builder->registerFactory ("PresetComp", &chowdsp::PresetsItem<ChowKick>::factory);
     builder->registerFactory ("TuningMenu", &TuningMenuItem::factory);
     builder->registerLookAndFeel ("SliderLNF", std::make_unique<SliderLNF>());
     builder->registerLookAndFeel ("BottomBarLNF", std::make_unique<BottomBarLNF>());
     builder->registerLookAndFeel ("ComboBoxLNF", std::make_unique<ComboBoxLNF>());
     builder->registerLookAndFeel ("TuningMenuLNF", std::make_unique<TuningMenuLNF>());
-
-    builder->registerFactory ("PresetComp2", chowdsp::PresetsItem<ChowKick>::factory);
 
 #if JUCE_IOS
     builder->registerFactory ("TipJar", &TipJarItem::factory);

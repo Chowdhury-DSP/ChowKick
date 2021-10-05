@@ -43,9 +43,9 @@
     </View>
     <View flex-direction="row" margin="0" background-color="00000000" padding="2">
       <View margin="2" padding="0" flex-direction="column" background-color="00000000">
-        <PresetComp flex-grow="0.25" margin="0" padding="8" background-color="00000000"
-                    presets-background="FF425866" lookAndFeel="BottomBarLNF" name="Presets"
-                    tooltip="Load and save plugin presets"/>
+        <PresetComp flex-grow="0.25" margin="0" padding="8"  background-color="00000000"
+                  background="FF425866" text-highlight="FF8B3232" lookAndFeel="BottomBarLNF"
+                  name="Presets" tooltip="Load and save plugin presets"/>
         <View margin="0" flex-direction="column" padding="0" background-color="FF425866">
           <Label text="Pulse Shape" justification="centred" font-size="24.0" lookAndFeel="MyLNF"
                  flex-grow="0.05" padding="0" margin="0" background-color="0x00000000"
