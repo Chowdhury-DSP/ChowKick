@@ -44,3 +44,39 @@ void PresetManager::loadPresetState (const XmlElement* xml)
 
     vts.replaceState (ValueTree::fromXml (*xml));
 }
+
+chowdsp::Preset PresetManager::loadUserPresetFromFile (const File& file)
+{
+    chowdsp::Preset compatiblePreset { file };
+    if (compatiblePreset.isValid())
+        return std::move (compatiblePreset);
+
+    auto xml = XmlDocument::parse (file);
+    if (xml == nullptr)
+        return compatiblePreset;
+
+    if (xml->getTagName() != chowdsp::Preset::presetTag.toString())
+        return compatiblePreset;
+
+    auto name = xml->getStringAttribute (chowdsp::Preset::nameTag);
+    if (name.isEmpty())
+        return compatiblePreset;
+
+    if (xml->getStringAttribute (chowdsp::Preset::pluginTag) != JucePlugin_Name)
+        return compatiblePreset;
+
+    auto vendor = xml->getStringAttribute (chowdsp::Preset::vendorTag);
+    if (vendor.isEmpty())
+    {
+        vendor = name.upToFirstOccurrenceOf ("_", false, false);
+        name = name.fromLastOccurrenceOf ("_", false, false);
+    }
+
+    auto category = xml->getStringAttribute (chowdsp::Preset::categoryTag);
+
+    auto* xmlState = xml->getChildElement (0);
+    if (xmlState == nullptr)
+        return compatiblePreset;
+
+    return { name, vendor, *xmlState, category };
+}
