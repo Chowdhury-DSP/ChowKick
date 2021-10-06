@@ -15,7 +15,7 @@ public:
         Vs.setVoltage (x);
 
         d53.incident (P2.reflected());
-        Vec y = r162.voltage();
+        Vec y = chowdsp::WDFT::voltage<Vec> (r162);
         P2.incident (d53.reflected());
 
         return y;
@@ -25,25 +25,19 @@ private:
     std::atomic<float>* sustainParam = nullptr;
     std::atomic<float>* decayParam = nullptr;
 
-    using Resistor = chowdsp::WDF::Resistor<Vec>;
-    using Capacitor = chowdsp::WDF::Capacitor<Vec>;
-    using ResVs = chowdsp::WDF::ResistiveVoltageSource<Vec>;
+    using Resistor = chowdsp::WDFT::ResistorT<Vec>;
+    using Capacitor = chowdsp::WDFT::CapacitorAlphaT<Vec>;
+    using ResVs = chowdsp::WDFT::ResistiveVoltageSourceT<Vec>;
 
     ResVs Vs;
     Resistor r162 { 4700.0f };
     Resistor r163 { 100000.0f };
     Capacitor c40;
-    chowdsp::WDF::Diode<Vec> d53 { 2.52e-9f, 25.85e-3f }; // 1N4148 diode
 
-    using P1Type = chowdsp::WDF::WDFParallelT<Vec, Capacitor, Resistor>;
-    P1Type P1 { c40, r163 };
+    chowdsp::WDFT::WDFParallelT<Vec, Capacitor, Resistor> P1 { c40, r163 };
+    chowdsp::WDFT::WDFSeriesT<Vec, ResVs, decltype (P1)> S1 { Vs, P1 };
+    chowdsp::WDFT::PolarityInverterT<Vec, Resistor> I1 { r162 };
+    chowdsp::WDFT::WDFParallelT<Vec, decltype (I1), decltype (S1)> P2 { I1, S1 };
 
-    using S1Type = chowdsp::WDF::WDFSeriesT<Vec, ResVs, P1Type>;
-    S1Type S1 { Vs, P1 };
-
-    using I1Type = chowdsp::WDF::PolarityInverterT<Vec, Resistor>;
-    I1Type I1 { r162 };
-
-    using P2Type = chowdsp::WDF::WDFParallelT<Vec, I1Type, S1Type>;
-    P2Type P2 { I1, S1 };
+    chowdsp::WDFT::DiodeT<Vec, decltype (P2)> d53 { P2, 2.52e-9f }; // 1N4148 diode
 };

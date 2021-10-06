@@ -133,7 +133,7 @@
       </View>
       <View flex-direction="row" flex-grow="0.2" margin="2" padding="0" background-color="FF425866">
         <Slider class="SliderClass" parameter="out_level" caption="Level" slider-type="linear-vertical"
-                background-color="00000000" lookAndFeel="SliderLNF" slider-track="FFFFB200"
+                background-color="00000000" lookAndFeel="SliderLNF" slider-thumb="FFFFB200"
                 slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
                 caption-color="C5D1D8" slider-background="1B2A33" name="Level"
                 tooltip="Controls the output level"/>
@@ -155,9 +155,9 @@
                 margin="0" padding="0" background-color="00000000" lookAndFeel="ComboBoxLNF"
                 tooltip="Selects the mode used by the resonance filter" flex-grow="1.0"/>
       <View flex-grow="0.3" background-color="00000000"/>
-      <PresetComp flex-grow="1.5" margin="0" padding="2" background-color="00000000"
-                  presets-background="FF425866" lookAndFeel="BottomBarLNF" name="Presets"
-                  tooltip="Load and save plugin presets"/>
+      <PresetComp flex-grow="1.5" margin="0" padding="2"  background-color="00000000"
+                  background="FF425866" text-highlight="FF8B3232" lookAndFeel="BottomBarLNF"
+                  name="Presets" tooltip="Load and save plugin presets"/>
       <View margin="0" background-color="00000000" lookAndFeel="MyLNF" flex-grow="0.3"/>
     </View>
   </View>

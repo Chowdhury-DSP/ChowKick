@@ -146,6 +146,12 @@ void TuningMenu::refreshMenu()
     resetMenuText();
 }
 
+void TuningMenu::resetMenuText()
+{
+    MessageManagerLock mml;
+    setText ("Tuning", dontSendNotification);
+}
+
 void TuningMenu::tuningLoadError (const String& message)
 {
 #if JUCE_IOS

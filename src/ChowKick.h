@@ -4,7 +4,6 @@
 #include "dsp/PulseShaper.h"
 #include "dsp/ResonantFilter.h"
 #include "dsp/Trigger.h"
-#include "presets/PresetManager.h"
 
 class ChowKick : public chowdsp::SynthBase<ChowKick>
 {
@@ -18,12 +17,6 @@ public:
 
     AudioProcessorEditor* createEditor() override;
     AudioProcessorValueTreeState& getVTS() { return vts; }
-
-    int getNumPrograms() override;
-    int getCurrentProgram() override;
-    void setCurrentProgram (int index) override;
-    const String getProgramName (int index) override;
-    PresetManager& getPresetManager() { return presetManager; }
 
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
@@ -44,7 +37,6 @@ private:
     chowdsp::StateVariableFilter<float> dcBlocker;
 
     foleys::MagicPlotSource* scope = nullptr;
-    PresetManager presetManager;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChowKick)
 };

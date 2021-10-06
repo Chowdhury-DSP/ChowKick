@@ -1,8 +1,6 @@
 juce_add_binary_data(BinaryData SOURCES
     gui.xml
     gui_ios.xml
-    LeftArrow.svg
-    RightArrow.svg
 
     presets/Bouncy.chowpreset
     presets/Default.chowpreset

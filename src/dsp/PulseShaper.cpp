@@ -8,8 +8,6 @@ const String decayTag = "pulse_decay";
 
 PulseShaper::PulseShaper (AudioProcessorValueTreeState& vts, double sampleRate) : c40 (0.015e-6f, (float) sampleRate, 0.029f)
 {
-    d53.connectToNode (&P2);
-
     decayParam = vts.getRawParameterValue (decayTag);
     sustainParam = vts.getRawParameterValue (sustainTag);
 }

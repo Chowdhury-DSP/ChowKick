@@ -4,7 +4,7 @@
 #include "gui/FilterViewer.h"
 #include "gui/PulseViewer.h"
 #include "gui/TuningMenu.h"
-#include "presets/PresetComp.h"
+#include "presets/PresetManager.h"
 
 #if JUCE_IOS
 #include "gui/TipJar.h"
@@ -14,6 +14,7 @@ ChowKick::ChowKick() : trigger (vts),
                        resFilter (vts, trigger),
                        outFilter (vts)
 {
+    presetManager = std::make_unique<PresetManager> (vts);
     scope = magicState.createAndAddObject<foleys::MagicOscilloscope> ("scope");
 }
 
@@ -23,7 +24,6 @@ void ChowKick::addParameters (Parameters& params)
     PulseShaper::addParameters (params);
     ResonantFilter::addParameters (params);
     OutputFilter::addParameters (params);
-    params.push_back (std::make_unique<AudioParameterInt> ("preset", "Preset", 0, PresetManager::maxNumPresets(), 0));
 }
 
 void ChowKick::prepareToPlay (double sampleRate, int samplesPerBlock)
@@ -89,7 +89,7 @@ AudioProcessorEditor* ChowKick::createEditor()
     builder->registerFactory ("PulseViewer", &PulseViewerItem::factory);
     builder->registerFactory ("FilterViewer", &FilterViewerItem::factory);
     builder->registerFactory ("DisabledSlider", &DisabledSlider::factory);
-    builder->registerFactory ("PresetComp", &PresetComponentItem::factory);
+    builder->registerFactory ("PresetComp", &chowdsp::PresetsItem<ChowKick>::factory);
     builder->registerFactory ("TuningMenu", &TuningMenuItem::factory);
     builder->registerLookAndFeel ("SliderLNF", std::make_unique<SliderLNF>());
     builder->registerLookAndFeel ("BottomBarLNF", std::make_unique<BottomBarLNF>());
@@ -110,38 +110,6 @@ AudioProcessorEditor* ChowKick::createEditor()
 }
 
 //==============================================================================
-int ChowKick::getNumPrograms()
-{
-    return presetManager.getNumPresets();
-}
-
-int ChowKick::getCurrentProgram()
-{
-    return (int) *vts.getRawParameterValue ("preset");
-}
-
-void ChowKick::setCurrentProgram (int index)
-{
-    if (index > presetManager.maxNumPresets())
-        return;
-
-    auto& presetParam = *vts.getRawParameterValue ("preset");
-    if ((int) presetParam == index)
-        return;
-
-    if (presetManager.setPreset (vts, index))
-    {
-        presetParam = (float) index;
-        presetManager.presetUpdated();
-        updateHostDisplay (AudioProcessorListener::ChangeDetails().withProgramChanged (true));
-    }
-}
-
-const String ChowKick::getProgramName (int index)
-{
-    return presetManager.getPresetName (index);
-}
-
 void ChowKick::getStateInformation (MemoryBlock& destData)
 {
     auto state = vts.copyState();
@@ -150,13 +118,14 @@ void ChowKick::getStateInformation (MemoryBlock& destData)
     auto tuningXml = std::make_unique<XmlElement> ("tuning_data");
     trigger.getTuningState (tuningXml.get());
     xml->addChildElement (tuningXml.release());
+    xml->addChildElement (presetManager->saveXmlState().release());
 
     copyXmlToBinary (*xml, destData);
 }
 
 void ChowKick::setStateInformation (const void* data, int sizeInBytes)
 {
-    std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+    std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
 
     if (xmlState.get() != nullptr)
     {
@@ -167,11 +136,11 @@ void ChowKick::setStateInformation (const void* data, int sizeInBytes)
             else
                 trigger.resetTuning();
 
-            vts.replaceState (juce::ValueTree::fromXml (*xmlState));
+            vts.replaceState (ValueTree::fromXml (*xmlState));
+
+            presetManager->loadXmlState (xmlState->getChildByName (chowdsp::PresetManager::presetStateTag));
         }
     }
-
-    presetManager.presetUpdated();
 }
 
 // This creates new instances of the plugin
