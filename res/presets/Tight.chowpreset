@@ -18,6 +18,5 @@
     <PARAM id="trig_width" value="2.5"/>
     <PARAM id="preset" value="2"/>
     <PARAM id="res_mode" value="2.0"/>
-    <PARAM id="preset" value="2"/>
   </Parameters>
 </Preset>
