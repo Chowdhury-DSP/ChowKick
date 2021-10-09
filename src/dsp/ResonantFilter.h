@@ -12,6 +12,7 @@ const String dampTag = "res_damp";
 const String tightTag = "res_tight";
 const String bounceTag = "res_bounce";
 const String modeTag = "res_mode";
+const String portamentoTag = "res_portamento";
 } // namespace ResTags
 
 class ResonantFilter
@@ -59,6 +60,7 @@ private:
     std::atomic<float>* tightParam = nullptr;
     std::atomic<float>* bounceParam = nullptr;
     std::atomic<float>* modeParam = nullptr;
+    std::atomic<float>* portamentoParam = nullptr;
     float freqMult = 1.0f;
 
     using FreqSmooth = chowdsp::SIMDUtils::SIMDSmoothedValue<Vec::ElementType, ValueSmoothingTypes::Multiplicative>;
@@ -73,6 +75,8 @@ private:
     Vec a[3] = { 1.0f, 0.0f, 0.0f };
     Vec b[3] = { 1.0f, 0.0f, 0.0f };
     Vec z[3];
+
+    float prevPortamento = 0.0f;
 
     LinearFilterProc linProc;
     BasicFilterProc baseProc;

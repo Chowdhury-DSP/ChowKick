@@ -55,6 +55,7 @@
           <View max-height="5" background-color="0x00000000"/>
           <View margin="0" padding="0" background-color="0x00000000" max-height="150"
                 flex-grow="0.9">
+            <View flex-grow="0.05" background-color="0x00000000"/>
             <Slider class="SliderClass" parameter="trig_width" caption="Width" lookAndFeel="SliderLNF"
                     margin="0" background-color="0x00000000" slider-textbox="textbox-below"
                     slider-text="FFFFFFFF" slider-text-outline="00000000" slider-text-highlight="00000000"
@@ -77,6 +78,13 @@
                     slider-text-highlight="00000000" slider-text-outline="00000000"
                     caption-color="C5D1D8" tooltip="Controls the sustain characteristic of the pulse shaper circuit"
                     name="Sustain"/>
+            <Slider class="SliderClass" parameter="res_portamento" caption="Portamento"
+                    lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
+                    slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
+                    slider-text-highlight="00000000" slider-text-outline="00000000"
+                    caption-color="C5D1D8" tooltip="Controls the portamento time between notes on the same voice"
+                    name="Portamento"/>
+            <View flex-grow="0.05" background-color="0x00000000"/>
           </View>
           <View max-height="45" background-color="0x00000000" margin="0" padding="0"
                 flex-justify-content="center" flex-grow="0.05"/>

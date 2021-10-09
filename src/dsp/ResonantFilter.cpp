@@ -11,6 +11,7 @@ ResonantFilter::ResonantFilter (AudioProcessorValueTreeState& vts, const Trigger
     tightParam = vts.getRawParameterValue (tightTag);
     bounceParam = vts.getRawParameterValue (bounceTag);
     modeParam = vts.getRawParameterValue (modeTag);
+    portamentoParam = vts.getRawParameterValue (portamentoTag);
 }
 
 void ResonantFilter::addParameters (Parameters& params)
@@ -69,6 +70,16 @@ void ResonantFilter::addParameters (Parameters& params)
                                                               "Res. Mode",
                                                               StringArray { "Linear", "Basic", "Bouncy" },
                                                               1));
+
+    NormalisableRange<float> portamentoRange (0.1f, 200.0f);
+    portamentoRange.setSkewForCentre (50.0f);
+    params.push_back (std::make_unique<VTSParam> (portamentoTag,
+                                                  "Portamento",
+                                                  String(),
+                                                  portamentoRange,
+                                                  50.0f,
+                                                  &timeMsValToString,
+                                                  &stringToTimeMsVal));
 }
 
 void ResonantFilter::reset (double sampleRate)
@@ -76,7 +87,8 @@ void ResonantFilter::reset (double sampleRate)
     fs = (float) sampleRate;
     std::fill (z, &z[3], 0.0f);
 
-    freqSmooth.reset (sampleRate, 0.05f);
+    prevPortamento = *portamentoParam;
+    freqSmooth.reset (sampleRate, prevPortamento * 0.001f);
     qSmooth.reset (sampleRate, 0.05f);
     gSmooth.reset (sampleRate, 0.05f);
     d1Smooth.reset (sampleRate, 0.05f);
@@ -175,6 +187,12 @@ void ResonantFilter::processBlockInternal (dsp::AudioBlock<Vec>& block, const in
 
 void ResonantFilter::processBlock (dsp::AudioBlock<Vec>& block, const int numSamples)
 {
+    if (*portamentoParam != prevPortamento)
+    {
+        prevPortamento = *portamentoParam;
+        freqSmooth.reset (fs, prevPortamento * 0.001f);
+    }
+
     freqSmooth.setTargetValue (getFrequencyHz());
     qSmooth.setTargetValue (*qParam);
     gSmooth.setTargetValue (getGVal());
