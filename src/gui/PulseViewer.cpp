@@ -7,25 +7,37 @@ constexpr int nSamples = int (0.0032 * fs); // 3.2 milliseconds
 constexpr int offset = int (0.0001 * fs); // 0.1 millisecond
 } // namespace
 
-PulseViewer::PulseViewer (AudioProcessorValueTreeState& vts) : trigger (vts),
-                                                               shaper (vts, fs),
-                                                               block (blockData, 1, nSamples)
+PulseViewer::PulseViewer (AudioProcessorValueTreeState& vtState) : vts (vtState),
+                                                                   trigger (vts),
+                                                                   shaper (vts, fs),
+                                                                   block (blockData, 1, nSamples)
 {
     trigger.prepareToPlay (fs, nSamples);
-    startTimerHz (24);
+
+    vts.addParameterListener (TriggerTags::ampTag, this);
+    vts.addParameterListener (TriggerTags::widthTag, this);
+    vts.addParameterListener (ShaperTags::decayTag, this);
+    vts.addParameterListener (ShaperTags::sustainTag, this);
 
     setColour (backgroundColour, Colours::black);
     setColour (traceColour, Colours::lightblue);
 }
 
-void PulseViewer::resized()
+PulseViewer::~PulseViewer()
 {
+    vts.removeParameterListener (TriggerTags::ampTag, this);
+    vts.removeParameterListener (TriggerTags::widthTag, this);
+    vts.removeParameterListener (ShaperTags::decayTag, this);
+    vts.removeParameterListener (ShaperTags::sustainTag, this);
 }
 
-void PulseViewer::paint (Graphics& g)
+void PulseViewer::resized()
 {
-    g.fillAll (findColour (backgroundColour));
+    updatePath();
+}
 
+void PulseViewer::updatePath()
+{
     block.clear();
     auto midiMessage = MidiMessage::noteOn (1, 64, (uint8) 127);
     MidiBuffer midiBuffer;
@@ -37,7 +49,7 @@ void PulseViewer::paint (Graphics& g)
     const auto yScale = (float) getHeight() * 0.68f;
     const auto yOff = (float) getHeight() * 0.3f;
 
-    Path curvePath;
+    pulsePath.clear();
     bool started = false;
     for (int n = 0; n < nSamples; ++n)
     {
@@ -46,20 +58,27 @@ void PulseViewer::paint (Graphics& g)
 
         if (! started)
         {
-            curvePath.startNewSubPath (xDraw, yDraw);
+            pulsePath.startNewSubPath (xDraw, yDraw);
             started = true;
         }
         else
         {
-            curvePath.lineTo (xDraw, yDraw);
+            pulsePath.lineTo (xDraw, yDraw);
         }
     }
 
-    g.setColour (findColour (traceColour));
-    g.strokePath (curvePath, PathStrokeType (2.0f, PathStrokeType::JointStyle::curved));
+    repaint();
 }
 
-void PulseViewer::timerCallback()
+void PulseViewer::paint (Graphics& g)
 {
-    repaint();
+    g.fillAll (findColour (backgroundColour));
+
+    g.setColour (findColour (traceColour));
+    g.strokePath (pulsePath, PathStrokeType (2.0f, PathStrokeType::JointStyle::curved));
+}
+
+void PulseViewer::parameterChanged (const String&, float)
+{
+    updatePath();
 }

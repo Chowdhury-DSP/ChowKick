@@ -6,10 +6,11 @@
 
 class PulseViewer : public Component,
                     public SettableTooltipClient,
-                    private Timer
+                    private AudioProcessorValueTreeState::Listener
 {
 public:
     PulseViewer (AudioProcessorValueTreeState& vts);
+    ~PulseViewer() override;
 
     enum ColourIDs
     {
@@ -20,11 +21,16 @@ public:
     void resized() override;
     void paint (Graphics& g) override;
 
-    void timerCallback() override;
+    void parameterChanged (const String&, float) override;
+    void updatePath();
 
 private:
+    AudioProcessorValueTreeState& vts;
+
     Trigger trigger;
     PulseShaper shaper;
+
+    Path pulsePath;
 
     HeapBlock<char> blockData;
     dsp::AudioBlock<Vec> block;

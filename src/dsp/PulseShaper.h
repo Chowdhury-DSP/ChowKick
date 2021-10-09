@@ -2,6 +2,12 @@
 
 #include <pch.h>
 
+namespace ShaperTags
+{
+const String sustainTag = "pulse_sustain";
+const String decayTag = "pulse_decay";
+} // namespace ShaperTags
+
 class PulseShaper
 {
 public:

@@ -1,10 +1,6 @@
 #include "PulseShaper.h"
 
-namespace
-{
-const String sustainTag = "pulse_sustain";
-const String decayTag = "pulse_decay";
-} // namespace
+using namespace ShaperTags;
 
 PulseShaper::PulseShaper (AudioProcessorValueTreeState& vts, double sampleRate) : c40 (0.015e-6f, (float) sampleRate, 0.029f)
 {
