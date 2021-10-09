@@ -88,12 +88,12 @@ void Trigger::processBlock (dsp::AudioBlock<Vec>& block, const int numSamples, M
         {
             const auto samplePosition = mm.samplePosition;
             auto samplesToFill = jmin (pulseSamples, numSamples - samplePosition);
-            leftoverSamples[voiceIdx] = pulseSamples - samplesToFill;
 
-            fillBlock (block, ampParam->load(), samplePosition, samplesToFill, voiceIdx);
             voiceIdx = (voiceIdx + 1) % numVoices;
-
+            fillBlock (block, ampParam->load(), samplePosition, samplesToFill, voiceIdx);
             curFreqHz.set (voiceIdx, (float) tuning.frequencyForMidiNote (message.getNoteNumber()));
+
+            leftoverSamples[voiceIdx] = pulseSamples - samplesToFill;
         }
     }
 
