@@ -1,11 +1,6 @@
 #include "Trigger.h"
 
-namespace
-{
-const String widthTag = "trig_width";
-const String ampTag = "trig_amp";
-const String voicesTag = "trig_voices";
-} // namespace
+using namespace TriggerTags;
 
 Trigger::Trigger (AudioProcessorValueTreeState& vtState) : vts (vtState)
 {

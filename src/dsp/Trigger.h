@@ -2,6 +2,13 @@
 
 #include <pch.h>
 
+namespace TriggerTags
+{
+const String widthTag = "trig_width";
+const String ampTag = "trig_amp";
+const String voicesTag = "trig_voices";
+} // namespace TriggerTags
+
 class Trigger : private AudioProcessorValueTreeState::Listener
 {
 public:
