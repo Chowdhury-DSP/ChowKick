@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ChowKick.h"
+#include "dsp/Noise.h"
 #include "dsp/PulseShaper.h"
 #include "dsp/Trigger.h"
 
@@ -28,6 +29,7 @@ private:
     AudioProcessorValueTreeState& vts;
 
     Trigger trigger;
+    Noise noise;
     PulseShaper shaper;
 
     Path pulsePath;

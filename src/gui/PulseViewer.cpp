@@ -9,15 +9,20 @@ constexpr int offset = int (0.0001 * fs); // 0.1 millisecond
 
 PulseViewer::PulseViewer (AudioProcessorValueTreeState& vtState) : vts (vtState),
                                                                    trigger (vts),
+                                                                   noise (vts),
                                                                    shaper (vts, fs),
                                                                    block (blockData, 1, nSamples)
 {
     trigger.prepareToPlay (fs, nSamples);
+    noise.prepareToPlay (fs, nSamples);
 
     vts.addParameterListener (TriggerTags::ampTag, this);
     vts.addParameterListener (TriggerTags::widthTag, this);
     vts.addParameterListener (ShaperTags::decayTag, this);
     vts.addParameterListener (ShaperTags::sustainTag, this);
+    vts.addParameterListener (NoiseTags::amtTag, this);
+    vts.addParameterListener (NoiseTags::freqTag, this);
+    vts.addParameterListener (NoiseTags::typeTag, this);
 
     setColour (backgroundColour, Colours::black);
     setColour (traceColour, Colours::lightblue);
@@ -29,6 +34,9 @@ PulseViewer::~PulseViewer()
     vts.removeParameterListener (TriggerTags::widthTag, this);
     vts.removeParameterListener (ShaperTags::decayTag, this);
     vts.removeParameterListener (ShaperTags::sustainTag, this);
+    vts.removeParameterListener (NoiseTags::amtTag, this);
+    vts.removeParameterListener (NoiseTags::freqTag, this);
+    vts.removeParameterListener (NoiseTags::typeTag, this);
 }
 
 void PulseViewer::resized()
@@ -45,6 +53,7 @@ void PulseViewer::updatePath()
 
     trigger.processBlock (block, nSamples, midiBuffer);
     shaper.processBlock (block, nSamples);
+    noise.processBlock (block, nSamples);
 
     const auto yScale = (float) getHeight() * 0.68f;
     const auto yOff = (float) getHeight() * 0.3f;

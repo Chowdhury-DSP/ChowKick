@@ -5,6 +5,7 @@ endif()
 target_sources(ChowKick PRIVATE
     ChowKick.cpp
 
+    dsp/Noise.cpp
     dsp/OutputFilter.cpp
     dsp/PulseShaper.cpp
     dsp/ResonantFilter.cpp
@@ -15,7 +16,6 @@ target_sources(ChowKick PRIVATE
     gui/PulseViewer.cpp
     gui/TuningMenu.cpp
 
-    # presets/PresetComp.cpp
     presets/PresetManager.cpp
 )
 

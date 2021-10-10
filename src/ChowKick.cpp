@@ -11,6 +11,7 @@
 #endif
 
 ChowKick::ChowKick() : trigger (vts),
+                       noise (vts),
                        resFilter (vts, trigger),
                        outFilter (vts)
 {
@@ -21,6 +22,7 @@ ChowKick::ChowKick() : trigger (vts),
 void ChowKick::addParameters (Parameters& params)
 {
     Trigger::addParameters (params);
+    Noise::addParameters (params);
     PulseShaper::addParameters (params);
     ResonantFilter::addParameters (params);
     OutputFilter::addParameters (params);
@@ -30,6 +32,9 @@ void ChowKick::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     monoBuffer.setSize (1, samplesPerBlock);
     fourVoiceBuffer = dsp::AudioBlock<Vec> (fourVoiceData, 1, (size_t) samplesPerBlock);
+
+    trigger.prepareToPlay (sampleRate, samplesPerBlock);
+    noise.prepareToPlay (sampleRate, samplesPerBlock);
 
     pulseShaper = std::make_unique<PulseShaper> (vts, sampleRate);
     resFilter.reset (sampleRate);
@@ -68,6 +73,7 @@ void ChowKick::processSynth (AudioBuffer<float>& buffer, MidiBuffer& midi)
 
     trigger.processBlock (fourVoiceBuffer, numSamples, midi);
     pulseShaper->processBlock (fourVoiceBuffer, numSamples);
+    noise.processBlock (fourVoiceBuffer, numSamples);
     resFilter.processBlock (fourVoiceBuffer, numSamples);
     reduceBlock (fourVoiceBuffer, monoBuffer);
     outFilter.processBlock (monoBuffer.getWritePointer (0), numSamples);
