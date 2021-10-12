@@ -1,5 +1,6 @@
 #pragma once
 
+#include "dsp/Noise.h"
 #include "dsp/OutputFilter.h"
 #include "dsp/PulseShaper.h"
 #include "dsp/ResonantFilter.h"
@@ -31,6 +32,7 @@ private:
     static_assert (Vec::size() == 4, "SIMD width must equal 4!");
 
     Trigger trigger;
+    Noise noise;
     std::unique_ptr<PulseShaper> pulseShaper;
     ResonantFilter resFilter;
     OutputFilter outFilter;

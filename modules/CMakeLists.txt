@@ -38,6 +38,7 @@ target_compile_definitions(juce_plugin_modules
         JucePlugin_VersionString="${CMAKE_PROJECT_VERSION}"
         JucePlugin_Name="${CMAKE_PROJECT_NAME}"
         FOLEYS_SHOW_GUI_EDITOR_PALLETTE=0
+        JUCE_MODAL_LOOPS_PERMITTED=0
         FOLEYS_ENABLE_BINARY_DATA=1
         CHOWDSP_USE_XSIMD=1
     INTERFACE

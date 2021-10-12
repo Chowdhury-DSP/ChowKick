@@ -76,18 +76,42 @@
                     slider-text-highlight="00000000" slider-text-outline="00000000"
                     caption-color="C5D1D8" tooltip="Controls the sustain characteristic of the pulse shaper circuit"
                     name="Sustain"/>
-            <Slider class="SliderClass" parameter="res_portamento" caption="Portamento"
-                    lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
-                    slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
-                    slider-text-highlight="00000000" slider-text-outline="00000000"
-                    caption-color="C5D1D8" tooltip="Controls the portamento time between notes on the same voice"
-                    name="Portamento"/>
             <View flex-grow="0.05" background-color="0x00000000"/>
+          </View>
+          <View margin="0" padding="0" background-color="0x00000000" flex-grow="0.95">
+            <View flex-grow="0.05" background-color="00000000"/>
+            <Slider parameter="noise_amt" slider-type="rotary-horizontal-vertical"
+                    name="Noise Amount" lookAndFeel="SliderLNF" caption="Noise Amount"
+                    caption-color="C5D1D8" margin="0" padding="0" border="0" background-color="00000000"
+                    slider-textbox="textbox-below" slider-thumb="FFFFB200" slider-track="1B2A33"
+                    slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
+                    tooltip="Controls the amount of noise added to the kick signal"/>
+            <Slider parameter="noise_decay" slider-type="rotary-horizontal-vertical"
+                    name="Noise Decay" lookAndFeel="SliderLNF" caption="Noise Decay"
+                    caption-color="C5D1D8" margin="0" padding="0" border="0" background-color="00000000"
+                    slider-textbox="textbox-below" slider-thumb="FFFFB200" slider-track="1B2A33"
+                    slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
+                    tooltip="Controls the decay length of the added noise"/>
+            <Slider parameter="noise_freq" slider-type="rotary-horizontal-vertical"
+                    name="Noise Cutoff" lookAndFeel="SliderLNF" caption="Noise Cutoff"
+                    caption-color="C5D1D8" margin="0" padding="0" border="0" background-color="00000000"
+                    slider-track="1B2A33" slider-thumb="FFFFB200" slider-textbox="textbox-below"
+                    slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
+                    tooltip="Controls the cutoff frequency of the added noise"/>
+            <View margin="0" padding="0" background-color="00000000" flex-direction="column">
+              <View background-color="00000000" flex-grow="0.15"/>
+              <ComboBox margin="0" padding="0" name="Noise Type" caption="Noise Type"
+                        background-color="00000000" caption-color="C5D1D8" parameter="noise_type"
+                        lookAndFeel="BottomBarLNF" combo-outline="00000000" combo-background="1B2A33"
+                        combo-menu-background="1B2A33" tooltip="Controls the type of added noise"/>
+              <View background-color="00000000" flex-grow="0.45"/>
+            </View>
+            <View background-color="00000000" flex-grow="0.1" margin="" padding=""/>
           </View>
           <View max-height="45" background-color="0x00000000" margin="0" padding="0"
                 flex-justify-content="center" flex-grow="0.05"/>
         </View>
-        <TooltipComp background-color="00000000" flex-grow="0.2" tooltip-text="A3B5BF"
+        <TooltipComp background-color="00000000" flex-grow="0.15" tooltip-text="A3B5BF"
                      tooltip-name="FFB200" margin="0" padding="5"/>
       </View>
       <View flex-direction="column" background-color="FF425866" margin="3"
@@ -136,6 +160,12 @@
                   slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
                   caption-color="C5D1D8" tooltip="Controls the response of the output tone filter"
                   name="Tone"/>
+          <Slider class="SliderClass" parameter="res_portamento" caption="Portamento"
+                  lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
+                  slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
+                  slider-text-highlight="00000000" slider-text-outline="00000000"
+                  caption-color="C5D1D8" tooltip="Controls the portamento time between notes on the same voice"
+                  name="Portamento"/>
         </View>
         <View max-height="5" background-color="00000000"/>
       </View>
@@ -163,7 +193,7 @@
                 margin="0" padding="0" background-color="00000000" lookAndFeel="ComboBoxLNF"
                 tooltip="Selects the mode used by the resonance filter" flex-grow="1.0"/>
       <View flex-grow="0.3" background-color="00000000"/>
-      <PresetComp flex-grow="1.5" margin="0" padding="2"  background-color="00000000"
+      <PresetComp flex-grow="1.5" margin="0" padding="2" background-color="00000000"
                   background="FF425866" text-highlight="FF8B3232" lookAndFeel="BottomBarLNF"
                   name="Presets" tooltip="Load and save plugin presets"/>
       <View margin="0" background-color="00000000" lookAndFeel="MyLNF" flex-grow="0.3"/>
