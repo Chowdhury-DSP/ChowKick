@@ -89,5 +89,6 @@ void PulseViewer::paint (Graphics& g)
 
 void PulseViewer::parameterChanged (const String&, float)
 {
-    MessageManager::callAsync ([=] { updatePath(); });
+    MessageManager::callAsync ([=]
+                               { updatePath(); });
 }

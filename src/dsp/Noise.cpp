@@ -76,7 +76,7 @@ void Noise::processBlock (dsp::AudioBlock<Vec>& block, int numSamples)
 
     auto* blockData = block.getChannelPointer (0);
     auto* noisePtr = noiseBlock.getChannelPointer (0);
-    
+
     for (int n = 0; n < numSamples; ++n)
     {
         auto noiseGain = chowdsp::SIMDUtils::powSIMD (Vec::abs (blockData[n]), (Vec) decaySmooth.getNextValue());

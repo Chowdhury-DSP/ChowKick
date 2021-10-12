@@ -30,7 +30,7 @@ private:
     NoiseType noise;
 
     SmoothedValue<float, ValueSmoothingTypes::Multiplicative> decaySmooth;
-    
+
     HeapBlock<char> noiseData;
     dsp::AudioBlock<Vec> noiseBuffer;
 
