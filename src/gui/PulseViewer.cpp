@@ -10,12 +10,8 @@ constexpr int offset = int (0.0001 * fs); // 0.1 millisecond
 PulseViewer::PulseViewer (AudioProcessorValueTreeState& vtState) : vts (vtState),
                                                                    trigger (vts),
                                                                    noise (vts),
-                                                                   shaper (vts, fs),
                                                                    block (blockData, 1, nSamples)
 {
-    trigger.prepareToPlay (fs, nSamples);
-    noise.prepareToPlay (fs, nSamples);
-
     vts.addParameterListener (TriggerTags::ampTag, this);
     vts.addParameterListener (TriggerTags::widthTag, this);
     vts.addParameterListener (ShaperTags::decayTag, this);
@@ -46,24 +42,28 @@ void PulseViewer::resized()
 
 void PulseViewer::updatePath()
 {
+    trigger.prepareToPlay (fs, nSamples);
+    noise.prepareToPlay (fs, nSamples);
+    shaper = std::make_unique<PulseShaper> (vts, fs);
+
     block.clear();
     auto midiMessage = MidiMessage::noteOn (1, 64, (uint8) 127);
     MidiBuffer midiBuffer;
     midiBuffer.addEvent (midiMessage, offset);
 
     trigger.processBlock (block, nSamples, midiBuffer);
-    shaper.processBlock (block, nSamples);
+    shaper->processBlock (block, nSamples);
     noise.processBlock (block, nSamples);
 
-    const auto yScale = (float) getHeight() * 0.68f;
-    const auto yOff = (float) getHeight() * 0.3f;
+    const auto yScale = proportionOfHeight (0.6f);
+    const auto yOff = proportionOfHeight (0.3f);
 
     pulsePath.clear();
     bool started = false;
     for (int n = 0; n < nSamples; ++n)
     {
         auto xDraw = ((float) n / (float) nSamples) * (float) getWidth();
-        auto yDraw = (float) getHeight() - (yScale * block.getSample (0, n).sum() + yOff) + 4.0f;
+        auto yDraw = (float) getHeight() - (yScale * jmin (block.getSample (0, n).sum(), 1.2f) + yOff) + 4.0f;
 
         if (! started)
         {
@@ -89,5 +89,5 @@ void PulseViewer::paint (Graphics& g)
 
 void PulseViewer::parameterChanged (const String&, float)
 {
-    updatePath();
+    MessageManager::callAsync ([=] { updatePath(); });
 }

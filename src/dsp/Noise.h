@@ -5,6 +5,7 @@
 namespace NoiseTags
 {
 const String amtTag = "noise_amt";
+const String decayTag = "noise_decay";
 const String freqTag = "noise_freq";
 const String typeTag = "noise_type";
 }; // namespace NoiseTags
@@ -21,15 +22,19 @@ public:
 
 private:
     std::atomic<float>* amtParam = nullptr;
+    std::atomic<float>* decayParam = nullptr;
     std::atomic<float>* freqParam = nullptr;
     std::atomic<float>* typeParam = nullptr;
 
-    using NoiseType = chowdsp::Noise<float>;
+    using NoiseType = chowdsp::Noise<Vec>;
     NoiseType noise;
 
-    AudioBuffer<float> buffer;
+    SmoothedValue<float, ValueSmoothingTypes::Multiplicative> decaySmooth;
+    
+    HeapBlock<char> noiseData;
+    dsp::AudioBlock<Vec> noiseBuffer;
 
-    chowdsp::StateVariableFilter<float> filter;
+    chowdsp::StateVariableFilter<Vec> filter;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Noise)
 };

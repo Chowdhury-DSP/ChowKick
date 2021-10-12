@@ -73,8 +73,8 @@ void ChowKick::processSynth (AudioBuffer<float>& buffer, MidiBuffer& midi)
 
     trigger.processBlock (fourVoiceBuffer, numSamples, midi);
     pulseShaper->processBlock (fourVoiceBuffer, numSamples);
-    noise.processBlock (fourVoiceBuffer, numSamples);
     resFilter.processBlock (fourVoiceBuffer, numSamples);
+    noise.processBlock (fourVoiceBuffer, numSamples);
     reduceBlock (fourVoiceBuffer, monoBuffer);
     outFilter.processBlock (monoBuffer.getWritePointer (0), numSamples);
 
