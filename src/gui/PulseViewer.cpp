@@ -9,15 +9,16 @@ constexpr int offset = int (0.0001 * fs); // 0.1 millisecond
 
 PulseViewer::PulseViewer (AudioProcessorValueTreeState& vtState) : vts (vtState),
                                                                    trigger (vts),
-                                                                   shaper (vts, fs),
+                                                                   noise (vts),
                                                                    block (blockData, 1, nSamples)
 {
-    trigger.prepareToPlay (fs, nSamples);
-
     vts.addParameterListener (TriggerTags::ampTag, this);
     vts.addParameterListener (TriggerTags::widthTag, this);
     vts.addParameterListener (ShaperTags::decayTag, this);
     vts.addParameterListener (ShaperTags::sustainTag, this);
+    vts.addParameterListener (NoiseTags::amtTag, this);
+    vts.addParameterListener (NoiseTags::freqTag, this);
+    vts.addParameterListener (NoiseTags::typeTag, this);
 
     setColour (backgroundColour, Colours::black);
     setColour (traceColour, Colours::lightblue);
@@ -29,6 +30,9 @@ PulseViewer::~PulseViewer()
     vts.removeParameterListener (TriggerTags::widthTag, this);
     vts.removeParameterListener (ShaperTags::decayTag, this);
     vts.removeParameterListener (ShaperTags::sustainTag, this);
+    vts.removeParameterListener (NoiseTags::amtTag, this);
+    vts.removeParameterListener (NoiseTags::freqTag, this);
+    vts.removeParameterListener (NoiseTags::typeTag, this);
 }
 
 void PulseViewer::resized()
@@ -38,23 +42,28 @@ void PulseViewer::resized()
 
 void PulseViewer::updatePath()
 {
+    trigger.prepareToPlay (fs, nSamples);
+    noise.prepareToPlay (fs, nSamples);
+    shaper = std::make_unique<PulseShaper> (vts, fs);
+
     block.clear();
     auto midiMessage = MidiMessage::noteOn (1, 64, (uint8) 127);
     MidiBuffer midiBuffer;
     midiBuffer.addEvent (midiMessage, offset);
 
     trigger.processBlock (block, nSamples, midiBuffer);
-    shaper.processBlock (block, nSamples);
+    shaper->processBlock (block, nSamples);
+    noise.processBlock (block, nSamples);
 
-    const auto yScale = (float) getHeight() * 0.68f;
-    const auto yOff = (float) getHeight() * 0.3f;
+    const auto yScale = proportionOfHeight (0.6f);
+    const auto yOff = proportionOfHeight (0.3f);
 
     pulsePath.clear();
     bool started = false;
     for (int n = 0; n < nSamples; ++n)
     {
         auto xDraw = ((float) n / (float) nSamples) * (float) getWidth();
-        auto yDraw = (float) getHeight() - (yScale * block.getSample (0, n).sum() + yOff) + 4.0f;
+        auto yDraw = (float) getHeight() - (yScale * jmin (block.getSample (0, n).sum(), 1.2f) + yOff) + 4.0f;
 
         if (! started)
         {
@@ -80,5 +89,6 @@ void PulseViewer::paint (Graphics& g)
 
 void PulseViewer::parameterChanged (const String&, float)
 {
-    updatePath();
+    MessageManager::callAsync ([=]
+                               { updatePath(); });
 }

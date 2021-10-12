@@ -10,7 +10,9 @@
 #include <JuceHeader.h>
 
 // Any other widely used headers that don't change...
+JUCE_BEGIN_IGNORE_WARNINGS_MSVC (4244)
 #include <Tunings.h>
+JUCE_END_IGNORE_WARNINGS_MSVC
 
 // global definitions
 using Parameters = std::vector<std::unique_ptr<RangedAudioParameter>>;
