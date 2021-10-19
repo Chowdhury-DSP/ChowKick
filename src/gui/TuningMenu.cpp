@@ -34,6 +34,10 @@ File getFactoryTuningLibrary()
     const auto rootPath = File ("/");
     const auto usrPath = File::getSpecialLocation (File::userHomeDirectory);
     return getLibraryPath (rootPath, usrPath, libraryPath);
+#elif JUCE_IOS
+    const String libraryPath = "ChowdhuryDSP/ChowKick/tuning_library";
+    const auto usrPath = File::getSpecialLocation (File::userApplicationDataDirectory);
+    return usrPath.getChildFile (libraryPath);
 #else
     return File();
 #endif
@@ -78,11 +82,43 @@ TuningMenu::TuningMenu (Trigger& trig) : trigger (trig)
 
     setColour (ComboBox::backgroundColourId, Colours::transparentBlack);
     setJustificationType (Justification::centred);
+    
+#if JUCE_IOS
+    // download tuning library content...
+    auto factoryTuningPath = getFactoryTuningLibrary();
+    if (! factoryTuningPath.isDirectory())
+    {
+        factoryTuningPath.deleteFile();
+        factoryTuningPath.createDirectory();
+        
+        URL libraryUrl { "https://ccrma.stanford.edu/~jatin/chowdsp/tuning_library.zip" };
+        downloadTask = libraryUrl.downloadToFile (factoryTuningPath.getSiblingFile ("tuning_library.zip"), {}, this);
+    }
+#endif
 }
 
 TuningMenu::~TuningMenu()
 {
     trigger.removeListener (this);
+}
+
+void TuningMenu::finished (URL::DownloadTask* task, bool success)
+{
+    auto factoryTuningPath = getFactoryTuningLibrary();
+    if (! success)
+    {
+        factoryTuningPath.deleteRecursively();
+        return;
+    }
+    
+    auto downloadFile = task->getTargetLocation();
+    ZipFile zipFile (downloadFile);
+    auto result = zipFile.uncompressTo (factoryTuningPath);
+    
+    if (result.failed())
+        factoryTuningPath.deleteRecursively();
+    
+    downloadFile.deleteFile();
 }
 
 void TuningMenu::refreshMenu()
@@ -118,12 +154,14 @@ void TuningMenu::refreshMenu()
     rootMenu->addItem ("Reset to Standard (12TET)", [=]
                        { trigger.resetTuning(); });
 
+#if ! JUCE_IOS
     rootMenu->addItem ("Select user tuning directory", [=]
                        {
                            resetMenuText();
                            chooseUserTuningLibraryPath (fileChooser, [=]
                                                         { refreshMenu(); });
                        });
+#endif
 
     rootMenu->addSeparator();
     if (factoryTuningPath != File())

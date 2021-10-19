@@ -3,6 +3,7 @@
 #include "ChowKick.h"
 
 class TuningMenu : public ComboBox,
+                   private URL::DownloadTask::Listener,
                    private Trigger::Listener
 {
 public:
@@ -14,10 +15,13 @@ public:
 
     void refreshMenu();
     void resetMenuText();
+    
+    void finished (URL::DownloadTask* task, bool success) override;
 
 private:
     Trigger& trigger;
 
+    std::unique_ptr<URL::DownloadTask> downloadTask;
     std::shared_ptr<FileChooser> fileChooser;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TuningMenu)
