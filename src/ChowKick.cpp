@@ -60,6 +60,8 @@ void reduceBlock (const dsp::AudioBlock<Vec>& block4, AudioBuffer<float>& buffer
 
 void ChowKick::processSynth (AudioBuffer<float>& buffer, MidiBuffer& midi)
 {
+    return;
+    
     ScopedNoDenormals noDenormals;
     const auto numSamples = buffer.getNumSamples();
 
