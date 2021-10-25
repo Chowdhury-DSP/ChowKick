@@ -25,26 +25,43 @@ float getYForMagnitude (float mag, float height)
 }
 } // namespace
 
-FilterViewer::FilterViewer (AudioProcessorValueTreeState& vts) : trigger (vts),
-                                                                 resFilter (vts, trigger),
-                                                                 helper (resFilter)
+FilterViewer::FilterViewer (AudioProcessorValueTreeState& vtState) : vts (vtState),
+                                                                     trigger (vts),
+                                                                     resFilter (vts, trigger),
+                                                                     helper (resFilter)
 {
     setColour (backgroundColour, Colours::black);
     setColour (traceColour, Colours::lightblue);
 
     resFilter.reset (fs);
-    startTimerHz (25);
+    
+    vts.addParameterListener (ResTags::freqTag, this);
+    vts.addParameterListener (ResTags::linkTag, this);
+    vts.addParameterListener (ResTags::qTag, this);
+    vts.addParameterListener (ResTags::dampTag, this);
+    vts.addParameterListener (ResTags::tightTag, this);
+    vts.addParameterListener (ResTags::bounceTag, this);
+    vts.addParameterListener (ResTags::modeTag, this);
+}
+
+FilterViewer::~FilterViewer()
+{
+    vts.removeParameterListener (ResTags::freqTag, this);
+    vts.removeParameterListener (ResTags::linkTag, this);
+    vts.removeParameterListener (ResTags::qTag, this);
+    vts.removeParameterListener (ResTags::dampTag, this);
+    vts.removeParameterListener (ResTags::tightTag, this);
+    vts.removeParameterListener (ResTags::bounceTag, this);
+    vts.removeParameterListener (ResTags::modeTag, this);
 }
 
 void FilterViewer::resized()
 {
-    repaint();
+    updatePath();
 }
 
-void FilterViewer::paint (Graphics& g)
+void FilterViewer::updatePath()
 {
-    g.fillAll (findColour (backgroundColour));
-
     const auto width = (float) getWidth();
     const auto height = (float) getHeight();
     const auto left = (float) getX();
@@ -53,12 +70,12 @@ void FilterViewer::paint (Graphics& g)
     helper.prepare();
     const auto resFreq = helper.getResFrequency();
 
-    Path tracePath;
+    tracePath.clear();
     float traceMagnitude = helper.getMagForFreq (getFreqForX (0.0f));
     float yPos = getYForMagnitude (traceMagnitude, height);
     tracePath.startNewSubPath (left, top + yPos);
 
-    Path tracePathNL;
+    tracePathNL.clear();
     float traceMagnitudeNL = helper.getMagForFreqNL (getFreqForX (0.0f));
     float yPosNL = getYForMagnitude (traceMagnitudeNL, height);
     tracePathNL.startNewSubPath (left, top + yPosNL);
@@ -91,6 +108,13 @@ void FilterViewer::paint (Graphics& g)
         }
     }
 
+    repaint();
+}
+
+void FilterViewer::paint (Graphics& g)
+{
+    g.fillAll (findColour (backgroundColour));
+
     g.setColour (Colours::red);
     g.strokePath (tracePathNL, PathStrokeType (2.0f, PathStrokeType::JointStyle::curved));
 
@@ -98,7 +122,8 @@ void FilterViewer::paint (Graphics& g)
     g.strokePath (tracePath, PathStrokeType (2.0f, PathStrokeType::JointStyle::curved));
 }
 
-void FilterViewer::timerCallback()
+void FilterViewer::parameterChanged (const String&, float)
 {
-    repaint();
+    MessageManager::callAsync ([=]
+                               { updatePath(); });
 }
