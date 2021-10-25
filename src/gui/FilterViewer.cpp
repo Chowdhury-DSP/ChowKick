@@ -34,7 +34,7 @@ FilterViewer::FilterViewer (AudioProcessorValueTreeState& vtState) : vts (vtStat
     setColour (traceColour, Colours::lightblue);
 
     resFilter.reset (fs);
-    
+
     vts.addParameterListener (ResTags::freqTag, this);
     vts.addParameterListener (ResTags::linkTag, this);
     vts.addParameterListener (ResTags::qTag, this);
