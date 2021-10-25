@@ -5,10 +5,11 @@
 
 class FilterViewer : public Component,
                      public SettableTooltipClient,
-                     private Timer
+                     private AudioProcessorValueTreeState::Listener
 {
 public:
     FilterViewer (AudioProcessorValueTreeState& vts);
+    ~FilterViewer();
 
     enum ColourIDs
     {
@@ -19,13 +20,18 @@ public:
     void resized() override;
     void paint (Graphics& g) override;
 
-    void timerCallback() override;
+    void parameterChanged (const String&, float) override;
+    void updatePath();
 
 private:
+    AudioProcessorValueTreeState& vts;
+
     Trigger trigger;
     ResonantFilter resFilter;
 
     FilterViewHelper helper;
+
+    Path tracePath, tracePathNL;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilterViewer)
 };

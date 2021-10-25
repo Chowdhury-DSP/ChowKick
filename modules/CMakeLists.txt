@@ -15,6 +15,7 @@ target_link_libraries(juce_plugin_modules
         BinaryData
         juce::juce_audio_utils
         juce::juce_audio_plugin_client
+        juce::juce_opengl
         foleys_gui_magic
         chowdsp_utils
         tuning-library
@@ -38,6 +39,7 @@ target_compile_definitions(juce_plugin_modules
         JucePlugin_VersionString="${CMAKE_PROJECT_VERSION}"
         JucePlugin_Name="${CMAKE_PROJECT_NAME}"
         FOLEYS_SHOW_GUI_EDITOR_PALLETTE=0
+        FOLEYS_ENABLE_OPEN_GL_CONTEXT=1
         JUCE_MODAL_LOOPS_PERMITTED=0
         FOLEYS_ENABLE_BINARY_DATA=1
         CHOWDSP_USE_XSIMD=1
