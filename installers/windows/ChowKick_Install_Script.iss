@@ -1,13 +1,29 @@
+#define MyAppPublisher "Chowdhury DSP"
+#define MyAppURL "https://chowdsp.com"
+#define MyAppName "ChowKick"
+#define MyAppVersion "##APPVERSION##"
+
 [Setup]
-AppName=ChowKick
-AppVersion=##APPVERSION##
-DisableWelcomePage=no
+AppName="{#MyAppName} {#MyAppVersion}"
+AppVersion={#MyAppVersion}
+AppVerName={#MyAppName}
+AppPublisher={#MyAppPublisher}
+AppPublisherURL={#MyAppURL}
+AppSupportURL={#MyAppURL}
+AppUpdatesURL={#MyAppURL}
+DefaultDirName={commonpf64}\Chowdhury DSP\
+DefaultGroupName={#MyAppName}
+DisableProgramGroupPage=yes
 DisableDirPage=yes
-DefaultDirName={commoncf64}
-DefaultGroupName=ChowKick
-OutputBaseFilename="ChowKick-Win-##APPVERSION##"
-OutputDir=.
+DisableWelcomePage=no
 LicenseFile=../../LICENSE
+OutputBaseFilename="{#MyAppName}-Win-{#MyAppVersion}"
+OutputDir=.
+SetupIconFile=chowkick.ico
+UninstallDisplayIcon=chowkick.ico
+UninstallFilesDir={commonpf64}\Chowdhury DSP\{#MyAppName}
+Compression=lzma
+SolidCompression=yes
 
 [Types]
 Name: "full"; Description: "Full installation"
@@ -29,6 +45,9 @@ Source: "../../bin/Win64/ChowKick.dll"; DestDir: "{code:GetDir|VST_64}"; Compone
 Source: "../../bin/Win32/ChowKick.vst3"; DestDir: "{code:GetDir|VST3_32}"; Components: VST3_32; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "../../bin/Win32/ChowKick.dll"; DestDir: "{code:GetDir|VST_32}"; Components: VST_32; Flags: ignoreversion
 Source: "../../bin/Win64/ChowKick.exe"; DestDir: "{code:GetDir|Standalone}"; Components: Standalone; Flags: ignoreversion
+
+[Icons]
+Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 
 [Code]
 var
