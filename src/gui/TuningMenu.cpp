@@ -158,8 +158,7 @@ void TuningMenu::refreshMenu()
         rootMenu->addItem ("Open Factory Tuning Directory", [=]
                            {
                                resetMenuText();
-                               auto success = factoryTuningPath.startAsProcess();
-                               jassert (success);
+                               factoryTuningPath.startAsProcess();
                            });
     }
     if (userTuningPath != File())
