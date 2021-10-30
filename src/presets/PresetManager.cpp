@@ -21,6 +21,18 @@ PresetManager::PresetManager (AudioProcessorValueTreeState& vtState) : chowdsp::
     addPresets (factoryPresets);
 
     loadDefaultPreset();
+
+#if JUCE_IOS
+    File appDataDir = File::getSpecialLocation (File::userApplicationDataDirectory);
+    auto userPresetFolder = appDataDir.getChildFile (userPresetPath).getSiblingFile ("Presets");
+    if (! userPresetFolder.isDirectory())
+    {
+        userPresetFolder.deleteFile();
+        userPresetFolder.createDirectory();
+    }
+
+    setUserPresetPath (userPresetFolder);
+#endif // JUCE_IOS
 }
 
 std::unique_ptr<XmlElement> PresetManager::savePresetState()

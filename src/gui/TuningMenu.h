@@ -16,6 +16,10 @@ public:
     void resetMenuText();
 
 private:
+#if JUCE_IOS
+    void refreshMenuIOS();
+#endif
+
     Trigger& trigger;
 
     std::shared_ptr<FileChooser> fileChooser;

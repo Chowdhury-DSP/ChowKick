@@ -68,6 +68,7 @@ if(ASIOSDK_DIR)
 endif()
 
 if(IOS)
+    include(cmake/CreateZip.cmake)
     target_link_libraries(juce_plugin_modules PRIVATE juce::juce_product_unlocking)
     target_compile_definitions(juce_plugin_modules PUBLIC JUCE_IN_APP_PURCHASES=1)
 endif()
