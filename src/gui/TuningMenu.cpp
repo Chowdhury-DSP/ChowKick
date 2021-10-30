@@ -82,7 +82,7 @@ TuningMenu::TuningMenu (Trigger& trig) : trigger (trig)
 
     setColour (ComboBox::backgroundColourId, Colours::transparentBlack);
     setJustificationType (Justification::centred);
-    
+
 #if JUCE_IOS
     // unpack tuning library content...
     auto factoryTuningPath = getFactoryTuningLibrary();
@@ -90,7 +90,7 @@ TuningMenu::TuningMenu (Trigger& trig) : trigger (trig)
     {
         factoryTuningPath.deleteFile();
         factoryTuningPath.createDirectory();
-        
+
         MemoryInputStream tuningInStream (BinaryData::tuning_library_zip, BinaryData::tuning_library_zipSize, false);
         ZipFile tuningZip (tuningInStream);
         auto unzipResult = tuningZip.uncompressTo (factoryTuningPath);
@@ -170,7 +170,7 @@ void TuningMenu::refreshMenu()
                                userTuningPath.startAsProcess();
                            });
     }
-    
+
     resetMenuText();
 #endif
 }
@@ -189,12 +189,13 @@ void TuningMenu::refreshMenuIOS()
     {
         std::map<String, PopupMenu> menuMap;
         PopupMenu otherMenu;
-        
-        auto getMapForSCLFile = [&] (const String& filePath) -> PopupMenu& {
+
+        auto getMapForSCLFile = [&] (const String& filePath) -> PopupMenu&
+        {
             auto getMenu = [&menuMap] (const String& key) -> PopupMenu& {
-                return menuMap.emplace (std::make_pair(key, PopupMenu())).first->second;
+                return menuMap.emplace (std::make_pair (key, PopupMenu())).first->second;
             };
-            
+
             if (filePath.contains ("Equal") && filePath.contains ("Temperament"))
                 return getMenu ("Equal Temperament");
             if (filePath.contains ("ED2"))
@@ -215,29 +216,29 @@ void TuningMenu::refreshMenuIOS()
                 return getMenu ("Subharmonic Division (harmonic 3)");
             if (filePath.contains ("SD4"))
                 return getMenu ("Subharmonic Division (harmonic 4)");
-            
+
             return otherMenu;
         };
-        
+
         for (DirectoryEntry entry : RangedDirectoryIterator (factoryTuningPath, true, "*.scl"))
         {
             const auto& scaleFile = entry.getFile();
             auto& subMenu = getMapForSCLFile (scaleFile.getFullPathName());
             subMenu.addItem (scaleFile.getFileName(), [=]
-                               {
-                                   resetMenuText();
-                                   trigger.setScaleFile (scaleFile);
-                               });
+                             {
+                                 resetMenuText();
+                                 trigger.setScaleFile (scaleFile);
+                             });
         }
-        
+
         for (auto& keyMenuPair : menuMap)
             scaleMenu.addSubMenu (keyMenuPair.first, keyMenuPair.second);
-        
+
         PopupMenu::MenuItemIterator it (otherMenu);
         while (it.next())
             scaleMenu.addItem (it.getItem());
     }
-    
+
     rootMenu->addSubMenu (scaleOption, scaleMenu);
 
     auto kbmName = trigger.getMappingName();
@@ -248,19 +249,19 @@ void TuningMenu::refreshMenuIOS()
         const auto& mappingFile = entry.getFile();
         if (! mappingFile.getFullPathName().contains ("KBM Concert Pitch"))
             continue;
-        
+
         mappingMenu.addItem (mappingFile.getFileName(), [=]
-                           {
-                               resetMenuText();
-                               trigger.setMappingFile (mappingFile);
-                           });
+                             {
+                                 resetMenuText();
+                                 trigger.setMappingFile (mappingFile);
+                             });
     }
-    
+
     rootMenu->addSubMenu (mappingOption, mappingMenu);
 
     rootMenu->addItem ("Reset to Standard (12TET)", [=]
                        { trigger.resetTuning(); });
-    
+
     resetMenuText();
 }
 #endif
