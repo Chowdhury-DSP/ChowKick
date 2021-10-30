@@ -54,7 +54,7 @@ void Noise::prepareToPlay (double sampleRate, int samplesPerBlock)
 
     filter.prepare (spec);
 
-    noiseBuffer = dsp::AudioBlock<Vec> (noiseData, 1, samplesPerBlock);
+    noiseBuffer = dsp::AudioBlock<Vec> (noiseData, 1, (size_t) samplesPerBlock);
 
     decaySmooth.reset (sampleRate, 0.05);
 }
@@ -65,7 +65,7 @@ void Noise::processBlock (dsp::AudioBlock<Vec>& block, int numSamples)
     noise.setNoiseType (NoiseType::Uniform);
     decaySmooth.setTargetValue (std::pow (1.0f - *decayParam, 2.5f) * 2.0f + 1.0f);
 
-    auto noiseBlock = noiseBuffer.getSubBlock (0, numSamples);
+    auto noiseBlock = noiseBuffer.getSubBlock (0, (size_t) numSamples);
     noiseBlock.clear();
 
     dsp::ProcessContextReplacing<Vec> context { noiseBlock };

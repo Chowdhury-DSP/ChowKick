@@ -6,7 +6,7 @@ const String userLibraryPath = "ChowdhuryDSP/ChowKick/UserTuningLibrary.txt";
 
 File getFactoryTuningLibrary()
 {
-    auto getLibraryPath = [] (const File& rootPath, const File& usrPath, const String& libPath)
+    [[maybe_unused]] auto getLibraryPath = [] (const File& rootPath, const File& usrPath, const String& libPath)
     {
         auto libraryDir = rootPath.getChildFile (libPath);
         if (libraryDir.isDirectory())
@@ -35,8 +35,8 @@ File getFactoryTuningLibrary()
     const auto usrPath = File::getSpecialLocation (File::userHomeDirectory);
     return getLibraryPath (rootPath, usrPath, libraryPath);
 #elif JUCE_IOS
-    const String libraryPath = "ChowdhuryDSP/ChowKick/tuning_library";
-    const auto usrPath = File::getSpecialLocation (File::userApplicationDataDirectory);
+    const String libraryPath = "ExtraContent/tuning_library";
+    const auto usrPath = File::getSpecialLocation (File::currentApplicationFile);
     return usrPath.getChildFile (libraryPath);
 #else
     return File();
@@ -164,12 +164,13 @@ void TuningMenu::refreshMenu()
 #endif
 
     rootMenu->addSeparator();
-    if (factoryTuningPath != File())
+    if (factoryTuningPath != File() && factoryTuningPath.isDirectory())
     {
         rootMenu->addItem ("Open Factory Tuning Directory", [=]
                            {
                                resetMenuText();
-                               factoryTuningPath.startAsProcess();
+                               auto success = factoryTuningPath.startAsProcess();
+                               jassert (success);
                            });
     }
     if (userTuningPath != File())

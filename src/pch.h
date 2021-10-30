@@ -10,8 +10,10 @@
 #include <JuceHeader.h>
 
 // Any other widely used headers that don't change...
+JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE("-Wsign-conversion")
 JUCE_BEGIN_IGNORE_WARNINGS_MSVC (4244)
 #include <Tunings.h>
+JUCE_END_IGNORE_WARNINGS_GCC_LIKE
 JUCE_END_IGNORE_WARNINGS_MSVC
 
 // global definitions
