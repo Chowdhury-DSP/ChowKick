@@ -3,7 +3,6 @@
 #include "ChowKick.h"
 
 class TuningMenu : public ComboBox,
-                   private URL::DownloadTask::Listener,
                    private Trigger::Listener
 {
 public:
@@ -15,10 +14,12 @@ public:
 
     void refreshMenu();
     void resetMenuText();
-    
-    void finished (URL::DownloadTask* task, bool success) override;
 
 private:
+#if JUCE_IOS
+    void refreshMenuIOS();
+#endif
+    
     Trigger& trigger;
 
     std::unique_ptr<URL::DownloadTask> downloadTask;
