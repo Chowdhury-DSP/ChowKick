@@ -46,48 +46,72 @@
         <PresetComp flex-grow="0.25" margin="0" padding="8"  background-color="00000000"
                   background="FF425866" text-highlight="FF8B3232" lookAndFeel="BottomBarLNF"
                   name="Presets" tooltip="Load and save plugin presets"/>
-        <View margin="0" flex-direction="column" padding="0" background-color="FF425866">
-          <Label text="Pulse Shape" justification="centred" font-size="24.0" lookAndFeel="MyLNF"
-                 flex-grow="0.05" padding="0" margin="0" background-color="0x00000000"
-                 label-text="FFFFB200" min-height="20.0"/>
-          <PulseViewer margin="3" padding="0" flex-grow="0.65" background="1B2A33" trace="FFFFB200"
-                       background-color="00000000" name="Pulse Viewer" tooltip="Shows the current shape of the trigger pulse"/>
-          <View max-height="5" background-color="0x00000000"/>
-          <View margin="0" padding="0" background-color="0x00000000" max-height="150"
-                flex-grow="0.9">
-            <View flex-grow="0.05" background-color="0x00000000"/>
-            <Slider class="SliderClass" parameter="trig_width" caption="Width" lookAndFeel="SliderLNF"
-                    margin="0" background-color="0x00000000" slider-textbox="textbox-below"
-                    slider-text="FFFFFFFF" slider-text-outline="00000000" slider-text-highlight="00000000"
-                    slider-track="1B2A33" slider-thumb="FFFFB200" caption-color="C5D1D8"
-                    tooltip="Controls the length of the trigger pulse" name="Width"/>
-            <Slider class="SliderClass" parameter="trig_amp" caption="Amplitude"
-                    lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
-                    slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
-                    slider-text-highlight="00000000" slider-text-outline="00000000"
-                    caption-color="C5D1D8" tooltip="Controls the amplitude of the trigger pulse"
-                    name="Amplitude"/>
-            <Slider class="SliderClass" parameter="pulse_decay" caption="Decay" lookAndFeel="SliderLNF"
-                    margin="0" background-color="0x00000000" slider-thumb="FFFFB200"
-                    slider-track="1B2A33" slider-text-outline="00000000" slider-text-highlight="00000000"
-                    slider-text="FFFFFFFF" caption-color="C5D1D8" tooltip="Controls the decay characteristic of the pulse shaper circuit"
-                    name="Decay"/>
-            <Slider class="SliderClass" parameter="pulse_sustain" caption="Sustain"
-                    lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
-                    slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
-                    slider-text-highlight="00000000" slider-text-outline="00000000"
-                    caption-color="C5D1D8" tooltip="Controls the sustain characteristic of the pulse shaper circuit"
-                    name="Sustain"/>
-            <Slider class="SliderClass" parameter="res_portamento" caption="Portamento"
-                    lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
-                    slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
-                    slider-text-highlight="00000000" slider-text-outline="00000000"
-                    caption-color="C5D1D8" tooltip="Controls the portamento time between notes on the same voice"
-                    name="Portamento"/>
-            <View flex-grow="0.05" background-color="0x00000000"/>
+      <View margin="0" flex-direction="column" padding="0" background-color="FF425866">
+        <Label text="Pulse Shape" justification="centred" font-size="24.0" lookAndFeel="MyLNF"
+               flex-grow="0.05" padding="0" margin="0" background-color="0x00000000"
+               label-text="FFFFB200" min-height="20.0"/>
+        <PulseViewer margin="3" padding="0" flex-grow="0.75" background="1B2A33" trace="FFFFB200"
+                     background-color="00000000" name="Pulse Viewer" tooltip="Shows the current shape of the trigger pulse"/>
+        <View max-height="5" background-color="0x00000000"/>
+        <View margin="0" padding="0" background-color="0x00000000" max-height="150"
+              flex-grow="0.9">
+          <View flex-grow="0.05" background-color="0x00000000"/>
+          <Slider class="SliderClass" parameter="trig_width" caption="Width" lookAndFeel="SliderLNF"
+                  margin="0" background-color="0x00000000" slider-textbox="textbox-below"
+                  slider-text="FFFFFFFF" slider-text-outline="00000000" slider-text-highlight="00000000"
+                  slider-track="1B2A33" slider-thumb="FFFFB200" caption-color="C5D1D8"
+                  tooltip="Controls the length of the trigger pulse" name="Width"/>
+          <Slider class="SliderClass" parameter="trig_amp" caption="Amplitude"
+                  lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
+                  slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
+                  slider-text-highlight="00000000" slider-text-outline="00000000"
+                  caption-color="C5D1D8" tooltip="Controls the amplitude of the trigger pulse"
+                  name="Amplitude"/>
+          <Slider class="SliderClass" parameter="pulse_decay" caption="Decay" lookAndFeel="SliderLNF"
+                  margin="0" background-color="0x00000000" slider-thumb="FFFFB200"
+                  slider-track="1B2A33" slider-text-outline="00000000" slider-text-highlight="00000000"
+                  slider-text="FFFFFFFF" caption-color="C5D1D8" tooltip="Controls the decay characteristic of the pulse shaper circuit"
+                  name="Decay"/>
+          <Slider class="SliderClass" parameter="pulse_sustain" caption="Sustain"
+                  lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
+                  slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
+                  slider-text-highlight="00000000" slider-text-outline="00000000"
+                  caption-color="C5D1D8" tooltip="Controls the sustain characteristic of the pulse shaper circuit"
+                  name="Sustain"/>
+          <View flex-grow="0.05" background-color="0x00000000"/>
+        </View>
+        <View margin="0" padding="0" background-color="0x00000000" flex-grow="0.95">
+          <View flex-grow="0.05" background-color="00000000"/>
+          <Slider parameter="noise_amt" slider-type="rotary-horizontal-vertical"
+                  name="Noise Amount" lookAndFeel="SliderLNF" caption="Noise Amount"
+                  caption-color="C5D1D8" margin="0" padding="0" border="0" background-color="00000000"
+                  slider-textbox="textbox-below" slider-thumb="FFFFB200" slider-track="1B2A33"
+                  slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
+                  tooltip="Controls the amount of noise added to the kick signal"/>
+          <Slider parameter="noise_decay" slider-type="rotary-horizontal-vertical"
+                  name="Noise Decay" lookAndFeel="SliderLNF" caption="Noise Decay"
+                  caption-color="C5D1D8" margin="0" padding="0" border="0" background-color="00000000"
+                  slider-textbox="textbox-below" slider-thumb="FFFFB200" slider-track="1B2A33"
+                  slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
+                  tooltip="Controls the decay length of the added noise"/>
+          <Slider parameter="noise_freq" slider-type="rotary-horizontal-vertical"
+                  name="Noise Cutoff" lookAndFeel="SliderLNF" caption="Noise Cutoff"
+                  caption-color="C5D1D8" margin="0" padding="0" border="0" background-color="00000000"
+                  slider-track="1B2A33" slider-thumb="FFFFB200" slider-textbox="textbox-below"
+                  slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
+                  tooltip="Controls the cutoff frequency of the added noise"/>
+          <View margin="0" padding="0" background-color="00000000" flex-direction="column">
+            <View background-color="00000000" flex-grow="0.15"/>
+            <ComboBox margin="0" padding="0" name="Noise Type" caption="Noise Type"
+                      background-color="00000000" caption-color="C5D1D8" parameter="noise_type"
+                      lookAndFeel="BottomBarLNF" combo-outline="00000000" combo-background="1B2A33"
+                      combo-menu-background="1B2A33" tooltip="Controls the type of added noise"/>
+            <View background-color="00000000" flex-grow="0.45"/>
           </View>
-          <View max-height="45" background-color="0x00000000" margin="0" padding="0"
-                flex-justify-content="center" flex-grow="0.05"/>
+          <View background-color="00000000" flex-grow="0.1" margin="" padding=""/>
+        </View>
+        <View max-height="45" background-color="0x00000000" margin="0" padding="0"
+              flex-justify-content="center" flex-grow="0.05"/>
         </View>
         <View max-height="2" background-color="0x00000000"/>
       </View>
@@ -137,12 +161,18 @@
                   slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
                   caption-color="C5D1D8" tooltip="Controls the response of the output tone filter"
                   name="Tone"/>
+          <Slider class="SliderClass" parameter="res_portamento" caption="Portamento"
+                  lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
+                  slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
+                  slider-text-highlight="00000000" slider-text-outline="00000000"
+                  caption-color="C5D1D8" tooltip="Controls the portamento time between notes on the same voice"
+                  name="Portamento"/>
         </View>
         <View max-height="5" background-color="00000000"/>
       </View>
       <View flex-direction="row" flex-grow="0.2" margin="2" padding="0" background-color="FF425866">
         <Slider class="SliderClass" parameter="out_level" caption="Level" slider-type="linear-vertical"
-                background-color="00000000" lookAndFeel="SliderLNF" slider-track="FFFFB200"
+                background-color="00000000" lookAndFeel="SliderLNF" slider-thumb="FFFFB200"
                 slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
                 caption-color="C5D1D8" slider-background="1B2A33" name="Level"
                 tooltip="Controls the output level"/>
@@ -156,6 +186,9 @@
                 lookAndFeel="ComboBoxLNF" combo-outline="00000000" combo-background="1B2A33"
                 combo-menu-background="1B2A33" combo-menu-background-highlight="FF425866"
                 background-color="00000000" name="Voices" tooltip="Selects how many polyphonic voices the kick drum can have"/>
+      <View flex-grow="0.5" background-color="00000000"/>
+      <TuningMenu margin="0" padding="0" background-color="00000000" lookAndFeel="TuningMenuLNF"
+                  name="Tuning Menu" tooltip="Select a custom scale or keyboard mapping"/>
       <View flex-grow="0.5" background-color="00000000"/>
       <ComboBox combo-background="1B2A33" parameter="res_mode" name="Res. Mode"
                 margin="0" padding="0" background-color="00000000" lookAndFeel="ComboBoxLNF"
