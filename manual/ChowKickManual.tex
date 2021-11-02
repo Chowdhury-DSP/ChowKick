@@ -44,9 +44,10 @@ Note that it is also possible to
 \end{figure}
 
 \subsection{Controls}
-ChowKick contains two main signal processing sections:
+ChowKick contains three main signal processing sections:
 a \boldtheme{Pulse Shaper} which generates a synthetic
 pulse whenever the kick drum is triggered (see \cref{fig:pulse_shaper}),
+a \boldtheme{Noise Generator} which adds noise to the shaped pulse,
 and a \boldtheme{Resonant Filter} that creates the kick
 drum sound when driven by the pulse.
 %
@@ -58,7 +59,7 @@ drum sound when driven by the pulse.
 
 \subsubsection{Pulse Shaper}
 \boldtheme{Width} controls the width of the generated pulse
-used the trigger the kick drum, ranging from 25 microseconds
+used the trigger the kick drum, from 25 microseconds
 to 2.5 milliseconds.
 \newpar
 \boldtheme{Amplitude} controls the maximum amplitude of the
@@ -78,6 +79,21 @@ kick sounds with a long decay time, so that triggering a new
 kick does not cut off the ringing out of the previous kick.
 Note that using more voices will not affect the plugin's
 CPU usage.
+
+\subsubsection{Noise Generator}
+\boldtheme{Noise Amount} controls the amount of noise added to
+the shaped pulse.
+\newpar
+\boldtheme{Noise Decay} controls the decay characteristic of the
+generated noise. At 100\%, the noise will decay at the same rate
+as the rest of the pulse. At lower valuse, the noise will decay
+more quickly than the rest of the pulse.
+\newpar
+\boldtheme{Noise Cutoff} controls the cutoff frequency of the noise.
+\newpar
+\boldtheme{Noise Type} controls the type of noise being generated,
+including options for \boldtheme{uniform} white noise, \boldtheme{normal}
+(or Gaussian) white noise, and \boldtheme{pink} noise.
 
 \subsubsection{Resonant Filter}
 The resonant filter section is an implementation of a nonlinear
@@ -112,8 +128,25 @@ drum sound.
 choosing to accentuate or dampen the high frequencies of
 the drum sound.
 \newpar
+\boldtheme{Portamento} adjusts the length of time that
+the filter will take to transition from one frequency
+to the next.
+\newpar
 \boldtheme{Res. Mode} controls the way in which the
 ``tight'' and ``bounce'' affect the overall sound.
+
+\subsection{Tuning}
+ChowKick supports full-keyboard microtuning, using the
+Scala SCL and KBM microtuning format. The tuning menu
+allows you to select .scl and .kbm files to load into
+the plugin, as well as an option to reset the plugin
+to the standard 12-tone equal temperament tuning (12-TET).
+\newpar
+For desktop users, you may load tuning files from anywhere
+on your computer. A factory library is included with the
+plugin, and you may also configure the plugin to use your
+own user tuning folder. For iOS users, only the factory
+tuning library is available.
 
 \subsection{Presets}
 Presets provide a quick way to achieve a specific sound
@@ -131,7 +164,6 @@ and when the plugin opens, it will search this folder, as
 well as any subfolders, to load new user presets.
 Presets located in subfolders will be placed in their
 own groups in the preset menu.
-\newpar
 
 \subsection{Open Source}
 ChowKick is open-source software that is free (as in ``free
