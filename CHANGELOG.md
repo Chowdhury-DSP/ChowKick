@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## UNRELEASED
+## [1.1.0] 2021-11-05
 - Added support for custom tunings.
 - Added controls to add noise to the kick drum sound.
 - Added "Portamento" parameter.
