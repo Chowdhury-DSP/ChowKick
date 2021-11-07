@@ -35,28 +35,6 @@ PresetManager::PresetManager (AudioProcessorValueTreeState& vtState) : chowdsp::
 #endif // JUCE_IOS
 }
 
-std::unique_ptr<XmlElement> PresetManager::savePresetState()
-{
-    auto state = vts.copyState();
-    std::unique_ptr<XmlElement> xml (state.createXml());
-
-    auto tuningXml = std::make_unique<XmlElement> ("tuning_data");
-    plugin->getTrigger().getTuningState (tuningXml.get());
-    xml->addChildElement (tuningXml.release());
-
-    return std::move (xml);
-}
-
-void PresetManager::loadPresetState (const XmlElement* xml)
-{
-    if (auto* tuningXml = xml->getChildByName ("tuning_data"))
-        plugin->getTrigger().setTuningState (tuningXml);
-    else
-        plugin->getTrigger().resetTuning();
-
-    vts.replaceState (ValueTree::fromXml (*xml));
-}
-
 chowdsp::Preset PresetManager::loadUserPresetFromFile (const File& file)
 {
     chowdsp::Preset compatiblePreset { file };

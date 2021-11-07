@@ -8,8 +8,6 @@ class PresetManager : public chowdsp::PresetManager
 public:
     PresetManager (AudioProcessorValueTreeState& vts);
 
-    std::unique_ptr<XmlElement> savePresetState() override;
-    void loadPresetState (const XmlElement* xml) override;
     chowdsp::Preset loadUserPresetFromFile (const File& file) override;
 
 private:
