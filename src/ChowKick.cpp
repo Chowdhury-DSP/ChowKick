@@ -137,14 +137,17 @@ void ChowKick::setStateInformation (const void* data, int sizeInBytes)
     {
         if (xmlState->hasTagName (vts.state.getType()))
         {
+            presetManager->loadXmlState (xmlState->getChildByName (chowdsp::PresetManager::presetStateTag));
+
             if (auto* tuningXml = xmlState->getChildByName ("tuning_data"))
                 trigger.setTuningState (tuningXml);
             else
                 trigger.resetTuning();
 
-            vts.replaceState (ValueTree::fromXml (*xmlState));
+            xmlState->deleteAllChildElementsWithTagName ("tuning_data");
+            xmlState->deleteAllChildElementsWithTagName (chowdsp::PresetManager::presetStateTag);
 
-            presetManager->loadXmlState (xmlState->getChildByName (chowdsp::PresetManager::presetStateTag));
+            vts.replaceState (ValueTree::fromXml (*xmlState));
         }
     }
 }
