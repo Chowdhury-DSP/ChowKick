@@ -11,6 +11,7 @@ const String decayTag = "pulse_decay";
 class PulseShaper
 {
     using v_type = xsimd::batch<float>;
+
 public:
     PulseShaper (AudioProcessorValueTreeState& vts, double sampleRate);
 
