@@ -13,3 +13,6 @@
 [submodule "modules/tuning-library"]
 	path = modules/tuning-library
 	url = https://github.com/surge-synthesizer/tuning-library
+[submodule "modules/chowdsp_wdf"]
+	path = modules/chowdsp_wdf
+	url = https://github.com/Chowdhury-DSP/chowdsp_wdf

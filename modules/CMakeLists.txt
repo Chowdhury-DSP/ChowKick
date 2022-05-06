@@ -4,7 +4,8 @@ subproject_version(JUCE juce_version)
 message(STATUS "VERSION for JUCE: ${juce_version}")
 
 juce_add_modules(foleys_gui_magic)
-juce_add_modules(chowdsp_utils)
+add_subdirectory(chowdsp_utils)
+add_subdirectory(chowdsp_wdf)
 
 add_subdirectory(tuning-library EXCLUDE_FROM_ALL)
 
@@ -17,7 +18,10 @@ target_link_libraries(juce_plugin_modules
         juce::juce_audio_plugin_client
         juce::juce_opengl
         foleys_gui_magic
-        chowdsp_utils
+        chowdsp_dsp
+        chowdsp_gui
+        chowdsp_plugin_utils
+        chowdsp_wdf
         tuning-library
     PUBLIC
         juce::juce_recommended_config_flags
@@ -40,7 +44,7 @@ target_compile_definitions(juce_plugin_modules
         JucePlugin_Name="${CMAKE_PROJECT_NAME}"
         FOLEYS_SHOW_GUI_EDITOR_PALLETTE=0
         FOLEYS_ENABLE_OPEN_GL_CONTEXT=1
-        JUCE_MODAL_LOOPS_PERMITTED=0
+        JUCE_MODAL_LOOPS_PERMITTED=1
         FOLEYS_ENABLE_BINARY_DATA=1
         CHOWDSP_USE_XSIMD=1
     INTERFACE
