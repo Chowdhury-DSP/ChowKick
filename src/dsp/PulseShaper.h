@@ -10,6 +10,8 @@ const String decayTag = "pulse_decay";
 
 class PulseShaper
 {
+    using v_type = xsimd::batch<float>;
+
 public:
     PulseShaper (AudioProcessorValueTreeState& vts, double sampleRate);
 
@@ -18,10 +20,10 @@ public:
 
     inline Vec processSample (Vec x) noexcept
     {
-        Vs.setVoltage (x);
+        Vs.setVoltage (x.value);
 
         d53.incident (P2.reflected());
-        Vec y = chowdsp::WDFT::voltage<Vec> (r162);
+        const auto y = (Vec) wdft::voltage<v_type> (r162);
         P2.incident (d53.reflected());
 
         return y;
@@ -31,19 +33,19 @@ private:
     std::atomic<float>* sustainParam = nullptr;
     std::atomic<float>* decayParam = nullptr;
 
-    using Resistor = chowdsp::WDFT::ResistorT<Vec>;
-    using Capacitor = chowdsp::WDFT::CapacitorAlphaT<Vec>;
-    using ResVs = chowdsp::WDFT::ResistiveVoltageSourceT<Vec>;
+    using Resistor = wdft::ResistorT<v_type>;
+    using Capacitor = wdft::CapacitorAlphaT<v_type>;
+    using ResVs = wdft::ResistiveVoltageSourceT<v_type>;
 
     ResVs Vs;
     Resistor r162 { 4700.0f };
     Resistor r163 { 100000.0f };
     Capacitor c40;
 
-    chowdsp::WDFT::WDFParallelT<Vec, Capacitor, Resistor> P1 { c40, r163 };
-    chowdsp::WDFT::WDFSeriesT<Vec, ResVs, decltype (P1)> S1 { Vs, P1 };
-    chowdsp::WDFT::PolarityInverterT<Vec, Resistor> I1 { r162 };
-    chowdsp::WDFT::WDFParallelT<Vec, decltype (I1), decltype (S1)> P2 { I1, S1 };
+    wdft::WDFParallelT<v_type, Capacitor, Resistor> P1 { c40, r163 };
+    wdft::WDFSeriesT<v_type, ResVs, decltype (P1)> S1 { Vs, P1 };
+    wdft::PolarityInverterT<v_type, Resistor> I1 { r162 };
+    wdft::WDFParallelT<v_type, decltype (I1), decltype (S1)> P2 { I1, S1 };
 
-    chowdsp::WDFT::DiodeT<Vec, decltype (P2)> d53 { P2, 2.52e-9f }; // 1N4148 diode
+    wdft::DiodeT<v_type, decltype (P2)> d53 { P2, 2.52e-9f }; // 1N4148 diode
 };
