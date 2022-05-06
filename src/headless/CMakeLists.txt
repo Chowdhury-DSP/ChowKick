@@ -15,11 +15,16 @@ target_sources(ChowKick_headless PRIVATE
 )
 
 target_precompile_headers(ChowKick_headless PRIVATE ../pch.h)
-target_include_directories(ChowKick_headless PRIVATE ../)
-target_include_directories(ChowKick_headless PRIVATE ../../modules)
-target_include_directories(ChowKick_headless PRIVATE ../../modules/JUCE/modules)
-target_include_directories(ChowKick_headless PRIVATE ../../modules/xsimd/include)
-target_include_directories(ChowKick_headless PRIVATE ../../modules/tuning-library/include)
+target_include_directories(ChowKick_headless
+    PRIVATE
+        ../
+        ../../modules
+        ../../modules/JUCE/modules
+        ../../modules/xsimd/include
+        ../../modules/chowdsp_utils/modules
+        ../../modules/tuning-library/include
+        ../../modules/chowdsp_wdf/include
+)
 
 target_link_libraries(ChowKick_headless PUBLIC
     BinaryData
