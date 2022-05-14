@@ -160,12 +160,8 @@ begin
     Result := AAXDirPage.values[0]
   else if (Param = 'VST3_64') then
     Result := Vst3_64DirPage.values[0]
-  else if (Param = 'VST3_32') then
-    Result := Vst3_32DirPage.values[0]
   else if (Param = 'VST_64') then
     Result := Vst_64DirPage.values[0]
-  else if (Param = 'VST_32') then
-    Result := Vst_32DirPage.values[0]
   else if (Param = 'Standalone') then
     Result := StandaloneDirPage.values[0]
 end;
