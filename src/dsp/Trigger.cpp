@@ -4,7 +4,7 @@ using namespace TriggerTags;
 
 namespace
 {
-static inline Vec insert (const Vec& v, float s, size_t i) noexcept
+inline Vec insert (const Vec& v, float s, size_t i) noexcept
 {
     union UnionType
     {
