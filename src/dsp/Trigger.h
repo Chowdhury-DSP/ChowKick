@@ -17,7 +17,7 @@ public:
 
     static void addParameters (Parameters& params);
     void prepareToPlay (double sampleRate, int samplesPerBlock);
-    void processBlock (dsp::AudioBlock<Vec>& block, int numSamples, MidiBuffer& midi);
+    void processBlock (chowdsp::AudioBlock<Vec>& block, int numSamples, MidiBuffer& midi);
 
     void parameterChanged (const String& paramID, float newValue) override;
 
@@ -54,7 +54,7 @@ private:
 
     size_t voiceIdx = 0;
     size_t numVoices;
-    std::array<int, Vec::size()> leftoverSamples { 0 };
+    std::array<int, Vec::size> leftoverSamples { 0 };
 
     Tunings::Tuning tuning;
     ListenerList<Listener> tuningListeners;

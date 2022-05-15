@@ -54,12 +54,12 @@ void Noise::prepareToPlay (double sampleRate, int samplesPerBlock)
 
     filter.prepare (spec);
 
-    noiseBuffer = dsp::AudioBlock<Vec> (noiseData, 1, (size_t) samplesPerBlock);
+    noiseBuffer = chowdsp::AudioBlock<Vec> (noiseData, 1, (size_t) samplesPerBlock);
 
     decaySmooth.reset (sampleRate, 0.05);
 }
 
-void Noise::processBlock (dsp::AudioBlock<Vec>& block, int numSamples)
+void Noise::processBlock (chowdsp::AudioBlock<Vec>& block, int numSamples)
 {
     noise.setGainLinear (std::pow (*amtParam, 2.0f));
     noise.setNoiseType (NoiseType::Uniform);
@@ -68,7 +68,7 @@ void Noise::processBlock (dsp::AudioBlock<Vec>& block, int numSamples)
     auto noiseBlock = noiseBuffer.getSubBlock (0, (size_t) numSamples);
     noiseBlock.clear();
 
-    dsp::ProcessContextReplacing<Vec> context { noiseBlock };
+    chowdsp::ProcessContextReplacing<Vec> context { noiseBlock };
     noise.process (context);
 
     filter.setCutoffFrequency (freqParam->load());
@@ -79,7 +79,7 @@ void Noise::processBlock (dsp::AudioBlock<Vec>& block, int numSamples)
 
     for (int n = 0; n < numSamples; ++n)
     {
-        auto noiseGain = chowdsp::SIMDUtils::powSIMD (Vec::abs (blockData[n]), (Vec) decaySmooth.getNextValue());
+        auto noiseGain = xsimd::pow (xsimd::abs (blockData[n]), (Vec) decaySmooth.getNextValue());
         blockData[n] += noiseGain * noisePtr[n];
     }
 }
