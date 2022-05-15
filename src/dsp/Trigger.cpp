@@ -2,6 +2,18 @@
 
 using namespace TriggerTags;
 
+namespace
+{
+static inline Vec insert (const Vec& v, float s, size_t i) noexcept
+{
+    union UnionType { Vec v; float s[4]; };
+    UnionType u {v};
+
+    u.s[i] = s;
+    return u.v;
+}
+}
+
 Trigger::Trigger (AudioProcessorValueTreeState& vtState) : vts (vtState)
 {
     widthParam = vts.getRawParameterValue (widthTag);
@@ -61,14 +73,14 @@ void Trigger::prepareToPlay (double sampleRate, int /*samplesPerBlock*/)
     std::fill (leftoverSamples.begin(), leftoverSamples.end(), 0);
 }
 
-void fillBlock (dsp::AudioBlock<Vec>& block, float value, int start, int numToFill, size_t channel)
+void fillBlock (chowdsp::AudioBlock<Vec>& block, float value, int start, int numToFill, size_t channel)
 {
     auto* x = block.getChannelPointer (0);
     for (int i = start; i < start + numToFill; ++i)
-        x[i].set (channel, value);
+        x[i] = insert (x[i], value, channel);
 }
 
-void Trigger::processBlock (dsp::AudioBlock<Vec>& block, const int numSamples, MidiBuffer& midi)
+void Trigger::processBlock (chowdsp::AudioBlock<Vec>& block, const int numSamples, MidiBuffer& midi)
 {
     jassert (block.getNumChannels() == 1); // only single-channel buffers!
 
@@ -91,7 +103,7 @@ void Trigger::processBlock (dsp::AudioBlock<Vec>& block, const int numSamples, M
 
             voiceIdx = (voiceIdx + 1) % numVoices;
             fillBlock (block, ampParam->load(), samplePosition, samplesToFill, voiceIdx);
-            curFreqHz.set (voiceIdx, (float) tuning.frequencyForMidiNote (message.getNoteNumber()));
+            curFreqHz = insert (curFreqHz, (float) tuning.frequencyForMidiNote (message.getNoteNumber()), voiceIdx);
 
             leftoverSamples[voiceIdx] = pulseSamples - samplesToFill;
         }

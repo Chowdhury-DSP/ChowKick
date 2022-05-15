@@ -20,5 +20,5 @@ JUCE_END_IGNORE_WARNINGS_MSVC
 
 // global definitions
 using Parameters = std::vector<std::unique_ptr<RangedAudioParameter>>;
-using Vec = dsp::SIMDRegister<float>;
+using Vec = xsimd::batch<float>;
 namespace wdft = chowdsp::wdft;

@@ -28,8 +28,8 @@ private:
     AudioBuffer<float> monoBuffer;
 
     HeapBlock<char> fourVoiceData;
-    dsp::AudioBlock<Vec> fourVoiceBuffer;
-    static_assert (Vec::size() == 4, "SIMD width must equal 4!");
+    chowdsp::AudioBlock<Vec> fourVoiceBuffer;
+    static_assert (Vec::size == 4, "SIMD width must equal 4!");
 
     Trigger trigger;
     Noise noise;

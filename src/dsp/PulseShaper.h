@@ -16,14 +16,14 @@ public:
     PulseShaper (AudioProcessorValueTreeState& vts, double sampleRate);
 
     static void addParameters (Parameters& params);
-    void processBlock (dsp::AudioBlock<Vec>& block, int numSamples);
+    void processBlock (chowdsp::AudioBlock<Vec>& block, int numSamples);
 
     inline Vec processSample (Vec x) noexcept
     {
-        Vs.setVoltage (x.value);
+        Vs.setVoltage (x);
 
         d53.incident (P2.reflected());
-        const auto y = (Vec) wdft::voltage<v_type> (r162);
+        const auto y = wdft::voltage<v_type> (r162);
         P2.incident (d53.reflected());
 
         return y;

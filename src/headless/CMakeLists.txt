@@ -21,7 +21,10 @@ target_include_directories(ChowKick_headless
         ../../modules
         ../../modules/JUCE/modules
         ../../modules/xsimd/include
-        ../../modules/chowdsp_utils/modules
+        ../../modules/chowdsp_utils/modules/common
+        ../../modules/chowdsp_utils/modules/dsp
+        ../../modules/chowdsp_utils/modules/plugin
+        ../../modules/chowdsp_utils/modules/gui
         ../../modules/tuning-library/include
         ../../modules/chowdsp_wdf/include
 )

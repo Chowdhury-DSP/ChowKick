@@ -23,7 +23,7 @@ public:
     static void addParameters (Parameters& params);
     void reset (double sampleRate);
     void calcCoefs (Vec freq, float Q, float G);
-    void processBlock (dsp::AudioBlock<Vec>& block, int numSamples);
+    void processBlock (chowdsp::AudioBlock<Vec>& block, int numSamples);
 
     void setFreqMult (float newMult) { freqMult = newMult; }
     Vec getFrequencyHz() const noexcept;
@@ -49,7 +49,7 @@ public:
 
 private:
     template <typename ProcType>
-    void processBlockInternal (dsp::AudioBlock<Vec>& block, int numSamples, const ProcType& proc);
+    void processBlockInternal (chowdsp::AudioBlock<Vec>& block, int numSamples, const ProcType& proc);
 
     const Trigger& trigger;
 
@@ -63,7 +63,7 @@ private:
     std::atomic<float>* portamentoParam = nullptr;
     float freqMult = 1.0f;
 
-    using FreqSmooth = chowdsp::SIMDUtils::SIMDSmoothedValue<Vec::ElementType, ValueSmoothingTypes::Multiplicative>;
+    using FreqSmooth = chowdsp::SIMDUtils::SIMDSmoothedValue<chowdsp::SampleTypeHelpers::NumericType<Vec>, ValueSmoothingTypes::Multiplicative>;
     FreqSmooth freqSmooth;
     SmoothedValue<float, ValueSmoothingTypes::Multiplicative> qSmooth;
     SmoothedValue<float, ValueSmoothingTypes::Multiplicative> gSmooth;

@@ -63,7 +63,7 @@ void PulseViewer::updatePath()
     for (int n = 0; n < nSamples; ++n)
     {
         auto xDraw = ((float) n / (float) nSamples) * (float) getWidth();
-        auto yDraw = (float) getHeight() - (yScale * jmin (block.getSample (0, n).sum(), 1.2f) + yOff) + 4.0f;
+        auto yDraw = (float) getHeight() - (yScale * jmin (xsimd::hadd (block.getSample (0, n)), 1.2f) + yOff) + 4.0f;
 
         if (! started)
         {
