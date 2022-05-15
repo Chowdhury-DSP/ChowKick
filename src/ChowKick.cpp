@@ -31,7 +31,7 @@ void ChowKick::addParameters (Parameters& params)
 void ChowKick::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     monoBuffer.setSize (1, samplesPerBlock);
-    fourVoiceBuffer = dsp::AudioBlock<Vec> (fourVoiceData, 1, (size_t) samplesPerBlock);
+    fourVoiceBuffer = chowdsp::AudioBlock<Vec> (fourVoiceData, 1, (size_t) samplesPerBlock);
 
     trigger.prepareToPlay (sampleRate, samplesPerBlock);
     noise.prepareToPlay (sampleRate, samplesPerBlock);
@@ -50,12 +50,12 @@ void ChowKick::releaseResources()
 {
 }
 
-void reduceBlock (const dsp::AudioBlock<Vec>& block4, AudioBuffer<float>& buffer)
+void reduceBlock (const chowdsp::AudioBlock<Vec>& block4, AudioBuffer<float>& buffer)
 {
     auto* x = block4.getChannelPointer (0);
     auto* y = buffer.getWritePointer (0);
     for (int i = 0; i < buffer.getNumSamples(); ++i)
-        y[i] = x[i].sum();
+        y[i] = xsimd::hadd (x[i]);
 }
 
 void ChowKick::processSynth (AudioBuffer<float>& buffer, MidiBuffer& midi)

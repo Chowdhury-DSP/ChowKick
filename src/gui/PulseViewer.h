@@ -35,7 +35,7 @@ private:
     Path pulsePath;
 
     HeapBlock<char> blockData;
-    dsp::AudioBlock<Vec> block;
+    chowdsp::AudioBlock<Vec> block;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PulseViewer)
 };

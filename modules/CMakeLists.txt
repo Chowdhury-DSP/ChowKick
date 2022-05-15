@@ -18,9 +18,11 @@ target_link_libraries(juce_plugin_modules
         juce::juce_audio_plugin_client
         juce::juce_opengl
         foleys_gui_magic
-        chowdsp_dsp
-        chowdsp_gui
-        chowdsp_plugin_utils
+        chowdsp::chowdsp_dsp_utils
+        chowdsp::chowdsp_foleys
+        chowdsp::chowdsp_plugin_base
+        chowdsp::chowdsp_plugin_utils
+        chowdsp::chowdsp_presets
         chowdsp_wdf
         tuning-library
     PUBLIC
@@ -46,7 +48,6 @@ target_compile_definitions(juce_plugin_modules
         FOLEYS_ENABLE_OPEN_GL_CONTEXT=1
         JUCE_MODAL_LOOPS_PERMITTED=1
         FOLEYS_ENABLE_BINARY_DATA=1
-        CHOWDSP_USE_XSIMD=1
     INTERFACE
         $<TARGET_PROPERTY:juce_plugin_modules,COMPILE_DEFINITIONS>
 )

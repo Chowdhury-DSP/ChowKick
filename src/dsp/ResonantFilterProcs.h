@@ -15,8 +15,7 @@ struct BasicFilterProc
 
     inline Vec drive (Vec x, float drive) const noexcept
     {
-        using namespace chowdsp::SIMDUtils;
-        return tanhSIMD (x * drive) / drive;
+        return xsimd::tanh (x * drive) / drive;
     }
 
     static inline float drive_deriv (float x)
@@ -85,8 +84,7 @@ struct BouncyFilterProc
 
     inline Vec drive (Vec x, float drive) const noexcept
     {
-        using namespace chowdsp::SIMDUtils;
-        return tanhSIMD (x * drive) / drive;
+        return xsimd::tanh (x * drive) / drive;
     }
 
     static inline float drive_deriv (float x)

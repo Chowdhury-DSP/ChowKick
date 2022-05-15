@@ -137,11 +137,9 @@ float ResonantFilter::getGVal() const noexcept
 
 void ResonantFilter::calcCoefs (Vec freq, float Q, float G)
 {
-    using namespace chowdsp::SIMDUtils;
-
     const auto wc = freq * MathConstants<float>::twoPi / fs;
-    const auto wS = sinSIMD (wc);
-    const auto wC = cosSIMD (wc);
+    const auto wS = xsimd::sin (wc);
+    const auto wC = xsimd::cos (wc);
     const auto alpha = wS / (2.0f * Q);
 
     const auto a0 = (Vec) (G + 1.0f) + alpha * G;
@@ -154,7 +152,7 @@ void ResonantFilter::calcCoefs (Vec freq, float Q, float G)
 }
 
 template <typename ProcType>
-void ResonantFilter::processBlockInternal (dsp::AudioBlock<Vec>& block, const int numSamples, const ProcType& proc)
+void ResonantFilter::processBlockInternal (chowdsp::AudioBlock<Vec>& block, const int numSamples, const ProcType& proc)
 {
     auto [d1, d2, d3] = proc.getDriveValues (tightParam->load(), bounceParam->load());
     d1Smooth.setTargetValue (d1);
@@ -185,7 +183,7 @@ void ResonantFilter::processBlockInternal (dsp::AudioBlock<Vec>& block, const in
         x[n] = proc (x[n], b, a, z, d1, d2, d3);
 }
 
-void ResonantFilter::processBlock (dsp::AudioBlock<Vec>& block, const int numSamples)
+void ResonantFilter::processBlock (chowdsp::AudioBlock<Vec>& block, const int numSamples)
 {
     if (*portamentoParam != prevPortamento)
     {

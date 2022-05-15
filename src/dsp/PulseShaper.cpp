@@ -28,7 +28,7 @@ void PulseShaper::addParameters (Parameters& params)
                                                   &stringToPercentVal));
 }
 
-void PulseShaper::processBlock (dsp::AudioBlock<Vec>& block, const int numSamples)
+void PulseShaper::processBlock (chowdsp::AudioBlock<Vec>& block, const int numSamples)
 {
     constexpr float r1Off = 5000.0f;
     constexpr float r1Scale = 500000.0f;

@@ -18,7 +18,7 @@ public:
     static void addParameters (Parameters& params);
 
     void prepareToPlay (double sampleRate, int samplesPerBlock);
-    void processBlock (dsp::AudioBlock<Vec>& block, int numSamples);
+    void processBlock (chowdsp::AudioBlock<Vec>& block, int numSamples);
 
 private:
     std::atomic<float>* amtParam = nullptr;
@@ -32,7 +32,7 @@ private:
     SmoothedValue<float, ValueSmoothingTypes::Multiplicative> decaySmooth;
 
     HeapBlock<char> noiseData;
-    dsp::AudioBlock<Vec> noiseBuffer;
+    chowdsp::AudioBlock<Vec> noiseBuffer;
 
     chowdsp::StateVariableFilter<Vec> filter;
 
