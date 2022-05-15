@@ -6,13 +6,17 @@ namespace
 {
 static inline Vec insert (const Vec& v, float s, size_t i) noexcept
 {
-    union UnionType { Vec v; float s[4]; };
-    UnionType u {v};
+    union UnionType
+    {
+        Vec v;
+        float s[4];
+    };
+    UnionType u { v };
 
     u.s[i] = s;
     return u.v;
 }
-}
+} // namespace
 
 Trigger::Trigger (AudioProcessorValueTreeState& vtState) : vts (vtState)
 {
