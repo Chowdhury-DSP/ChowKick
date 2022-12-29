@@ -34,7 +34,7 @@ private:
     HeapBlock<char> noiseData;
     chowdsp::AudioBlock<Vec> noiseBuffer;
 
-    chowdsp::StateVariableFilter<Vec> filter;
+    chowdsp::StateVariableFilter<Vec, chowdsp::StateVariableFilterType::Lowpass> filter;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Noise)
 };

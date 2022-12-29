@@ -55,7 +55,7 @@ void reduceBlock (const chowdsp::AudioBlock<Vec>& block4, AudioBuffer<float>& bu
     auto* x = block4.getChannelPointer (0);
     auto* y = buffer.getWritePointer (0);
     for (int i = 0; i < buffer.getNumSamples(); ++i)
-        y[i] = xsimd::hadd (x[i]);
+        y[i] = xsimd::reduce_add (x[i]);
 }
 
 void ChowKick::processSynth (AudioBuffer<float>& buffer, MidiBuffer& midi)
@@ -80,7 +80,7 @@ void ChowKick::processSynth (AudioBuffer<float>& buffer, MidiBuffer& midi)
 
     dsp::AudioBlock<float> monoBlock (monoBuffer);
     dsp::ProcessContextReplacing<float> monoContext (monoBlock);
-    dcBlocker.process<dsp::ProcessContextReplacing<float>, chowdsp::StateVariableFilterType::Highpass> (monoContext);
+    dcBlocker.process<dsp::ProcessContextReplacing<float>> (monoContext);
 
     // copy monoBuffer to other channels
     for (int ch = 0; ch < buffer.getNumChannels(); ++ch)
