@@ -61,8 +61,7 @@ void chooseUserTuningLibraryPath (std::shared_ptr<FileChooser>& fileChooser, Cal
                                   config.deleteFile();
                                   config.create();
                                   config.replaceWithText (result.getFullPathName());
-                                  callback();
-                              });
+                                  callback(); });
 }
 
 [[maybe_unused]] File getUserTuningLibraryPath()
@@ -129,8 +128,7 @@ void TuningMenu::refreshMenu()
                            resetMenuText();
                            fileChooser = std::make_shared<FileChooser> ("Choose Scale", factoryTuningPath, "*.scl");
                            fileChooser->launchAsync (fileChooserFlags, [=] (const FileChooser& fc)
-                                                     { trigger.setScaleFile (fc.getResult()); });
-                       });
+                                                     { trigger.setScaleFile (fc.getResult()); }); });
 
     auto kbmName = trigger.getMappingName();
     auto mappingOption = "Select KBM" + (kbmName.isEmpty() ? "" : " (" + kbmName + ")");
@@ -139,8 +137,7 @@ void TuningMenu::refreshMenu()
                            resetMenuText();
                            fileChooser = std::make_shared<FileChooser> ("Choose Keyboard Mapping", factoryTuningPath, "*.kbm");
                            fileChooser->launchAsync (fileChooserFlags, [=] (const FileChooser& fc)
-                                                     { trigger.setMappingFile (fc.getResult()); });
-                       });
+                                                     { trigger.setMappingFile (fc.getResult()); }); });
 
     rootMenu->addItem ("Reset to Standard (12TET)", [=]
                        { trigger.resetTuning(); });
@@ -149,8 +146,7 @@ void TuningMenu::refreshMenu()
                        {
                            resetMenuText();
                            chooseUserTuningLibraryPath (fileChooser, [=]
-                                                        { refreshMenu(); });
-                       });
+                                                        { refreshMenu(); }); });
 
     rootMenu->addSeparator();
     if (factoryTuningPath != File() && factoryTuningPath.isDirectory())
@@ -158,16 +154,14 @@ void TuningMenu::refreshMenu()
         rootMenu->addItem ("Open Factory Tuning Directory", [=]
                            {
                                resetMenuText();
-                               factoryTuningPath.startAsProcess();
-                           });
+                               factoryTuningPath.startAsProcess(); });
     }
     if (userTuningPath != File())
     {
         rootMenu->addItem ("Open User Tuning Directory", [=]
                            {
                                resetMenuText();
-                               userTuningPath.startAsProcess();
-                           });
+                               userTuningPath.startAsProcess(); });
     }
 
     resetMenuText();
@@ -191,7 +185,8 @@ void TuningMenu::refreshMenuIOS()
 
         auto getMapForSCLFile = [&] (const String& filePath) -> PopupMenu&
         {
-            auto getMenu = [&menuMap] (const String& key) -> PopupMenu& {
+            auto getMenu = [&menuMap] (const String& key) -> PopupMenu&
+            {
                 return menuMap.emplace (std::make_pair (key, PopupMenu())).first->second;
             };
 
@@ -226,8 +221,7 @@ void TuningMenu::refreshMenuIOS()
             subMenu.addItem (scaleFile.getFileName(), [=]
                              {
                                  resetMenuText();
-                                 trigger.setScaleFile (scaleFile);
-                             });
+                                 trigger.setScaleFile (scaleFile); });
         }
 
         for (auto& keyMenuPair : menuMap)
@@ -252,8 +246,7 @@ void TuningMenu::refreshMenuIOS()
         mappingMenu.addItem (mappingFile.getFileName(), [=]
                              {
                                  resetMenuText();
-                                 trigger.setMappingFile (mappingFile);
-                             });
+                                 trigger.setMappingFile (mappingFile); });
     }
 
     rootMenu->addSubMenu (mappingOption, mappingMenu);
