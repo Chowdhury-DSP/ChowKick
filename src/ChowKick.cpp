@@ -3,8 +3,8 @@
 #include "gui/DisabledSlider.h"
 #include "gui/FilterViewer.h"
 #include "gui/PulseViewer.h"
-#include "gui/TuningMenu.h"
 #include "gui/SettingsButton.h"
+#include "gui/TuningMenu.h"
 #include "presets/PresetManager.h"
 
 #if JUCE_IOS
@@ -16,7 +16,7 @@ namespace
 const String settingsFilePath = "ChowdhuryDSP/ChowKick/.plugin_settings.json";
 const String logFileSubDir = "ChowdhuryDSP/ChowKick/Logs";
 const String logFileNameRoot = "ChowKick_Log_";
-}
+} // namespace
 
 ChowKick::ChowKick() : logger (logFileSubDir, logFileNameRoot),
                        trigger (vts),
@@ -81,16 +81,16 @@ void ChowKick::processSynth (AudioBuffer<float>& buffer, MidiBuffer& midi)
 
     magicState.processMidiBuffer (midi, numSamples);
 
-//    trigger.processBlock (fourVoiceBuffer, numSamples, midi);
-//    pulseShaper->processBlock (fourVoiceBuffer, numSamples);
-//    resFilter.processBlock (fourVoiceBuffer, numSamples);
-//    noise.processBlock (fourVoiceBuffer, numSamples);
-//    reduceBlock (fourVoiceBuffer, monoBuffer);
-//    outFilter.processBlock (monoBuffer.getWritePointer (0), numSamples);
-//
-//    dsp::AudioBlock<float> monoBlock (monoBuffer);
-//    dsp::ProcessContextReplacing<float> monoContext (monoBlock);
-//    dcBlocker.process<dsp::ProcessContextReplacing<float>> (monoContext);
+    //    trigger.processBlock (fourVoiceBuffer, numSamples, midi);
+    //    pulseShaper->processBlock (fourVoiceBuffer, numSamples);
+    //    resFilter.processBlock (fourVoiceBuffer, numSamples);
+    //    noise.processBlock (fourVoiceBuffer, numSamples);
+    //    reduceBlock (fourVoiceBuffer, monoBuffer);
+    //    outFilter.processBlock (monoBuffer.getWritePointer (0), numSamples);
+    //
+    //    dsp::AudioBlock<float> monoBlock (monoBuffer);
+    //    dsp::ProcessContextReplacing<float> monoContext (monoBlock);
+    //    dcBlocker.process<dsp::ProcessContextReplacing<float>> (monoContext);
 
     // copy monoBuffer to other channels
     for (int ch = 0; ch < buffer.getNumChannels(); ++ch)
