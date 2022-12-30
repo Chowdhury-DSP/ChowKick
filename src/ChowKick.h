@@ -17,14 +17,18 @@ public:
     void processSynth (AudioBuffer<float>& buffer, MidiBuffer& midi) override;
 
     AudioProcessorEditor* createEditor() override;
-    AudioProcessorValueTreeState& getVTS() { return vts; }
 
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
-    Trigger& getTrigger() { return trigger; }
+    auto& getVTS() { return vts; }
+    auto& getTrigger() { return trigger; }
+    auto* getOpenGLHelper() { return openGLHelper.get(); }
 
 private:
+    chowdsp::PluginLogger logger;
+    chowdsp::SharedPluginSettings pluginSettings;
+
     AudioBuffer<float> monoBuffer;
 
     HeapBlock<char> fourVoiceData;
@@ -39,6 +43,7 @@ private:
     chowdsp::StateVariableFilter<float, chowdsp::StateVariableFilterType::Highpass> dcBlocker;
 
     foleys::MagicPlotSource* scope = nullptr;
+    std::unique_ptr<chowdsp::OpenGLHelper> openGLHelper = nullptr;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChowKick)
 };
