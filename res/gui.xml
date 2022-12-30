@@ -196,7 +196,10 @@
       <PresetComp flex-grow="1.5" margin="0" padding="2" background-color="00000000"
                   background="FF425866" text-highlight="FF8B3232" lookAndFeel="BottomBarLNF"
                   name="Presets" tooltip="Load and save plugin presets"/>
-      <View margin="0" background-color="00000000" lookAndFeel="MyLNF" flex-grow="0.3"/>
+      <View margin="0" background-color="00000000" lookAndFeel="MyLNF" flex-grow="0.15"/>
+      <SettingsButton lookAndFeel="ComboBoxLNF" background-color="00000000" flex-grow="0.15"
+                      margin="0" padding="5" max-width="40" min-width="25" name="Settings"
+                      tooltip="Opens the plugin settings menu."/>
     </View>
   </View>
 </magic>

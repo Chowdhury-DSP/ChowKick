@@ -3,14 +3,19 @@ set(CMAKE_OSX_DEPLOYMENT_TARGET "10.12" CACHE STRING "Minimum OS X deployment ta
 project(ChowKick VERSION 1.1.1)
 
 set(CMAKE_CXX_STANDARD 17)
-add_subdirectory(modules)
 
 # juce_set_vst2_sdk_path(C:/SDKs/VST_SDK/VST2_SDK)
 # set default plugin formats to build
 if(IOS)
     set(JUCE_FORMATS Standalone AUv3)
+    option(CHOWKICK_BUILD_CLAP "Create a CLAP target for ChowKick" OFF)
 else()
     set(JUCE_FORMATS AU VST3 Standalone)
+    option(CHOWKICK_BUILD_CLAP "Create a CLAP target for ChowKick" ON)
+endif()
+
+if (CHOWKICK_BUILD_CLAP AND (CMAKE_VERSION VERSION_LESS 3.21.0))
+    message(WARNING "CLAP builds require CMake version 3.21 or higher! To disable CLAP builds, run CMake configuration with \"-DCHOWKICK_BUILD_CLAP=OFF\"")
 endif()
 
 # Build LV2 only on Linux
@@ -24,6 +29,8 @@ if(TARGET juce_vst2_sdk)
     message(STATUS "Building VST2 plugin format")
     list(APPEND JUCE_FORMATS VST)
 endif()
+
+add_subdirectory(modules)
 
 juce_add_plugin(ChowKick
     COMPANY_NAME chowdsp
@@ -40,6 +47,16 @@ juce_add_plugin(ChowKick
     IPHONE_SCREEN_ORIENTATIONS UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
     IPAD_SCREEN_ORIENTATIONS UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
 )
+
+if(CHOWKICK_BUILD_CLAP)
+    clap_juce_extensions_plugin(
+        TARGET ChowKick
+        CLAP_ID "org.chowdsp.ChowKick"
+        CLAP_FEATURES instrument drum
+        CLAP_PROCESS_EVENTS_RESOLUTION_SAMPLES 64
+        CLAP_USE_JUCE_PARAMETER_RANGES DISCRETE
+    )
+endif()
 
 juce_generate_juce_header(ChowKick)
 add_subdirectory(src)

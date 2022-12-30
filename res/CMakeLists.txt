@@ -2,6 +2,8 @@ set(binary_data_files
     gui.xml
     gui_ios.xml
 
+    cog-solid.svg
+
     presets/Bouncy.chowpreset
     presets/Default.chowpreset
     presets/Tight.chowpreset

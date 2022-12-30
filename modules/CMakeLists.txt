@@ -62,6 +62,15 @@ target_include_directories(juce_plugin_modules
         $<TARGET_PROPERTY:juce_plugin_modules,INCLUDE_DIRECTORIES>
 )
 
+if(CHOWKICK_BUILD_CLAP)
+    add_subdirectory(clap-juce-extensions EXCLUDE_FROM_ALL)
+    target_link_libraries(juce_plugin_modules
+        PRIVATE
+            chowdsp::chowdsp_clap_extensions
+            clap_juce_extensions
+    )
+endif()
+
 set_target_properties(juce_plugin_modules PROPERTIES
     POSITION_INDEPENDENT_CODE TRUE
     VISIBILITY_INLINES_HIDDEN TRUE
