@@ -72,7 +72,7 @@ void Noise::processBlock (chowdsp::AudioBlock<Vec>& block, int numSamples)
     noise.process (context);
 
     filter.setCutoffFrequency (freqParam->load());
-    filter.process<decltype (context), chowdsp::StateVariableFilterType::Lowpass> (context);
+    filter.process<decltype (context)> (context);
 
     auto* blockData = block.getChannelPointer (0);
     auto* noisePtr = noiseBlock.getChannelPointer (0);

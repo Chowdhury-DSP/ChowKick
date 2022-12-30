@@ -1,13 +1,17 @@
 add_subdirectory(JUCE)
-include(cmake/SubprojectVersion.cmake)
+add_subdirectory(chowdsp_utils)
+
 subproject_version(JUCE juce_version)
 message(STATUS "VERSION for JUCE: ${juce_version}")
 
+subproject_version(chowdsp_utils chowdsp_version)
+message(STATUS "VERSION for chowdsp_utils: ${chowdsp_version}")
+
 juce_add_modules(foleys_gui_magic)
-add_subdirectory(chowdsp_utils)
 add_subdirectory(chowdsp_wdf)
 
 add_subdirectory(tuning-library EXCLUDE_FROM_ALL)
+add_subdirectory(oddsound-mts EXCLUDE_FROM_ALL)
 
 include(cmake/WarningFlags.cmake)
 add_library(juce_plugin_modules STATIC)
@@ -16,22 +20,21 @@ target_link_libraries(juce_plugin_modules
         BinaryData
         juce::juce_audio_utils
         juce::juce_audio_plugin_client
-        juce::juce_opengl
         foleys_gui_magic
-        chowdsp::chowdsp_dsp_utils
+        chowdsp::chowdsp_filters
+        chowdsp::chowdsp_sources
         chowdsp::chowdsp_foleys
         chowdsp::chowdsp_plugin_base
         chowdsp::chowdsp_plugin_utils
         chowdsp::chowdsp_presets
-        chowdsp_wdf
+        chowdsp::chowdsp_wdf
         tuning-library
+        oddsound-mts
     PUBLIC
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
         warning_flags
 )
-
-target_include_directories(juce_plugin_modules PUBLIC xsimd/include)
 
 target_compile_definitions(juce_plugin_modules
     PUBLIC
@@ -76,4 +79,17 @@ if(IOS)
     include(cmake/CreateZip.cmake)
     target_link_libraries(juce_plugin_modules PRIVATE juce::juce_product_unlocking)
     target_compile_definitions(juce_plugin_modules PUBLIC JUCE_IN_APP_PURCHASES=1)
+endif()
+
+# Enable OpenGL on Windows by default.
+if (WIN32)
+    option(CHOWDSP_ENABLE_OPENGL "Enable OpenGL for this plugin" ON)
+else()
+    option(CHOWDSP_ENABLE_OPENGL "Enable OpenGL for this plugin" OFF)
+endif()
+
+if(CHOWDSP_ENABLE_OPENGL)
+    message(STATUS "Linking with OpenGL")
+    target_link_libraries(juce_plugin_modules PRIVATE juce::juce_opengl)
+    target_compile_definitions(juce_plugin_modules PUBLIC FOLEYS_ENABLE_OPEN_GL_CONTEXT=1)
 endif()

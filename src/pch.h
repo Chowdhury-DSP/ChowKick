@@ -18,6 +18,8 @@ JUCE_BEGIN_IGNORE_WARNINGS_MSVC (4244)
 JUCE_END_IGNORE_WARNINGS_GCC_LIKE
 JUCE_END_IGNORE_WARNINGS_MSVC
 
+#include "libMTSClient.h"
+
 // global definitions
 using Parameters = std::vector<std::unique_ptr<RangedAudioParameter>>;
 using Vec = xsimd::batch<float>;
