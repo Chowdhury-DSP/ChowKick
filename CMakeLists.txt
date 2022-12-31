@@ -4,7 +4,6 @@ project(ChowKick VERSION 1.1.1)
 
 set(CMAKE_CXX_STANDARD 17)
 
-# juce_set_vst2_sdk_path(C:/SDKs/VST_SDK/VST2_SDK)
 # set default plugin formats to build
 if(IOS)
     set(JUCE_FORMATS Standalone AUv3)
@@ -24,13 +23,15 @@ if(UNIX AND NOT APPLE)
     list(APPEND JUCE_FORMATS LV2)
 endif()
 
+add_subdirectory(modules)
+
 # Build VST2 is SDK set
+# juce_set_vst2_sdk_path(C:/SDKs/VST_SDK/VST2_SDK)
 if(TARGET juce_vst2_sdk)
     message(STATUS "Building VST2 plugin format")
     list(APPEND JUCE_FORMATS VST)
 endif()
 
-add_subdirectory(modules)
 
 juce_add_plugin(ChowKick
     COMPANY_NAME chowdsp
