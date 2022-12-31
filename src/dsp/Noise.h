@@ -4,16 +4,16 @@
 
 namespace NoiseTags
 {
-const String amtTag = "noise_amt";
-const String decayTag = "noise_decay";
-const String freqTag = "noise_freq";
-const String typeTag = "noise_type";
-}; // namespace NoiseTags
+const juce::ParameterID amtTag { "noise_amt", VersionHints::original };
+const juce::ParameterID decayTag { "noise_decay", VersionHints::original };
+const juce::ParameterID freqTag { "noise_freq", VersionHints::original };
+const juce::ParameterID typeTag { "noise_type", VersionHints::original };
+} // namespace NoiseTags
 
 class Noise
 {
 public:
-    Noise (AudioProcessorValueTreeState& vts);
+    explicit Noise (AudioProcessorValueTreeState& vts);
 
     static void addParameters (Parameters& params);
 
@@ -21,12 +21,14 @@ public:
     void processBlock (chowdsp::AudioBlock<Vec>& block, int numSamples);
 
 private:
-    std::atomic<float>* amtParam = nullptr;
-    std::atomic<float>* decayParam = nullptr;
-    std::atomic<float>* freqParam = nullptr;
-    std::atomic<float>* typeParam = nullptr;
-
     using NoiseType = chowdsp::Noise<Vec>;
+    using NoiseMode = NoiseType::NoiseType;
+
+    chowdsp::FloatParameter* amtParam = nullptr;
+    chowdsp::FloatParameter* decayParam = nullptr;
+    chowdsp::FloatParameter* freqParam = nullptr;
+    chowdsp::EnumChoiceParameter<NoiseMode>* typeParam = nullptr;
+
     NoiseType noise;
 
     SmoothedValue<float, ValueSmoothingTypes::Multiplicative> decaySmooth;

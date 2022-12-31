@@ -12,13 +12,13 @@ PulseViewer::PulseViewer (AudioProcessorValueTreeState& vtState) : vts (vtState)
                                                                    noise (vts),
                                                                    block (blockData, 1, nSamples)
 {
-    vts.addParameterListener (TriggerTags::ampTag, this);
-    vts.addParameterListener (TriggerTags::widthTag, this);
-    vts.addParameterListener (ShaperTags::decayTag, this);
-    vts.addParameterListener (ShaperTags::sustainTag, this);
-    vts.addParameterListener (NoiseTags::amtTag, this);
-    vts.addParameterListener (NoiseTags::freqTag, this);
-    vts.addParameterListener (NoiseTags::typeTag, this);
+    vts.addParameterListener (TriggerTags::ampTag.getParamID(), this);
+    vts.addParameterListener (TriggerTags::widthTag.getParamID(), this);
+    vts.addParameterListener (ShaperTags::decayTag.getParamID(), this);
+    vts.addParameterListener (ShaperTags::sustainTag.getParamID(), this);
+    vts.addParameterListener (NoiseTags::amtTag.getParamID(), this);
+    vts.addParameterListener (NoiseTags::freqTag.getParamID(), this);
+    vts.addParameterListener (NoiseTags::typeTag.getParamID(), this);
 
     setColour (backgroundColour, Colours::black);
     setColour (traceColour, Colours::lightblue);
@@ -26,13 +26,13 @@ PulseViewer::PulseViewer (AudioProcessorValueTreeState& vtState) : vts (vtState)
 
 PulseViewer::~PulseViewer()
 {
-    vts.removeParameterListener (TriggerTags::ampTag, this);
-    vts.removeParameterListener (TriggerTags::widthTag, this);
-    vts.removeParameterListener (ShaperTags::decayTag, this);
-    vts.removeParameterListener (ShaperTags::sustainTag, this);
-    vts.removeParameterListener (NoiseTags::amtTag, this);
-    vts.removeParameterListener (NoiseTags::freqTag, this);
-    vts.removeParameterListener (NoiseTags::typeTag, this);
+    vts.removeParameterListener (TriggerTags::ampTag.getParamID(), this);
+    vts.removeParameterListener (TriggerTags::widthTag.getParamID(), this);
+    vts.removeParameterListener (ShaperTags::decayTag.getParamID(), this);
+    vts.removeParameterListener (ShaperTags::sustainTag.getParamID(), this);
+    vts.removeParameterListener (NoiseTags::amtTag.getParamID(), this);
+    vts.removeParameterListener (NoiseTags::freqTag.getParamID(), this);
+    vts.removeParameterListener (NoiseTags::typeTag.getParamID(), this);
 }
 
 void PulseViewer::resized()

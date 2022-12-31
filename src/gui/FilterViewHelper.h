@@ -18,9 +18,9 @@ public:
 
     void prepare()
     {
-        freqVal = (bool) filter.linkParam->load() ? 100.0f : filter.freqParam->load();
+        freqVal = filter.linkParam->get() ? 100.0f : filter.freqParam->get();
         gVal = filter.getGVal();
-        qVal = filter.qParam->load();
+        qVal = filter.qParam->get();
         T = 1.0f / filter.fs;
 
         b1 = filter.b[1].get (0);

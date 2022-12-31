@@ -5,7 +5,7 @@
 class OutputFilter
 {
 public:
-    OutputFilter (AudioProcessorValueTreeState& vts);
+    explicit OutputFilter (AudioProcessorValueTreeState& vts);
 
     static void addParameters (Parameters& params);
     void reset (double sampleRate);
@@ -21,9 +21,9 @@ public:
     }
 
 private:
-    std::atomic<float>* toneParam = nullptr;
-    std::atomic<float>* levelDBParam = nullptr;
-    std::atomic<float>* bounceParam = nullptr;
+    chowdsp::FloatParameter* toneParam = nullptr;
+    chowdsp::FloatParameter* levelDBParam = nullptr;
+    chowdsp::FloatParameter* bounceParam = nullptr;
 
     SmoothedValue<float, ValueSmoothingTypes::Multiplicative> freqSmooth;
     SmoothedValue<float, ValueSmoothingTypes::Multiplicative> gainSmooth;

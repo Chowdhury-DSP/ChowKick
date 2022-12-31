@@ -20,6 +20,8 @@ JUCE_END_IGNORE_WARNINGS_MSVC
 
 #include "libMTSClient.h"
 
+#include "VersionHints.h"
+
 // global definitions
 using Parameters = std::vector<std::unique_ptr<RangedAudioParameter>>;
 using Vec = xsimd::batch<float>;

@@ -3,46 +3,33 @@
 
 namespace
 {
-const String toneTag = "out_tone";
-const String levelTag = "out_level";
+const juce::ParameterID toneTag { "out_tone", VersionHints::original };
+const juce::ParameterID levelTag { "out_level", VersionHints::original };
 
-NormalisableRange<float> freqRange (300.0f, 7000.0f);
+constexpr auto centreFreq = 800.0f;
+const auto freqRange = chowdsp::ParamUtils::createNormalisableRange (300.0f, 7000.0f, centreFreq);
 } // namespace
 
 OutputFilter::OutputFilter (AudioProcessorValueTreeState& vts)
 {
-    toneParam = vts.getRawParameterValue (toneTag);
-    levelDBParam = vts.getRawParameterValue (levelTag);
-    bounceParam = vts.getRawParameterValue (ResTags::bounceTag);
+    using namespace chowdsp::ParamUtils;
+    loadParameterPointer (toneParam, vts, toneTag);
+    loadParameterPointer (levelDBParam, vts, levelTag);
+    loadParameterPointer (bounceParam, vts, ResTags::bounceTag);
 }
 
 void OutputFilter::addParameters (Parameters& params)
 {
     using namespace chowdsp::ParamUtils;
-
-    freqRange.setSkewForCentre (800.0f);
-    params.push_back (std::make_unique<VTSParam> (toneTag,
-                                                  "Tone",
-                                                  String(),
-                                                  freqRange,
-                                                  800.0f,
-                                                  &freqValToString,
-                                                  &stringToFreqVal));
-
-    params.push_back (std::make_unique<VTSParam> (levelTag,
-                                                  "Level",
-                                                  String(),
-                                                  NormalisableRange<float> { -30.0f, 30.0f },
-                                                  0.0f,
-                                                  &gainValToString,
-                                                  &stringToGainVal));
+    createFreqParameter (params, toneTag, "Tone", freqRange.start, freqRange.end, centreFreq, centreFreq);
+    createGainDBParameter (params, levelTag, "Level", -30.0f, 30.0f, 0.0f);
 }
 
 float OutputFilter::getGainFromParam() const
 {
-    const auto toneMakeupDB = (freqRange.convertTo0to1 (toneParam->load()) - 0.5f) * -6.0f;
-    const auto bounceMakeupDB = 14.0f * std::pow (bounceParam->load(), 2.5f);
-    return Decibels::decibelsToGain (levelDBParam->load() + bounceMakeupDB + toneMakeupDB + 3.5f);
+    const auto toneMakeupDB = (freqRange.convertTo0to1 (toneParam->getCurrentValue()) - 0.5f) * -6.0f;
+    const auto bounceMakeupDB = 14.0f * std::pow (bounceParam->getCurrentValue(), 2.5f);
+    return Decibels::decibelsToGain (levelDBParam->getCurrentValue() + bounceMakeupDB + toneMakeupDB + 3.5f);
 }
 
 void OutputFilter::reset (double sampleRate)
@@ -53,7 +40,7 @@ void OutputFilter::reset (double sampleRate)
     freqSmooth.reset (sampleRate, 0.05);
     gainSmooth.reset (sampleRate, 0.05);
 
-    freqSmooth.setCurrentAndTargetValue (toneParam->load());
+    freqSmooth.setCurrentAndTargetValue (toneParam->getCurrentValue());
     gainSmooth.setCurrentAndTargetValue (getGainFromParam());
 
     calcCoefs (freqSmooth.getTargetValue(), gainSmooth.getTargetValue());
@@ -72,7 +59,7 @@ void OutputFilter::calcCoefs (float freq, float gain)
 
 void OutputFilter::processBlock (float* buffer, const int numSamples)
 {
-    freqSmooth.setTargetValue (toneParam->load());
+    freqSmooth.setTargetValue (toneParam->getCurrentValue());
     gainSmooth.setTargetValue (getGainFromParam());
 
     if (freqSmooth.isSmoothing() || gainSmooth.isSmoothing())

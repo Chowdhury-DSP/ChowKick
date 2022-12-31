@@ -35,24 +35,24 @@ FilterViewer::FilterViewer (AudioProcessorValueTreeState& vtState) : vts (vtStat
 
     resFilter.reset (fs);
 
-    vts.addParameterListener (ResTags::freqTag, this);
-    vts.addParameterListener (ResTags::linkTag, this);
-    vts.addParameterListener (ResTags::qTag, this);
-    vts.addParameterListener (ResTags::dampTag, this);
-    vts.addParameterListener (ResTags::tightTag, this);
-    vts.addParameterListener (ResTags::bounceTag, this);
-    vts.addParameterListener (ResTags::modeTag, this);
+    vts.addParameterListener (ResTags::freqTag.getParamID(), this);
+    vts.addParameterListener (ResTags::linkTag.getParamID(), this);
+    vts.addParameterListener (ResTags::qTag.getParamID(), this);
+    vts.addParameterListener (ResTags::dampTag.getParamID(), this);
+    vts.addParameterListener (ResTags::tightTag.getParamID(), this);
+    vts.addParameterListener (ResTags::bounceTag.getParamID(), this);
+    vts.addParameterListener (ResTags::modeTag.getParamID(), this);
 }
 
 FilterViewer::~FilterViewer()
 {
-    vts.removeParameterListener (ResTags::freqTag, this);
-    vts.removeParameterListener (ResTags::linkTag, this);
-    vts.removeParameterListener (ResTags::qTag, this);
-    vts.removeParameterListener (ResTags::dampTag, this);
-    vts.removeParameterListener (ResTags::tightTag, this);
-    vts.removeParameterListener (ResTags::bounceTag, this);
-    vts.removeParameterListener (ResTags::modeTag, this);
+    vts.removeParameterListener (ResTags::freqTag.getParamID(), this);
+    vts.removeParameterListener (ResTags::linkTag.getParamID(), this);
+    vts.removeParameterListener (ResTags::qTag.getParamID(), this);
+    vts.removeParameterListener (ResTags::dampTag.getParamID(), this);
+    vts.removeParameterListener (ResTags::tightTag.getParamID(), this);
+    vts.removeParameterListener (ResTags::bounceTag.getParamID(), this);
+    vts.removeParameterListener (ResTags::modeTag.getParamID(), this);
 }
 
 void FilterViewer::resized()
