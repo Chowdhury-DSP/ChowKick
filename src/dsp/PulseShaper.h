@@ -4,8 +4,8 @@
 
 namespace ShaperTags
 {
-const String sustainTag = "pulse_sustain";
-const String decayTag = "pulse_decay";
+const juce::ParameterID sustainTag { "pulse_sustain", VersionHints::original };
+const juce::ParameterID decayTag { "pulse_decay", VersionHints::original };
 } // namespace ShaperTags
 
 class PulseShaper
@@ -30,8 +30,8 @@ public:
     }
 
 private:
-    std::atomic<float>* sustainParam = nullptr;
-    std::atomic<float>* decayParam = nullptr;
+    chowdsp::FloatParameter* sustainParam = nullptr;
+    chowdsp::FloatParameter* decayParam = nullptr;
 
     using Resistor = wdft::ResistorT<v_type>;
     using Capacitor = wdft::CapacitorAlphaT<v_type>;
@@ -48,4 +48,6 @@ private:
     wdft::WDFParallelT<v_type, decltype (I1), decltype (S1)> P2 { I1, S1 };
 
     wdft::DiodeT<v_type, decltype (P2)> d53 { P2, 2.52e-9f }; // 1N4148 diode
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PulseShaper)
 };

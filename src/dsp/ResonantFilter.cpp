@@ -4,82 +4,34 @@ using namespace ResTags;
 
 ResonantFilter::ResonantFilter (AudioProcessorValueTreeState& vts, const Trigger& trig) : trigger (trig)
 {
-    freqParam = vts.getRawParameterValue (freqTag);
-    linkParam = vts.getRawParameterValue (linkTag);
-    qParam = vts.getRawParameterValue (qTag);
-    dampParam = vts.getRawParameterValue (dampTag);
-    tightParam = vts.getRawParameterValue (tightTag);
-    bounceParam = vts.getRawParameterValue (bounceTag);
-    modeParam = vts.getRawParameterValue (modeTag);
-    portamentoParam = vts.getRawParameterValue (portamentoTag);
+    using namespace chowdsp::ParamUtils;
+    loadParameterPointer (freqParam, vts, freqTag);
+    loadParameterPointer (linkParam, vts, linkTag);
+    loadParameterPointer (qParam, vts, qTag);
+    loadParameterPointer (dampParam, vts, dampTag);
+    loadParameterPointer (tightParam, vts, tightTag);
+    loadParameterPointer (bounceParam, vts, bounceTag);
+    loadParameterPointer (modeParam, vts, modeTag);
+    loadParameterPointer (portamentoParam, vts, portamentoTag);
 }
 
 void ResonantFilter::addParameters (Parameters& params)
 {
     using namespace chowdsp::ParamUtils;
-    NormalisableRange<float> percentRange (0.0f, 1.0f);
 
-    NormalisableRange<float> freqRange (30.0f, 500.0f);
-    freqRange.setSkewForCentre (100.0f);
-    constexpr float freqDefault = 80.0f;
-    params.push_back (std::make_unique<VTSParam> (freqTag,
-                                                  "Frequency",
-                                                  String(),
-                                                  freqRange,
-                                                  freqDefault,
-                                                  &freqValToString,
-                                                  &stringToFreqVal));
+    createFreqParameter (params, freqTag, "Frequency", 30.0f, 500.0f, 100.0f, 80.0f);
 
-    NormalisableRange<float> qRange (0.1f, 2.0f);
-    qRange.setSkewForCentre (1.0f / MathConstants<float>::sqrt2);
-    params.push_back (std::make_unique<VTSParam> (qTag,
-                                                  "Q",
-                                                  String(),
-                                                  qRange,
-                                                  0.5f,
-                                                  &floatValToString,
-                                                  &stringToFloatVal));
+    const auto qRange = createNormalisableRange (0.1f, 2.0f, chowdsp::CoefficientCalculators::butterworthQ<float>);
+    emplace_param<chowdsp::FloatParameter> (params, qTag, "Q", qRange, 0.5f, &floatValToString, &stringToFloatVal);
 
-    params.push_back (std::make_unique<VTSParam> (dampTag,
-                                                  "Damping",
-                                                  String(),
-                                                  percentRange,
-                                                  0.5f,
-                                                  &percentValToString,
-                                                  &stringToPercentVal));
+    createPercentParameter (params, dampTag, "Damping", 0.5f);
+    createPercentParameter (params, tightTag, "Tight", 0.5f);
+    createPercentParameter (params, bounceTag, "Bounce", 0.0f);
 
-    params.push_back (std::make_unique<VTSParam> (tightTag,
-                                                  "Tight",
-                                                  String(),
-                                                  percentRange,
-                                                  0.5f,
-                                                  &percentValToString,
-                                                  &stringToPercentVal));
+    emplace_param<chowdsp::BoolParameter> (params, linkTag, "Link", false);
+    emplace_param<chowdsp::ChoiceParameter> (params, modeTag, "Res. Mode", StringArray { "Linear", "Basic", "Bouncy" }, 1);
 
-    params.push_back (std::make_unique<VTSParam> (bounceTag,
-                                                  "Bounce",
-                                                  String(),
-                                                  percentRange,
-                                                  0.0f,
-                                                  &percentValToString,
-                                                  &stringToPercentVal));
-
-    params.push_back (std::make_unique<AudioParameterBool> (linkTag, "Link", false));
-
-    params.push_back (std::make_unique<AudioParameterChoice> (modeTag,
-                                                              "Res. Mode",
-                                                              StringArray { "Linear", "Basic", "Bouncy" },
-                                                              1));
-
-    NormalisableRange<float> portamentoRange (0.1f, 200.0f);
-    portamentoRange.setSkewForCentre (50.0f);
-    params.push_back (std::make_unique<VTSParam> (portamentoTag,
-                                                  "Portamento",
-                                                  String(),
-                                                  portamentoRange,
-                                                  50.0f,
-                                                  &timeMsValToString,
-                                                  &stringToTimeMsVal));
+    createTimeMsParameter (params, portamentoTag, "Portamento", createNormalisableRange (0.1f, 200.0f, 50.0f), 50.0f);
 }
 
 void ResonantFilter::reset (double sampleRate)
@@ -99,18 +51,18 @@ void ResonantFilter::reset (double sampleRate)
     qSmooth.setCurrentAndTargetValue (*qParam);
     gSmooth.setCurrentAndTargetValue (getGVal());
 
-    auto curMode = static_cast<int> (modeParam->load());
+    auto curMode = modeParam->getIndex();
     float d1 = 0.0f, d2 = 0.0f, d3 = 0.0f; // NOLINT
     switch (curMode)
     {
         case 0: // Linear
-            std::tie (d1, d2, d3) = linProc.getDriveValues (tightParam->load(), bounceParam->load());
+            std::tie (d1, d2, d3) = linProc.getDriveValues (tightParam->getCurrentValue(), bounceParam->getCurrentValue());
             break;
         case 1: // Basic
-            std::tie (d1, d2, d3) = baseProc.getDriveValues (tightParam->load(), bounceParam->load());
+            std::tie (d1, d2, d3) = baseProc.getDriveValues (tightParam->getCurrentValue(), bounceParam->getCurrentValue());
             break;
         case 2: // Bouncy
-            std::tie (d1, d2, d3) = bouncyProc.getDriveValues (tightParam->load(), bounceParam->load());
+            std::tie (d1, d2, d3) = bouncyProc.getDriveValues (tightParam->getCurrentValue(), bounceParam->getCurrentValue());
             break;
         default:
             break;
@@ -124,7 +76,7 @@ void ResonantFilter::reset (double sampleRate)
 
 Vec ResonantFilter::getFrequencyHz() const noexcept
 {
-    return (Vec) freqMult * (bool (*linkParam) ? trigger.getFrequencyHz() : (Vec) freqParam->load());
+    return (Vec) freqMult * (linkParam->get() ? trigger.getFrequencyHz() : (Vec) freqParam->getCurrentValue());
 }
 
 float ResonantFilter::getGVal() const noexcept
@@ -132,7 +84,7 @@ float ResonantFilter::getGVal() const noexcept
     constexpr float lowDamp = 0.0001f;
     constexpr float highDamp = 0.5f;
 
-    return lowDamp * std::pow ((highDamp / lowDamp), dampParam->load());
+    return lowDamp * std::pow ((highDamp / lowDamp), dampParam->getCurrentValue());
 }
 
 void ResonantFilter::calcCoefs (Vec freq, float Q, float G)
@@ -154,7 +106,7 @@ void ResonantFilter::calcCoefs (Vec freq, float Q, float G)
 template <typename ProcType>
 void ResonantFilter::processBlockInternal (chowdsp::AudioBlock<Vec>& block, const int numSamples, const ProcType& proc)
 {
-    auto [d1, d2, d3] = proc.getDriveValues (tightParam->load(), bounceParam->load());
+    auto [d1, d2, d3] = proc.getDriveValues (tightParam->getCurrentValue(), bounceParam->getCurrentValue());
     d1Smooth.setTargetValue (d1);
     d2Smooth.setTargetValue (d2);
     d3Smooth.setTargetValue (d3);
@@ -195,7 +147,7 @@ void ResonantFilter::processBlock (chowdsp::AudioBlock<Vec>& block, const int nu
     qSmooth.setTargetValue (*qParam);
     gSmooth.setTargetValue (getGVal());
 
-    auto curMode = static_cast<int> (modeParam->load());
+    auto curMode = modeParam->getIndex();
     switch (curMode)
     {
         case 0: // Linear
@@ -209,5 +161,5 @@ void ResonantFilter::processBlock (chowdsp::AudioBlock<Vec>& block, const int nu
             break;
         default:
             break;
-    };
+    }
 }

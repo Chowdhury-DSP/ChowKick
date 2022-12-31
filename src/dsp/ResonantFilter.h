@@ -5,14 +5,14 @@
 
 namespace ResTags
 {
-const String freqTag = "res_freq";
-const String linkTag = "res_link";
-const String qTag = "res_q";
-const String dampTag = "res_damp";
-const String tightTag = "res_tight";
-const String bounceTag = "res_bounce";
-const String modeTag = "res_mode";
-const String portamentoTag = "res_portamento";
+const juce::ParameterID freqTag { "res_freq", VersionHints::original };
+const juce::ParameterID linkTag { "res_link", VersionHints::original };
+const juce::ParameterID qTag { "res_q", VersionHints::original };
+const juce::ParameterID dampTag { "res_damp", VersionHints::original };
+const juce::ParameterID tightTag { "res_tight", VersionHints::original };
+const juce::ParameterID bounceTag { "res_bounce", VersionHints::original };
+const juce::ParameterID modeTag { "res_mode", VersionHints::original };
+const juce::ParameterID portamentoTag { "res_portamento", VersionHints::original };
 } // namespace ResTags
 
 class ResonantFilter
@@ -31,7 +31,7 @@ public:
 
     auto getNLCorrections (float b1, float b2, float a1, float a2, float T) const
     {
-        auto curMode = static_cast<int> (modeParam->load());
+        auto curMode = modeParam->getIndex();
         switch (curMode)
         {
             case 0: // Linear
@@ -53,14 +53,14 @@ private:
 
     const Trigger& trigger;
 
-    std::atomic<float>* freqParam = nullptr;
-    std::atomic<float>* linkParam = nullptr;
-    std::atomic<float>* qParam = nullptr;
-    std::atomic<float>* dampParam = nullptr;
-    std::atomic<float>* tightParam = nullptr;
-    std::atomic<float>* bounceParam = nullptr;
-    std::atomic<float>* modeParam = nullptr;
-    std::atomic<float>* portamentoParam = nullptr;
+    chowdsp::FloatParameter* freqParam = nullptr;
+    chowdsp::BoolParameter* linkParam = nullptr;
+    chowdsp::FloatParameter* qParam = nullptr;
+    chowdsp::FloatParameter* dampParam = nullptr;
+    chowdsp::FloatParameter* tightParam = nullptr;
+    chowdsp::FloatParameter* bounceParam = nullptr;
+    chowdsp::ChoiceParameter* modeParam = nullptr;
+    chowdsp::FloatParameter* portamentoParam = nullptr;
     float freqMult = 1.0f;
 
     using FreqSmooth = chowdsp::SIMDUtils::SIMDSmoothedValue<chowdsp::SampleTypeHelpers::NumericType<Vec>, ValueSmoothingTypes::Multiplicative>;
@@ -74,7 +74,7 @@ private:
     float fs = 44100.0f;
     Vec a[3] = { 1.0f, 0.0f, 0.0f };
     Vec b[3] = { 1.0f, 0.0f, 0.0f };
-    Vec z[3];
+    Vec z[3] {};
 
     float prevPortamento = 0.0f;
 

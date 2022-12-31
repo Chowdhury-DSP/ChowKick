@@ -24,6 +24,7 @@ public:
     auto& getVTS() { return vts; }
     auto& getTrigger() { return trigger; }
     auto* getOpenGLHelper() { return openGLHelper.get(); }
+    auto* getHostContextProvider() { return hostContextProvider.get(); }
 
 private:
     chowdsp::PluginLogger logger;
@@ -37,12 +38,13 @@ private:
 
     Trigger trigger;
     Noise noise;
-    std::unique_ptr<PulseShaper> pulseShaper;
+    std::optional<PulseShaper> pulseShaper;
     ResonantFilter resFilter;
     OutputFilter outFilter;
     chowdsp::StateVariableFilter<float, chowdsp::StateVariableFilterType::Highpass> dcBlocker;
 
     foleys::MagicPlotSource* scope = nullptr;
+    std::unique_ptr<chowdsp::HostContextProvider> hostContextProvider;
     std::unique_ptr<chowdsp::OpenGLHelper> openGLHelper = nullptr;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChowKick)

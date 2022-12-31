@@ -4,46 +4,23 @@ using namespace NoiseTags;
 
 Noise::Noise (AudioProcessorValueTreeState& vts)
 {
-    amtParam = vts.getRawParameterValue (amtTag);
-    decayParam = vts.getRawParameterValue (decayTag);
-    freqParam = vts.getRawParameterValue (freqTag);
-    typeParam = vts.getRawParameterValue (typeTag);
+    using namespace chowdsp::ParamUtils;
+    loadParameterPointer (amtParam, vts, amtTag);
+    loadParameterPointer (decayParam, vts, decayTag);
+    loadParameterPointer (freqParam, vts, freqTag);
+    loadParameterPointer (typeParam, vts, typeTag);
 }
 
 void Noise::addParameters (Parameters& params)
 {
     using namespace chowdsp::ParamUtils;
-
-    params.push_back (std::make_unique<VTSParam> (amtTag,
-                                                  "Noise Amount",
-                                                  String(),
-                                                  NormalisableRange<float> { 0.0f, 1.0f },
-                                                  0.0f,
-                                                  &percentValToString,
-                                                  &stringToPercentVal));
-
-    params.push_back (std::make_unique<VTSParam> (decayTag,
-                                                  "Noise Decay",
-                                                  String(),
-                                                  NormalisableRange<float> { 0.0f, 1.0f },
-                                                  0.5f,
-                                                  &percentValToString,
-                                                  &stringToPercentVal));
-
-    NormalisableRange<float> freqRange { 20.0f, 20000.0f };
-    freqRange.setSkewForCentre (2000.0f);
-    params.push_back (std::make_unique<VTSParam> (freqTag,
-                                                  "Noise Cutoff",
-                                                  String(),
-                                                  freqRange,
-                                                  500.0f,
-                                                  &freqValToString,
-                                                  &stringToFreqVal));
-
-    params.push_back (std::make_unique<AudioParameterChoice> (typeTag,
-                                                              "Noise Type",
-                                                              StringArray { "Uniform", "Normal", "Pink" },
-                                                              0));
+    createPercentParameter (params, amtTag, "Noise Amount", 0.0f);
+    createPercentParameter (params, decayTag, "Noise Decay", 0.5f);
+    createFreqParameter (params, freqTag, "Noise Cutoff", 20.0f, 20000.0f, 2000.0f, 500.0f);
+    emplace_param<chowdsp::EnumChoiceParameter<NoiseMode>> (params,
+                                                            typeTag,
+                                                            "Noise Type",
+                                                            NoiseType::Uniform);
 }
 
 void Noise::prepareToPlay (double sampleRate, int samplesPerBlock)
@@ -62,7 +39,7 @@ void Noise::prepareToPlay (double sampleRate, int samplesPerBlock)
 void Noise::processBlock (chowdsp::AudioBlock<Vec>& block, int numSamples)
 {
     noise.setGainLinear (std::pow (*amtParam, 2.0f));
-    noise.setNoiseType (NoiseType::Uniform);
+    noise.setNoiseType (typeParam->get());
     decaySmooth.setTargetValue (std::pow (1.0f - *decayParam, 2.5f) * 2.0f + 1.0f);
 
     auto noiseBlock = noiseBuffer.getSubBlock (0, (size_t) numSamples);
@@ -71,7 +48,7 @@ void Noise::processBlock (chowdsp::AudioBlock<Vec>& block, int numSamples)
     chowdsp::ProcessContextReplacing<Vec> context { noiseBlock };
     noise.process (context);
 
-    filter.setCutoffFrequency (freqParam->load());
+    filter.setCutoffFrequency (freqParam->getCurrentValue());
     filter.process<decltype (context)> (context);
 
     auto* blockData = block.getChannelPointer (0);

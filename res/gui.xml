@@ -1,206 +1,224 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <magic>
-  <Styles>
-    <Style name="default">
-      <Nodes/>
-      <Classes>
-        <plot-view border="2" background-color="black" border-color="silver" display="contents"/>
-        <nomargin margin="0" padding="0" border="0"/>
-        <group margin="5" padding="5" border="2" flex-direction="column"/>
-        <SliderClass slider-type="rotary-horizontal-vertical" slider-textbox="textbox-below"
-                     padding="0" margin="0">
-          <media/>
-        </SliderClass>
-      </Classes>
-      <Types>
-        <Slider border="0" slider-textbox="textbox-below"/>
-        <ToggleButton border="0" max-height="50" caption-size="0" text="Active"/>
-        <TextButton border="0" max-height="50" caption-size="0"/>
-        <ComboBox border="0" max-height="50" caption-size="0"/>
-        <Plot border="0" margin="0" padding="0" background-color="00000000"
-              radius="0"/>
-        <XYDragComponent border="0" margin="0" padding="0" background-color="00000000"
-                         radius="0"/>
-      </Types>
-      <Palettes>
-        <default/>
-      </Palettes>
-    </Style>
-  </Styles>
-  <View id="root" resizable="1" resize-corner="1" flex-direction="column"
-        width="850" height="600" background-color="0xFF23343F" padding="2">
-    <View max-height="50" flex-grow="0.5" margin="0" padding="0" background-color="0x00000000">
-      <TitleComp title="Chow" max-width="200" margin="2" padding="2" min-width="200"
-                 background-color="0x00000000" subtitle="Kick" font="35" text1="FFFFFFFF"
-                 text2="A3B5BF"/>
-      <View margin="0" padding="0" flex-direction="column" flex-grow="1.0"
-            background-color="0x00000000">
-        <View flex-grow="0.25" background-color="0x00000000"/>
-        <InfoComp padding="2" margin="2" background-color="0x00000000" text1="748B99"/>
-      </View>
-      <Plot margin="2" padding="0" source="scope" background-color="FF425866"
-            plot-fill-color="00000000" plot-color="FFFFB200" plot-decay="0.45"/>
-    </View>
-    <View flex-direction="row" margin="0" background-color="00000000" padding="2">
-      <View margin="2" padding="0" flex-direction="column" background-color="00000000">
-        <View margin="0" flex-direction="column" padding="0" background-color="FF425866">
-          <Label text="Pulse Shape" justification="centred" font-size="24.0" lookAndFeel="MyLNF"
-                 flex-grow="0.05" padding="0" margin="0" background-color="0x00000000"
-                 label-text="FFFFB200" min-height="20.0"/>
-          <PulseViewer margin="3" padding="0" flex-grow="0.75" background="1B2A33" trace="FFFFB200"
-                       background-color="00000000" name="Pulse Viewer" tooltip="Shows the current shape of the trigger pulse"/>
-          <View max-height="5" background-color="0x00000000"/>
-          <View margin="0" padding="0" background-color="0x00000000" max-height="150"
-                flex-grow="0.9">
-            <View flex-grow="0.05" background-color="0x00000000"/>
-            <Slider class="SliderClass" parameter="trig_width" caption="Width" lookAndFeel="SliderLNF"
-                    margin="0" background-color="0x00000000" slider-textbox="textbox-below"
-                    slider-text="FFFFFFFF" slider-text-outline="00000000" slider-text-highlight="00000000"
-                    slider-track="1B2A33" slider-thumb="FFFFB200" caption-color="C5D1D8"
-                    tooltip="Controls the length of the trigger pulse" name="Width"/>
-            <Slider class="SliderClass" parameter="trig_amp" caption="Amplitude"
-                    lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
-                    slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
-                    slider-text-highlight="00000000" slider-text-outline="00000000"
-                    caption-color="C5D1D8" tooltip="Controls the amplitude of the trigger pulse"
-                    name="Amplitude"/>
-            <Slider class="SliderClass" parameter="pulse_decay" caption="Decay" lookAndFeel="SliderLNF"
-                    margin="0" background-color="0x00000000" slider-thumb="FFFFB200"
-                    slider-track="1B2A33" slider-text-outline="00000000" slider-text-highlight="00000000"
-                    slider-text="FFFFFFFF" caption-color="C5D1D8" tooltip="Controls the decay characteristic of the pulse shaper circuit"
-                    name="Decay"/>
-            <Slider class="SliderClass" parameter="pulse_sustain" caption="Sustain"
-                    lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
-                    slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
-                    slider-text-highlight="00000000" slider-text-outline="00000000"
-                    caption-color="C5D1D8" tooltip="Controls the sustain characteristic of the pulse shaper circuit"
-                    name="Sustain"/>
-            <View flex-grow="0.05" background-color="0x00000000"/>
-          </View>
-          <View margin="0" padding="0" background-color="0x00000000" flex-grow="0.95">
-            <View flex-grow="0.05" background-color="00000000"/>
-            <Slider parameter="noise_amt" slider-type="rotary-horizontal-vertical"
-                    name="Noise Amount" lookAndFeel="SliderLNF" caption="Noise Amount"
-                    caption-color="C5D1D8" margin="0" padding="0" border="0" background-color="00000000"
-                    slider-textbox="textbox-below" slider-thumb="FFFFB200" slider-track="1B2A33"
-                    slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
-                    tooltip="Controls the amount of noise added to the kick signal"/>
-            <Slider parameter="noise_decay" slider-type="rotary-horizontal-vertical"
-                    name="Noise Decay" lookAndFeel="SliderLNF" caption="Noise Decay"
-                    caption-color="C5D1D8" margin="0" padding="0" border="0" background-color="00000000"
-                    slider-textbox="textbox-below" slider-thumb="FFFFB200" slider-track="1B2A33"
-                    slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
-                    tooltip="Controls the decay length of the added noise"/>
-            <Slider parameter="noise_freq" slider-type="rotary-horizontal-vertical"
-                    name="Noise Cutoff" lookAndFeel="SliderLNF" caption="Noise Cutoff"
-                    caption-color="C5D1D8" margin="0" padding="0" border="0" background-color="00000000"
-                    slider-track="1B2A33" slider-thumb="FFFFB200" slider-textbox="textbox-below"
-                    slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
-                    tooltip="Controls the cutoff frequency of the added noise"/>
-            <View margin="0" padding="0" background-color="00000000" flex-direction="column">
-              <View background-color="00000000" flex-grow="0.15"/>
-              <ComboBox margin="0" padding="0" name="Noise Type" caption="Noise Type"
-                        background-color="00000000" caption-color="C5D1D8" parameter="noise_type"
-                        lookAndFeel="BottomBarLNF" combo-outline="00000000" combo-background="1B2A33"
-                        combo-menu-background="1B2A33" tooltip="Controls the type of added noise"/>
-              <View background-color="00000000" flex-grow="0.45"/>
+    <Styles>
+        <Style name="default">
+            <Nodes/>
+            <Classes>
+                <plot-view border="2" background-color="black" border-color="silver" display="contents"/>
+                <nomargin margin="0" padding="0" border="0"/>
+                <group margin="5" padding="5" border="2" flex-direction="column"/>
+                <ModSliderClass slider-type="rotary-horizontal-vertical" slider-textbox="textbox-below"
+                                padding="0" margin="0">
+                    <media/>
+                </SliderClass>
+            </Classes>
+            <Types>
+                <ModSlider border="0" slider-textbox="textbox-below"/>
+                <ToggleButton border="0" max-height="50" caption-size="0" text="Active"/>
+                <TextButton border="0" max-height="50" caption-size="0"/>
+                <ComboBox border="0" max-height="50" caption-size="0"/>
+                <Plot border="0" margin="0" padding="0" background-color="00000000"
+                      radius="0"/>
+                <XYDragComponent border="0" margin="0" padding="0" background-color="00000000"
+                                 radius="0"/>
+            </Types>
+            <Palettes>
+                <default/>
+            </Palettes>
+        </Style>
+    </Styles>
+    <View id="root" resizable="1" resize-corner="1" flex-direction="column"
+          width="850" height="600" background-color="0xFF23343F" padding="2">
+        <View max-height="50" flex-grow="0.5" margin="0" padding="0" background-color="0x00000000">
+            <TitleComp title="Chow" max-width="200" margin="2" padding="2" min-width="200"
+                       background-color="0x00000000" subtitle="Kick" font="35" text1="FFFFFFFF"
+                       text2="A3B5BF"/>
+            <View margin="0" padding="0" flex-direction="column" flex-grow="1.0"
+                  background-color="0x00000000">
+                <View flex-grow="0.25" background-color="0x00000000"/>
+                <InfoComp padding="2" margin="2" background-color="0x00000000" text1="748B99"/>
             </View>
-            <View background-color="00000000" flex-grow="0.1" margin="" padding=""/>
-          </View>
-          <View max-height="45" background-color="0x00000000" margin="0" padding="0"
-                flex-justify-content="center" flex-grow="0.05"/>
+            <Plot margin="2" padding="0" source="scope" background-color="FF425866"
+                  plot-fill-color="00000000" plot-color="FFFFB200" plot-decay="0.45"/>
         </View>
-        <TooltipComp background-color="00000000" flex-grow="0.15" tooltip-text="A3B5BF"
-                     tooltip-name="FFB200" margin="0" padding="5"/>
-      </View>
-      <View flex-direction="column" background-color="FF425866" margin="3"
-            padding="0">
-        <Label min-height="20" flex-grow="0.05" background-color="00000000"
-               text="Resonant Filter" justification="centred" font-size="24.0"
-               label-text="FFFFB200" margin="0" padding="0" lookAndFeel="MyLNF"/>
-        <FilterViewer lookAndFeel="MyLNF" background-color="00000000" margin="3" padding="0"
-                      flex-grow="0.67" background="1B2A33" trace="FFFFB200" name="Filter Viewer"
-                      tooltip="Shows the frequency response of the resonant filter"/>
-        <View max-height="5" background-color="00000000"/>
-        <View margin="0" flex-direction="row" background-color="00000000" padding="0">
-          <ToggleButton parameter="res_link" text="LINK" flex-grow="0.6" padding="0"
-                        margin="0" background-color="00000000" lookAndFeel="MyLNF" name="Frequency Link"
-                        tooltip="Links the filter frequency to the incoming MIDI notes"/>
-          <DisabledSlider class="SliderClass" parameter="res_freq" caption="Frequency"
-                          lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
-                          slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
-                          slider-text-highlight="00000000" slider-text-outline="00000000"
-                          caption-color="C5D1D8" disable-param="res_link" disable-for-val="1"
-                          name="Frequency" tooltip="Controls the frequency of the filter when not in link mode"/>
-          <Slider class="SliderClass" parameter="res_q" caption="Q" lookAndFeel="SliderLNF"
-                  margin="0" background-color="0x00000000" slider-thumb="FFFFB200"
-                  slider-track="1B2A33" slider-text="FFFFFFFF" slider-text-highlight="00000000"
-                  slider-text-outline="00000000" caption-color="C5D1D8" tooltip="Controls the resonant of the filter"
-                  name="Q"/>
-          <Slider class="SliderClass" parameter="res_damp" caption="Damping" lookAndFeel="SliderLNF"
-                  margin="0" background-color="0x00000000" slider-thumb="FFFFB200"
-                  slider-track="1B2A33" slider-text="FFFFFFFF" slider-text-highlight="00000000"
-                  slider-text-outline="00000000" caption-color="C5D1D8" tooltip="Controls the damping of the filter feedback"
-                  name="Damping"/>
+        <View flex-direction="row" margin="0" background-color="00000000" padding="2">
+            <View margin="2" padding="0" flex-direction="column" background-color="00000000">
+                <View margin="0" flex-direction="column" padding="0" background-color="FF425866">
+                    <Label text="Pulse Shape" justification="centred" font-size="24.0" lookAndFeel="MyLNF"
+                           flex-grow="0.05" padding="0" margin="0" background-color="0x00000000"
+                           label-text="FFFFB200" min-height="20.0"/>
+                    <PulseViewer margin="3" padding="0" flex-grow="0.75" background="1B2A33" trace="FFFFB200"
+                                 background-color="00000000" name="Pulse Viewer"
+                                 tooltip="Shows the current shape of the trigger pulse"/>
+                    <View max-height="5" background-color="0x00000000"/>
+                    <View margin="0" padding="0" background-color="0x00000000" max-height="150"
+                          flex-grow="0.9">
+                        <View flex-grow="0.05" background-color="0x00000000"/>
+                        <ModSlider class="SliderClass" parameter="trig_width" caption="Width" lookAndFeel="SliderLNF"
+                                   margin="0" background-color="0x00000000" slider-textbox="textbox-below"
+                                   slider-text="FFFFFFFF" slider-text-outline="00000000"
+                                   slider-text-highlight="00000000" slider-type="rotary-horizontal-vertical"
+                                   slider-track="1B2A33" slider-thumb="FFFFB200" caption-color="C5D1D8"
+                                   tooltip="Controls the length of the trigger pulse" name="Width"/>
+                        <ModSlider class="SliderClass" parameter="trig_amp" caption="Amplitude"
+                                   lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
+                                   slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
+                                   slider-text-highlight="00000000" slider-text-outline="00000000"
+                                   caption-color="C5D1D8" tooltip="Controls the amplitude of the trigger pulse"
+                                   name="Amplitude" slider-type="rotary-horizontal-vertical"/>
+                        <ModSlider class="SliderClass" parameter="pulse_decay" caption="Decay" lookAndFeel="SliderLNF"
+                                   margin="0" background-color="0x00000000" slider-thumb="FFFFB200"
+                                   slider-track="1B2A33" slider-text-outline="00000000" slider-text-highlight="00000000"
+                                   slider-text="FFFFFFFF" caption-color="C5D1D8" slider-type="rotary-horizontal-vertical"
+                                   tooltip="Controls the decay characteristic of the pulse shaper circuit"
+                                   name="Decay"/>
+                        <ModSlider class="SliderClass" parameter="pulse_sustain" caption="Sustain"
+                                   lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
+                                   slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
+                                   slider-text-highlight="00000000" slider-text-outline="00000000"
+                                   caption-color="C5D1D8" slider-type="rotary-horizontal-vertical"
+                                   tooltip="Controls the sustain characteristic of the pulse shaper circuit"
+                                   name="Sustain"/>
+                        <View flex-grow="0.05" background-color="0x00000000"/>
+                    </View>
+                    <View margin="0" padding="0" background-color="0x00000000" flex-grow="0.95">
+                        <View flex-grow="0.05" background-color="00000000"/>
+                        <ModSlider parameter="noise_amt" slider-type="rotary-horizontal-vertical"
+                                   name="Noise Amount" lookAndFeel="SliderLNF" caption="Noise Amount"
+                                   caption-color="C5D1D8" margin="0" padding="0" border="0" background-color="00000000"
+                                   slider-textbox="textbox-below" slider-thumb="FFFFB200" slider-track="1B2A33"
+                                   slider-text="FFFFFFFF" slider-text-highlight="00000000"
+                                   slider-text-outline="00000000"
+                                   tooltip="Controls the amount of noise added to the kick signal"/>
+                        <ModSlider parameter="noise_decay" slider-type="rotary-horizontal-vertical"
+                                   name="Noise Decay" lookAndFeel="SliderLNF" caption="Noise Decay"
+                                   caption-color="C5D1D8" margin="0" padding="0" border="0" background-color="00000000"
+                                   slider-textbox="textbox-below" slider-thumb="FFFFB200" slider-track="1B2A33"
+                                   slider-text="FFFFFFFF" slider-text-highlight="00000000"
+                                   slider-text-outline="00000000"
+                                   tooltip="Controls the decay length of the added noise"/>
+                        <ModSlider parameter="noise_freq" slider-type="rotary-horizontal-vertical"
+                                   name="Noise Cutoff" lookAndFeel="SliderLNF" caption="Noise Cutoff"
+                                   caption-color="C5D1D8" margin="0" padding="0" border="0" background-color="00000000"
+                                   slider-track="1B2A33" slider-thumb="FFFFB200" slider-textbox="textbox-below"
+                                   slider-text="FFFFFFFF" slider-text-highlight="00000000"
+                                   slider-text-outline="00000000"
+                                   tooltip="Controls the cutoff frequency of the added noise"/>
+                        <View margin="0" padding="0" background-color="00000000" flex-direction="column">
+                            <View background-color="00000000" flex-grow="0.15"/>
+                            <ComboBox margin="0" padding="0" name="Noise Type" caption="Noise Type"
+                                      background-color="00000000" caption-color="C5D1D8" parameter="noise_type"
+                                      lookAndFeel="BottomBarLNF" combo-outline="00000000" combo-background="1B2A33"
+                                      combo-menu-background="1B2A33" tooltip="Controls the type of added noise"/>
+                            <View background-color="00000000" flex-grow="0.45"/>
+                        </View>
+                        <View background-color="00000000" flex-grow="0.1" margin="" padding=""/>
+                    </View>
+                    <View max-height="45" background-color="0x00000000" margin="0" padding="0"
+                          flex-justify-content="center" flex-grow="0.05"/>
+                </View>
+                <TooltipComp background-color="00000000" flex-grow="0.15" tooltip-text="A3B5BF"
+                             tooltip-name="FFB200" margin="0" padding="5"/>
+            </View>
+            <View flex-direction="column" background-color="FF425866" margin="3"
+                  padding="0">
+                <Label min-height="20" flex-grow="0.05" background-color="00000000"
+                       text="Resonant Filter" justification="centred" font-size="24.0"
+                       label-text="FFFFB200" margin="0" padding="0" lookAndFeel="MyLNF"/>
+                <FilterViewer lookAndFeel="MyLNF" background-color="00000000" margin="3" padding="0"
+                              flex-grow="0.67" background="1B2A33" trace="FFFFB200" name="Filter Viewer"
+                              tooltip="Shows the frequency response of the resonant filter"/>
+                <View max-height="5" background-color="00000000"/>
+                <View margin="0" flex-direction="row" background-color="00000000" padding="0">
+                    <ToggleButton parameter="res_link" text="LINK" flex-grow="0.6" padding="0"
+                                  margin="0" background-color="00000000" lookAndFeel="MyLNF" name="Frequency Link"
+                                  tooltip="Links the filter frequency to the incoming MIDI notes"/>
+                    <ModSlider class="SliderClass" parameter="res_freq" caption="Frequency"
+                                    lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
+                                    slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
+                                    slider-text-highlight="00000000" slider-text-outline="00000000"
+                                    caption-color="C5D1D8" disable-param="res_link" disable-for-val="1"
+                                    name="Frequency" slider-type="rotary-horizontal-vertical"
+                                    tooltip="Controls the frequency of the filter when not in link mode"/>
+                    <ModSlider class="SliderClass" parameter="res_q" caption="Q" lookAndFeel="SliderLNF"
+                               margin="0" background-color="0x00000000" slider-thumb="FFFFB200"
+                               slider-track="1B2A33" slider-text="FFFFFFFF" slider-text-highlight="00000000"
+                               slider-text-outline="00000000" caption-color="C5D1D8"
+                               tooltip="Controls the resonant of the filter"
+                               name="Q" slider-type="rotary-horizontal-vertical"/>
+                    <ModSlider class="SliderClass" parameter="res_damp" caption="Damping" lookAndFeel="SliderLNF"
+                               margin="0" background-color="0x00000000" slider-thumb="FFFFB200"
+                               slider-track="1B2A33" slider-text="FFFFFFFF" slider-text-highlight="00000000"
+                               slider-text-outline="00000000" caption-color="C5D1D8"
+                               tooltip="Controls the damping of the filter feedback"
+                               name="Damping" slider-type="rotary-horizontal-vertical"/>
+                </View>
+                <View margin="0" padding="0" background-color="00000000">
+                    <ModSlider class="SliderClass" parameter="res_tight" caption="Tight"
+                                    background-color="0x00000000"
+                                    lookAndFeel="SliderLNF" slider-thumb="FFFFB200" slider-track="1B2A33"
+                                    slider-text="FFFFFFFF" slider-text-highlight="00000000"
+                                    slider-text-outline="00000000"
+                                    caption-color="C5D1D8" slider-type="rotary-horizontal-vertical"
+                                    tooltip="Controls nonlinear behaviour of the filter resonance"
+                                    name="Tight" disable-param="res_mode" disable-for-val="0"/>
+                    <ModSlider class="SliderClass" parameter="res_bounce" caption="Bounce"
+                                    background-color="0x00000000"
+                                    lookAndFeel="SliderLNF" slider-thumb="FFFFB200" slider-track="1B2A33"
+                                    slider-text="FFFFFFFF" slider-text-highlight="00000000"
+                                    slider-text-outline="00000000"
+                                    caption-color="C5D1D8" slider-type="rotary-horizontal-vertical"
+                                    tooltip="Controls nonlinear behaviour of the filter frequency"
+                                    name="Bounce" disable-param="res_mode" disable-for-val="0"/>
+                    <ModSlider class="SliderClass" parameter="out_tone" caption="Tone" background-color="0x00000000"
+                               lookAndFeel="SliderLNF" slider-thumb="FFFFB200" slider-track="1B2A33"
+                               slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
+                               caption-color="C5D1D8" tooltip="Controls the response of the output tone filter"
+                               name="Tone" slider-type="rotary-horizontal-vertical"/>
+                    <ModSlider class="SliderClass" parameter="res_portamento" caption="Portamento"
+                               lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
+                               slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
+                               slider-text-highlight="00000000" slider-text-outline="00000000"
+                               caption-color="C5D1D8" slider-type="rotary-horizontal-vertical"
+                               tooltip="Controls the portamento time between notes on the same voice"
+                               name="Portamento"/>
+                </View>
+                <View max-height="5" background-color="00000000"/>
+            </View>
+            <View flex-direction="row" flex-grow="0.2" margin="2" padding="0" background-color="FF425866">
+                <ModSlider class="SliderClass" parameter="out_level" caption="Level" slider-type="linear-vertical"
+                           background-color="00000000" lookAndFeel="SliderLNF" slider-thumb="FFFFB200"
+                           slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
+                           caption-color="C5D1D8" slider-background="1B2A33" name="Level"
+                           tooltip="Controls the output level"/>
+            </View>
         </View>
-        <View margin="0" padding="0" background-color="00000000">
-          <DisabledSlider class="SliderClass" parameter="res_tight" caption="Tight" background-color="0x00000000"
-                          lookAndFeel="SliderLNF" slider-thumb="FFFFB200" slider-track="1B2A33"
-                          slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
-                          caption-color="C5D1D8" tooltip="Controls nonlinear behaviour of the filter resonance"
-                          name="Tight" disable-param="res_mode" disable-for-val="0"/>
-          <DisabledSlider class="SliderClass" parameter="res_bounce" caption="Bounce" background-color="0x00000000"
-                          lookAndFeel="SliderLNF" slider-thumb="FFFFB200" slider-track="1B2A33"
-                          slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
-                          caption-color="C5D1D8" tooltip="Controls nonlinear behaviour of the filter frequency"
-                          name="Bounce" disable-param="res_mode" disable-for-val="0"/>
-          <Slider class="SliderClass" parameter="out_tone" caption="Tone" background-color="0x00000000"
-                  lookAndFeel="SliderLNF" slider-thumb="FFFFB200" slider-track="1B2A33"
-                  slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
-                  caption-color="C5D1D8" tooltip="Controls the response of the output tone filter"
-                  name="Tone"/>
-          <Slider class="SliderClass" parameter="res_portamento" caption="Portamento"
-                  lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
-                  slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
-                  slider-text-highlight="00000000" slider-text-outline="00000000"
-                  caption-color="C5D1D8" tooltip="Controls the portamento time between notes on the same voice"
-                  name="Portamento"/>
+        <KeyboardComponent padding="0" margin="0" flex-grow="0.4"/>
+        <View margin="0" max-height="30" background-color="1B2A33" flex-grow="0.1"
+              lookAndFeel="MyLNF" padding="0">
+            <View background-color="00000000" flex-grow="0.3"/>
+            <ComboBox max-width="100" margin="0" padding="0" parameter="trig_voices"
+                      lookAndFeel="ComboBoxLNF" combo-outline="00000000" combo-background="1B2A33"
+                      combo-menu-background="1B2A33" combo-menu-background-highlight="FF425866"
+                      background-color="00000000" name="Voices"
+                      tooltip="Selects how many polyphonic voices the kick drum can have"/>
+            <View background-color="00000000" flex-grow="0.1"/>
+            <TuningMenu margin="0" padding="0" background-color="00000000" lookAndFeel="TuningMenuLNF"
+                        name="Tuning Menu" tooltip="Select a custom scale or keyboard mapping"/>
+            <View flex-grow="0.01" background-color="00000000"/>
+            <ComboBox combo-background="1B2A33" parameter="res_mode" name="Res. Mode"
+                      margin="0" padding="0" background-color="00000000" lookAndFeel="ComboBoxLNF"
+                      tooltip="Selects the mode used by the resonance filter" flex-grow="1.0"/>
+            <View flex-grow="0.3" background-color="00000000"/>
+            <PresetComp flex-grow="1.5" margin="0" padding="2" background-color="00000000"
+                        background="FF425866" text-highlight="FF8B3232" lookAndFeel="BottomBarLNF"
+                        name="Presets" tooltip="Load and save plugin presets"/>
+            <View margin="0" background-color="00000000" lookAndFeel="MyLNF" flex-grow="0.15"/>
+            <SettingsButton lookAndFeel="ComboBoxLNF" background-color="00000000" flex-grow="0.15"
+                            margin="0" padding="5" max-width="40" min-width="25" name="Settings"
+                            tooltip="Opens the plugin settings menu."/>
         </View>
-        <View max-height="5" background-color="00000000"/>
-      </View>
-      <View flex-direction="row" flex-grow="0.2" margin="2" padding="0" background-color="FF425866">
-        <Slider class="SliderClass" parameter="out_level" caption="Level" slider-type="linear-vertical"
-                background-color="00000000" lookAndFeel="SliderLNF" slider-thumb="FFFFB200"
-                slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
-                caption-color="C5D1D8" slider-background="1B2A33" name="Level"
-                tooltip="Controls the output level"/>
-      </View>
     </View>
-    <KeyboardComponent padding="0" margin="0" flex-grow="0.4"/>
-    <View margin="0" max-height="30" background-color="1B2A33" flex-grow="0.1"
-          lookAndFeel="MyLNF" padding="0">
-      <View background-color="00000000" flex-grow="0.3"/>
-      <ComboBox max-width="100" margin="0" padding="0" parameter="trig_voices"
-                lookAndFeel="ComboBoxLNF" combo-outline="00000000" combo-background="1B2A33"
-                combo-menu-background="1B2A33" combo-menu-background-highlight="FF425866"
-                background-color="00000000" name="Voices" tooltip="Selects how many polyphonic voices the kick drum can have"/>
-      <View background-color="00000000" flex-grow="0.1"/>
-      <TuningMenu margin="0" padding="0" background-color="00000000" lookAndFeel="TuningMenuLNF"
-                  name="Tuning Menu" tooltip="Select a custom scale or keyboard mapping"/>
-      <View flex-grow="0.01" background-color="00000000"/>
-      <ComboBox combo-background="1B2A33" parameter="res_mode" name="Res. Mode"
-                margin="0" padding="0" background-color="00000000" lookAndFeel="ComboBoxLNF"
-                tooltip="Selects the mode used by the resonance filter" flex-grow="1.0"/>
-      <View flex-grow="0.3" background-color="00000000"/>
-      <PresetComp flex-grow="1.5" margin="0" padding="2" background-color="00000000"
-                  background="FF425866" text-highlight="FF8B3232" lookAndFeel="BottomBarLNF"
-                  name="Presets" tooltip="Load and save plugin presets"/>
-      <View margin="0" background-color="00000000" lookAndFeel="MyLNF" flex-grow="0.15"/>
-      <SettingsButton lookAndFeel="ComboBoxLNF" background-color="00000000" flex-grow="0.15"
-                      margin="0" padding="5" max-width="40" min-width="25" name="Settings"
-                      tooltip="Opens the plugin settings menu."/>
-    </View>
-  </View>
 </magic>
- 
+         

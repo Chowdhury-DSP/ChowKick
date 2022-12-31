@@ -16,6 +16,7 @@ target_sources(ChowKick PRIVATE
     gui/PulseViewer.cpp
     gui/TuningMenu.cpp
     gui/SettingsButton.cpp
+    gui/ModulatableSlider.cpp
 
     presets/PresetManager.cpp
 )
