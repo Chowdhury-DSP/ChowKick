@@ -18,27 +18,22 @@ inline Vec insert (const Vec& v, float s, size_t i) noexcept
 }
 } // namespace
 
-Trigger::Trigger (AudioProcessorValueTreeState& vtState) : vts (vtState)
+Trigger::Trigger (AudioProcessorValueTreeState& vts)
 {
-    widthParam = vts.getRawParameterValue (widthTag);
-    ampParam = vts.getRawParameterValue (ampTag);
-
-    vts.addParameterListener (voicesTag, this);
-    parameterChanged (voicesTag, *vts.getRawParameterValue (voicesTag));
+    using namespace chowdsp::ParamUtils;
+    loadParameterPointer (widthParam, vts, widthTag);
+    loadParameterPointer (ampParam, vts, ampTag);
+    loadParameterPointer (voicesParam, vts, voicesTag);
 }
 
-Trigger::~Trigger()
+void Trigger::setNumVoices()
 {
-    vts.removeParameterListener (voicesTag, this);
-}
-
-void Trigger::parameterChanged (const String& paramID, float newValue)
-{
-    if (paramID != voicesTag)
+    const auto newNumVoices = (size_t) voicesParam->getIndex() + 1;
+    if (newNumVoices == numVoices)
         return;
 
     std::fill (leftoverSamples.begin(), leftoverSamples.end(), 0);
-    numVoices = (size_t) newValue + 1;
+    numVoices = newNumVoices;
     voiceIdx = 0;
 }
 
@@ -46,35 +41,20 @@ void Trigger::addParameters (Parameters& params)
 {
     using namespace chowdsp::ParamUtils;
 
-    NormalisableRange<float> pulseRange (0.025f, 2.5f);
-    pulseRange.setSkewForCentre (1.0f);
-
-    params.push_back (std::make_unique<VTSParam> (widthTag,
-                                                  "Pulse Width [ms]",
-                                                  String(),
-                                                  pulseRange,
-                                                  1.0f,
-                                                  &timeMsValToString,
-                                                  &stringToTimeMsVal));
-
-    params.push_back (std::make_unique<VTSParam> (ampTag,
-                                                  "Pulse Amp",
-                                                  String(),
-                                                  NormalisableRange<float> { 0.0f, 1.0f },
-                                                  1.0f,
-                                                  &percentValToString,
-                                                  &stringToPercentVal));
-
-    params.push_back (std::make_unique<AudioParameterChoice> (voicesTag,
-                                                              "Voices",
-                                                              StringArray { "1", "2", "3", "4" },
-                                                              0));
+    createTimeMsParameter (params, widthTag, "Pulse Width [ms]", createNormalisableRange (0.025f, 2.5f, 1.0f), 1.0f);
+    createPercentParameter (params, ampTag, "Pulse Amp", 1.0f);
+    emplace_param<chowdsp::ChoiceParameter> (params,
+                                             voicesTag,
+                                             "Voices",
+                                             StringArray { "1", "2", "3", "4" },
+                                             0);
 }
 
 void Trigger::prepareToPlay (double sampleRate, int /*samplesPerBlock*/)
 {
     fs = (float) sampleRate;
     std::fill (leftoverSamples.begin(), leftoverSamples.end(), 0);
+    setNumVoices();
 }
 
 void fillBlock (chowdsp::AudioBlock<Vec>& block, float value, int start, int numToFill, size_t channel)
@@ -88,12 +68,13 @@ void Trigger::processBlock (chowdsp::AudioBlock<Vec>& block, const int numSample
 {
     jassert (block.getNumChannels() == 1); // only single-channel buffers!
 
+    setNumVoices();
     const auto pulseSamples = int (fs * (*widthParam / 1000.0f));
 
     for (size_t i = 0; i < numVoices; ++i)
     {
         int samplesToFill = jmin (leftoverSamples[i], numSamples);
-        fillBlock (block, ampParam->load(), 0, samplesToFill, i);
+        fillBlock (block, ampParam->getCurrentValue(), 0, samplesToFill, i);
         leftoverSamples[i] -= samplesToFill;
     }
 
@@ -106,7 +87,7 @@ void Trigger::processBlock (chowdsp::AudioBlock<Vec>& block, const int numSample
             auto samplesToFill = jmin (pulseSamples, numSamples - samplePosition);
 
             voiceIdx = (voiceIdx + 1) % numVoices;
-            fillBlock (block, ampParam->load(), samplePosition, samplesToFill, voiceIdx);
+            fillBlock (block, ampParam->getCurrentValue(), samplePosition, samplesToFill, voiceIdx);
             curFreqHz = insert (curFreqHz, (float) tuning.frequencyForMidiNote (message.getNoteNumber()), voiceIdx);
 
             leftoverSamples[voiceIdx] = pulseSamples - samplesToFill;

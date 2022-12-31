@@ -4,22 +4,19 @@
 
 namespace TriggerTags
 {
-const String widthTag = "trig_width";
-const String ampTag = "trig_amp";
-const String voicesTag = "trig_voices";
+const juce::ParameterID widthTag { "trig_width", VersionHints::original };
+const juce::ParameterID ampTag { "trig_amp", VersionHints::original };
+const juce::ParameterID voicesTag { "trig_voices", VersionHints::original };
 } // namespace TriggerTags
 
-class Trigger : private AudioProcessorValueTreeState::Listener
+class Trigger
 {
 public:
-    Trigger (AudioProcessorValueTreeState& vts);
-    ~Trigger() override;
+    explicit Trigger (AudioProcessorValueTreeState& vts);
 
     static void addParameters (Parameters& params);
     void prepareToPlay (double sampleRate, int samplesPerBlock);
     void processBlock (chowdsp::AudioBlock<Vec>& block, int numSamples, MidiBuffer& midi);
-
-    void parameterChanged (const String& paramID, float newValue) override;
 
     Vec getFrequencyHz() const noexcept { return curFreqHz; }
 
@@ -45,15 +42,17 @@ public:
     void removeListener (Listener* l) { tuningListeners.remove (l); }
 
 private:
-    std::atomic<float>* widthParam = nullptr;
-    std::atomic<float>* ampParam = nullptr;
-    AudioProcessorValueTreeState& vts;
+    void setNumVoices();
+
+    chowdsp::FloatParameter* widthParam = nullptr;
+    chowdsp::FloatParameter* ampParam = nullptr;
+    chowdsp::ChoiceParameter* voicesParam = nullptr;
 
     float fs = 44100.0f;
     Vec curFreqHz = 10.0f;
 
     size_t voiceIdx = 0;
-    size_t numVoices;
+    size_t numVoices = 0;
     std::array<int, Vec::size> leftoverSamples { 0 };
 
     Tunings::Tuning tuning;

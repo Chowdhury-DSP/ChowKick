@@ -4,41 +4,29 @@ using namespace ShaperTags;
 
 PulseShaper::PulseShaper (AudioProcessorValueTreeState& vts, double sampleRate) : c40 (0.015e-6f, (float) sampleRate, 0.029f)
 {
-    decayParam = vts.getRawParameterValue (decayTag);
-    sustainParam = vts.getRawParameterValue (sustainTag);
+    using namespace chowdsp::ParamUtils;
+    loadParameterPointer (decayParam, vts, decayTag);
+    loadParameterPointer (sustainParam, vts, sustainTag);
 }
 
 void PulseShaper::addParameters (Parameters& params)
 {
     using namespace chowdsp::ParamUtils;
-
-    params.push_back (std::make_unique<VTSParam> (sustainTag,
-                                                  "Sustain",
-                                                  String(),
-                                                  NormalisableRange<float> { 0.0f, 1.0f },
-                                                  0.5f,
-                                                  &percentValToString,
-                                                  &stringToPercentVal));
-    params.push_back (std::make_unique<VTSParam> (decayTag,
-                                                  "Decay",
-                                                  String(),
-                                                  NormalisableRange<float> { 0.0f, 1.0f },
-                                                  0.5f,
-                                                  &percentValToString,
-                                                  &stringToPercentVal));
+    createPercentParameter (params, sustainTag, "Sustain", 0.5f);
+    createPercentParameter (params, decayTag, "Decay", 0.5f);
 }
 
 void PulseShaper::processBlock (chowdsp::AudioBlock<Vec>& block, const int numSamples)
 {
     constexpr float r1Off = 5000.0f;
     constexpr float r1Scale = 500000.0f;
-    auto sustainVal = 1.0f - std::pow (sustainParam->load(), 0.05f);
+    auto sustainVal = 1.0f - std::pow (sustainParam->getCurrentValue(), 0.05f);
     auto r1Val = r1Off + (sustainVal * (r1Scale - r1Off));
     r163.setResistanceValue (r1Val);
 
     constexpr float r2Off = 500.0f;
     constexpr float r2Scale = 100000.0f;
-    auto decayVal = std::pow (decayParam->load(), 2.0f);
+    auto decayVal = std::pow (decayParam->getCurrentValue(), 2.0f);
     auto r2Val = r2Off + (decayVal * (r2Scale - r2Off));
     r162.setResistanceValue (r2Val);
 
