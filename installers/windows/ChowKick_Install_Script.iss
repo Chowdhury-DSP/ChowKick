@@ -32,15 +32,17 @@ Name: "custom"; Description: "Custom installation"; Flags: iscustom
 [Components]
 Name: "VST3_64"; Description: "VST3 Plugin"; Types: full
 Name: "VST_64"; Description: "VST Plugin"; Types: full
+Name: "CLAP_64"; Description: "CLAP Plugin"; Types: full
 Name: "Standalone"; Description: "Standalone Plugin"; Types: full
 Name: Data; Description: "Data Files"; Types: full custom; Flags: fixed
 ; Name: "AAX"; Description: "AAX Plugin"; Types: full
 
 [Files]
 Source: "../../res/tuning_library/*"; DestDir: {commonappdata}\ChowKick\tuning_library; Components: Data; Flags: recursesubdirs; Excludes: "*.git,windows.wt,configuration.xml,paramdocumentation.xml";
-Source: "../../bin/Win64/ChowKick.vst3"; DestDir: "{code:GetDir|VST3_64}"; Components: VST3_64; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "../../bin/Win64/ChowKick.dll"; Excludes: "*.vst3"; DestDir: "{code:GetDir|VST_64}"; Components: VST_64; Flags: ignoreversion
-Source: "../../bin/Win64/ChowKick.exe"; Excludes: "*.vst3"; DestDir: "{code:GetDir|Standalone}"; Components: Standalone; Flags: ignoreversion
+Source: "../../bin/Win64/ChowKick.vst3"; Excludes: "*.clap"; DestDir: "{code:GetDir|VST3_64}"; Components: VST3_64; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "../../bin/Win64/ChowKick.dll"; Excludes: "*.vst3,*.clap"; DestDir: "{code:GetDir|VST_64}"; Components: VST_64; Flags: ignoreversion
+Source: "../../bin/Win64/ChowKick.clap"; Excludes: "*.vst3"; DestDir: "{code:GetDir|CLAP_64}"; Components: CLAP_64; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "../../bin/Win64/ChowKick.exe"; Excludes: "*.vst3,*.clap"; DestDir: "{code:GetDir|Standalone}"; Components: Standalone; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
@@ -162,6 +164,8 @@ begin
     Result := Vst3_64DirPage.values[0]
   else if (Param = 'VST_64') then
     Result := Vst_64DirPage.values[0]
+  else if (Param = 'CLAP_64') then
+    Result := ExpandConstant('{commoncf64}\CLAP')
   else if (Param = 'Standalone') then
     Result := StandaloneDirPage.values[0]
 end;
@@ -185,6 +189,9 @@ begin
 
   if IsSelected('vst_64') then
     S := S + Space +  GetDir('VST_64') + ' (VST 64-bit)' + NewLine;
+
+  if IsSelected('clap_64') then
+    S := S + Space +  GetDir('CLAP_64') + ' (CLAP 64-bit)' + NewLine;
 
   if IsSelected('standalone') then
     S := S + Space +  GetDir('Standalone') + ' (Standalone)' + NewLine;

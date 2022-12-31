@@ -3,6 +3,7 @@
 #include "gui/DisabledSlider.h"
 #include "gui/FilterViewer.h"
 #include "gui/PulseViewer.h"
+#include "gui/SettingsButton.h"
 #include "gui/TuningMenu.h"
 #include "presets/PresetManager.h"
 
@@ -10,11 +11,20 @@
 #include "gui/TipJar.h"
 #endif
 
-ChowKick::ChowKick() : trigger (vts),
+namespace
+{
+const String settingsFilePath = "ChowdhuryDSP/ChowKick/.plugin_settings.json";
+const String logFileSubDir = "ChowdhuryDSP/ChowKick/Logs";
+const String logFileNameRoot = "ChowKick_Log_";
+} // namespace
+
+ChowKick::ChowKick() : logger (logFileSubDir, logFileNameRoot),
+                       trigger (vts),
                        noise (vts),
                        resFilter (vts, trigger),
                        outFilter (vts)
 {
+    pluginSettings->initialise (settingsFilePath);
     presetManager = std::make_unique<PresetManager> (vts);
     scope = magicState.createAndAddObject<foleys::MagicOscilloscope> ("scope");
 }
@@ -71,16 +81,16 @@ void ChowKick::processSynth (AudioBuffer<float>& buffer, MidiBuffer& midi)
 
     magicState.processMidiBuffer (midi, numSamples);
 
-    trigger.processBlock (fourVoiceBuffer, numSamples, midi);
-    pulseShaper->processBlock (fourVoiceBuffer, numSamples);
-    resFilter.processBlock (fourVoiceBuffer, numSamples);
-    noise.processBlock (fourVoiceBuffer, numSamples);
-    reduceBlock (fourVoiceBuffer, monoBuffer);
-    outFilter.processBlock (monoBuffer.getWritePointer (0), numSamples);
-
-    dsp::AudioBlock<float> monoBlock (monoBuffer);
-    dsp::ProcessContextReplacing<float> monoContext (monoBlock);
-    dcBlocker.process<dsp::ProcessContextReplacing<float>> (monoContext);
+    //    trigger.processBlock (fourVoiceBuffer, numSamples, midi);
+    //    pulseShaper->processBlock (fourVoiceBuffer, numSamples);
+    //    resFilter.processBlock (fourVoiceBuffer, numSamples);
+    //    noise.processBlock (fourVoiceBuffer, numSamples);
+    //    reduceBlock (fourVoiceBuffer, monoBuffer);
+    //    outFilter.processBlock (monoBuffer.getWritePointer (0), numSamples);
+    //
+    //    dsp::AudioBlock<float> monoBlock (monoBuffer);
+    //    dsp::ProcessContextReplacing<float> monoContext (monoBlock);
+    //    dcBlocker.process<dsp::ProcessContextReplacing<float>> (monoContext);
 
     // copy monoBuffer to other channels
     for (int ch = 0; ch < buffer.getNumChannels(); ++ch)
@@ -91,12 +101,16 @@ void ChowKick::processSynth (AudioBuffer<float>& buffer, MidiBuffer& midi)
 
 AudioProcessorEditor* ChowKick::createEditor()
 {
+    if (openGLHelper == nullptr)
+        openGLHelper = std::make_unique<chowdsp::OpenGLHelper>();
+
     auto builder = chowdsp::createGUIBuilder (magicState);
     builder->registerFactory ("PulseViewer", &PulseViewerItem::factory);
     builder->registerFactory ("FilterViewer", &FilterViewerItem::factory);
     builder->registerFactory ("DisabledSlider", &DisabledSlider::factory);
     builder->registerFactory ("PresetComp", &chowdsp::PresetsItem<ChowKick>::factory);
     builder->registerFactory ("TuningMenu", &TuningMenuItem::factory);
+    builder->registerFactory ("SettingsButton", &SettingsButtonItem::factory);
     builder->registerLookAndFeel ("SliderLNF", std::make_unique<SliderLNF>());
     builder->registerLookAndFeel ("BottomBarLNF", std::make_unique<BottomBarLNF>());
     builder->registerLookAndFeel ("ComboBoxLNF", std::make_unique<ComboBoxLNF>());
@@ -111,6 +125,8 @@ AudioProcessorEditor* ChowKick::createEditor()
 
     // we need to set resize limits for StandalonePluginHolder
     editor->setResizeLimits (10, 10, 2000, 2000);
+
+    openGLHelper->setComponent (editor);
 
     return editor;
 }
@@ -133,7 +149,7 @@ void ChowKick::setStateInformation (const void* data, int sizeInBytes)
 {
     std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
 
-    if (xmlState.get() != nullptr)
+    if (xmlState != nullptr)
     {
         if (xmlState->hasTagName (vts.state.getType()))
         {
