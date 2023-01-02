@@ -36,7 +36,7 @@
                        text2="A3B5BF"/>
             <View margin="0" padding="0" flex-direction="column" flex-grow="1.0"
                   background-color="0x00000000">
-                <InfoComp padding="2" margin="2" background-color="0x00000000" text1="748B99"/>
+                <PluginInfoComp padding="2" margin="2" background-color="0x00000000" text1="748B99"/>
             </View>
             <Plot margin="2" padding="0" source="scope" background-color="FF425866"
                   plot-fill-color="00000000" plot-color="FFFFB200" plot-decay="0.45"/>

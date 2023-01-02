@@ -113,6 +113,7 @@ AudioProcessorEditor* ChowKick::createEditor()
     builder->registerFactory ("TuningMenu", &TuningMenuItem::factory);
     builder->registerFactory ("SettingsButton", &SettingsButtonItem::factory);
     builder->registerFactory ("ModSlider", &ModSliderItem::factory);
+    builder->registerFactory ("PluginInfoComp", &chowdsp::InfoItem<ChowKick>::factory);
     builder->registerLookAndFeel ("SliderLNF", std::make_unique<SliderLNF>());
     builder->registerLookAndFeel ("BottomBarLNF", std::make_unique<BottomBarLNF>());
     builder->registerLookAndFeel ("ComboBoxLNF", std::make_unique<ComboBoxLNF>());
