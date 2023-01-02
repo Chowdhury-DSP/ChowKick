@@ -158,7 +158,7 @@ void TuningMenu::refreshMenu()
 
     auto sclName = trigger.getScaleName();
     auto scaleOption = "Select SCL" + (sclName.isEmpty() ? "" : " (" + sclName + ")");
-    rootMenu->addItem (scaleOption, [this, factoryTuningPath]
+    rootMenu->addItem (scaleOption, [this, factoryTuningPath, fileChooserFlags]
                        {
                            resetMenuText();
                            fileChooser = std::make_shared<FileChooser> ("Choose Scale", factoryTuningPath, "*.scl");
@@ -167,7 +167,7 @@ void TuningMenu::refreshMenu()
 
     auto kbmName = trigger.getMappingName();
     auto mappingOption = "Select KBM" + (kbmName.isEmpty() ? "" : " (" + kbmName + ")");
-    rootMenu->addItem (mappingOption, [this, factoryTuningPath]
+    rootMenu->addItem (mappingOption, [this, factoryTuningPath, fileChooserFlags]
                        {
                            resetMenuText();
                            fileChooser = std::make_shared<FileChooser> ("Choose Keyboard Mapping", factoryTuningPath, "*.kbm");
