@@ -30,7 +30,7 @@ private:
 
     Trigger trigger;
     Noise noise;
-    std::unique_ptr<PulseShaper> shaper;
+    PulseShaper shaper;
 
     Path pulsePath;
 

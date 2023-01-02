@@ -18,7 +18,7 @@ inline Vec insert (const Vec& v, float s, size_t i) noexcept
 }
 } // namespace
 
-Trigger::Trigger (AudioProcessorValueTreeState& vts)
+Trigger::Trigger (AudioProcessorValueTreeState& vts, bool allowParamMod) : allowParamModulation (allowParamMod)
 {
     using namespace chowdsp::ParamUtils;
     loadParameterPointer (widthParam, vts, widthTag);
@@ -35,6 +35,16 @@ void Trigger::setNumVoices()
     std::fill (leftoverSamples.begin(), leftoverSamples.end(), 0);
     numVoices = newNumVoices;
     voiceIdx = 0;
+}
+
+float Trigger::getAmp() const noexcept
+{
+    return allowParamModulation ? ampParam->getCurrentValue() : ampParam->get();
+}
+
+float Trigger::getWidth() const noexcept
+{
+    return allowParamModulation ? widthParam->getCurrentValue() : widthParam->get();
 }
 
 void Trigger::addParameters (Parameters& params)
@@ -69,12 +79,12 @@ void Trigger::processBlock (chowdsp::AudioBlock<Vec>& block, const int numSample
     jassert (block.getNumChannels() == 1); // only single-channel buffers!
 
     setNumVoices();
-    const auto pulseSamples = int (fs * (*widthParam / 1000.0f));
+    const auto pulseSamples = int (fs * (getWidth() / 1000.0f));
 
     for (size_t i = 0; i < numVoices; ++i)
     {
         int samplesToFill = jmin (leftoverSamples[i], numSamples);
-        fillBlock (block, ampParam->getCurrentValue(), 0, samplesToFill, i);
+        fillBlock (block, getAmp(), 0, samplesToFill, i);
         leftoverSamples[i] -= samplesToFill;
     }
 
@@ -87,7 +97,7 @@ void Trigger::processBlock (chowdsp::AudioBlock<Vec>& block, const int numSample
             auto samplesToFill = jmin (pulseSamples, numSamples - samplePosition);
 
             voiceIdx = (voiceIdx + 1) % numVoices;
-            fillBlock (block, ampParam->getCurrentValue(), samplePosition, samplesToFill, voiceIdx);
+            fillBlock (block, getAmp(), samplePosition, samplesToFill, voiceIdx);
             curFreqHz = insert (curFreqHz, (float) tuning.frequencyForMidiNote (message.getNoteNumber()), voiceIdx);
 
             leftoverSamples[voiceIdx] = pulseSamples - samplesToFill;

@@ -13,7 +13,7 @@ const juce::ParameterID typeTag { "noise_type", VersionHints::original };
 class Noise
 {
 public:
-    explicit Noise (AudioProcessorValueTreeState& vts);
+    explicit Noise (AudioProcessorValueTreeState& vts, bool allowParamModulation = true);
 
     static void addParameters (Parameters& params);
 
@@ -28,6 +28,7 @@ private:
     chowdsp::FloatParameter* decayParam = nullptr;
     chowdsp::FloatParameter* freqParam = nullptr;
     chowdsp::EnumChoiceParameter<NoiseMode>* typeParam = nullptr;
+    const bool allowParamModulation = true;
 
     NoiseType noise;
 

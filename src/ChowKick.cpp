@@ -1,6 +1,5 @@
 #include "ChowKick.h"
 #include "gui/CustomLNFs.h"
-#include "gui/DisabledSlider.h"
 #include "gui/FilterViewer.h"
 #include "gui/ModulatableSlider.h"
 #include "gui/PulseViewer.h"
@@ -110,7 +109,6 @@ AudioProcessorEditor* ChowKick::createEditor()
     auto builder = chowdsp::createGUIBuilder (magicState);
     builder->registerFactory ("PulseViewer", &PulseViewerItem::factory);
     builder->registerFactory ("FilterViewer", &FilterViewerItem::factory);
-    builder->registerFactory ("DisabledSlider", &DisabledSlider::factory);
     builder->registerFactory ("PresetComp", &chowdsp::PresetsItem<ChowKick>::factory);
     builder->registerFactory ("TuningMenu", &TuningMenuItem::factory);
     builder->registerFactory ("SettingsButton", &SettingsButtonItem::factory);

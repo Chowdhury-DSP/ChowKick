@@ -8,8 +8,9 @@ constexpr int offset = int (0.0001 * fs); // 0.1 millisecond
 } // namespace
 
 PulseViewer::PulseViewer (AudioProcessorValueTreeState& vtState) : vts (vtState),
-                                                                   trigger (vts),
-                                                                   noise (vts),
+                                                                   trigger (vts, false),
+                                                                   noise (vts, false),
+                                                                   shaper (vts, fs, false),
                                                                    block (blockData, 1, nSamples)
 {
     vts.addParameterListener (TriggerTags::ampTag.getParamID(), this);
@@ -44,7 +45,7 @@ void PulseViewer::updatePath()
 {
     trigger.prepareToPlay (fs, nSamples);
     noise.prepareToPlay (fs, nSamples);
-    shaper = std::make_unique<PulseShaper> (vts, fs);
+    shaper.reset();
 
     block.clear();
     auto midiMessage = MidiMessage::noteOn (1, 64, (uint8) 127);
@@ -52,7 +53,7 @@ void PulseViewer::updatePath()
     midiBuffer.addEvent (midiMessage, offset);
 
     trigger.processBlock (block, nSamples, midiBuffer);
-    shaper->processBlock (block, nSamples);
+    shaper.processBlock (block, nSamples);
     noise.processBlock (block, nSamples);
 
     const auto yScale = proportionOfHeight (0.6f);

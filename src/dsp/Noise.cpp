@@ -2,7 +2,7 @@
 
 using namespace NoiseTags;
 
-Noise::Noise (AudioProcessorValueTreeState& vts)
+Noise::Noise (AudioProcessorValueTreeState& vts, bool allowParamMod) : allowParamModulation (allowParamMod)
 {
     using namespace chowdsp::ParamUtils;
     loadParameterPointer (amtParam, vts, amtTag);
@@ -38,7 +38,7 @@ void Noise::prepareToPlay (double sampleRate, int samplesPerBlock)
 
 void Noise::processBlock (chowdsp::AudioBlock<Vec>& block, int numSamples)
 {
-    noise.setGainLinear (std::pow (*amtParam, 2.0f));
+    noise.setGainLinear (std::pow (allowParamModulation ? amtParam->getCurrentValue() : amtParam->get(), 2.0f));
     noise.setNoiseType (typeParam->get());
     decaySmooth.setTargetValue (std::pow (1.0f - *decayParam, 2.5f) * 2.0f + 1.0f);
 
@@ -48,7 +48,7 @@ void Noise::processBlock (chowdsp::AudioBlock<Vec>& block, int numSamples)
     chowdsp::ProcessContextReplacing<Vec> context { noiseBlock };
     noise.process (context);
 
-    filter.setCutoffFrequency (freqParam->getCurrentValue());
+    filter.setCutoffFrequency (allowParamModulation ? freqParam->getCurrentValue() : freqParam->get());
     filter.process<decltype (context)> (context);
 
     auto* blockData = block.getChannelPointer (0);

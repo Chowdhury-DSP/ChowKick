@@ -12,7 +12,7 @@ const juce::ParameterID voicesTag { "trig_voices", VersionHints::original };
 class Trigger
 {
 public:
-    explicit Trigger (AudioProcessorValueTreeState& vts);
+    Trigger (AudioProcessorValueTreeState& vts, bool allowParamModulation = true);
 
     static void addParameters (Parameters& params);
     void prepareToPlay (double sampleRate, int samplesPerBlock);
@@ -43,10 +43,13 @@ public:
 
 private:
     void setNumVoices();
+    float getAmp() const noexcept;
+    float getWidth() const noexcept;
 
     chowdsp::FloatParameter* widthParam = nullptr;
     chowdsp::FloatParameter* ampParam = nullptr;
     chowdsp::ChoiceParameter* voicesParam = nullptr;
+    const bool allowParamModulation = true;
 
     float fs = 44100.0f;
     Vec curFreqHz = 10.0f;

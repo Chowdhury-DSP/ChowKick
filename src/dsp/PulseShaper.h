@@ -13,10 +13,12 @@ class PulseShaper
     using v_type = xsimd::batch<float>;
 
 public:
-    PulseShaper (AudioProcessorValueTreeState& vts, double sampleRate);
+    PulseShaper (AudioProcessorValueTreeState& vts, double sampleRate, bool allowParameterModulation = true);
 
     static void addParameters (Parameters& params);
     void processBlock (chowdsp::AudioBlock<Vec>& block, int numSamples);
+
+    void reset() noexcept { c40.reset(); }
 
     inline Vec processSample (Vec x) noexcept
     {
@@ -32,6 +34,7 @@ public:
 private:
     chowdsp::FloatParameter* sustainParam = nullptr;
     chowdsp::FloatParameter* decayParam = nullptr;
+    const bool allowParameterModulation;
 
     using Resistor = wdft::ResistorT<v_type>;
     using Capacitor = wdft::CapacitorAlphaT<v_type>;
