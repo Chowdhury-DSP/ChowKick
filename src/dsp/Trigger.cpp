@@ -18,12 +18,23 @@ inline Vec insert (const Vec& v, float s, size_t i) noexcept
 }
 } // namespace
 
-Trigger::Trigger (AudioProcessorValueTreeState& vts, bool allowParamMod) : allowParamModulation (allowParamMod)
+Trigger::Trigger (AudioProcessorValueTreeState& vts, bool allowParamMod, bool initMTSClient)
+    : allowParamModulation (allowParamMod)
 {
     using namespace chowdsp::ParamUtils;
     loadParameterPointer (widthParam, vts, widthTag);
     loadParameterPointer (ampParam, vts, ampTag);
     loadParameterPointer (voicesParam, vts, voicesTag);
+    loadParameterPointer (useMTSParam, vts, useMTSTag);
+
+    if (initMTSClient)
+        mtsClient = MTS_RegisterClient();
+}
+
+Trigger::~Trigger()
+{
+    if (mtsClient != nullptr)
+        MTS_DeregisterClient (mtsClient);
 }
 
 void Trigger::setNumVoices()
@@ -58,6 +69,7 @@ void Trigger::addParameters (Parameters& params)
                                              "Voices",
                                              StringArray { "1", "2", "3", "4" },
                                              0);
+    emplace_param<chowdsp::BoolParameter> (params, useMTSTag, "Use MTS", true);
 }
 
 void Trigger::prepareToPlay (double sampleRate, int /*samplesPerBlock*/)
@@ -80,6 +92,7 @@ void Trigger::processBlock (chowdsp::AudioBlock<Vec>& block, const int numSample
 
     setNumVoices();
     const auto pulseSamples = int (fs * (getWidth() / 1000.0f));
+    const auto useMTSNow = isCurrentlyUsingMTS();
 
     for (size_t i = 0; i < numVoices; ++i)
     {
@@ -93,13 +106,23 @@ void Trigger::processBlock (chowdsp::AudioBlock<Vec>& block, const int numSample
         auto message = mm.getMessage();
         if (message.isNoteOn())
         {
+            if (useMTSNow && MTS_ShouldFilterNote (mtsClient, (char) message.getNoteNumber(), (char) message.getChannel()))
+                continue;
+
             const auto samplePosition = mm.samplePosition;
             auto samplesToFill = jmin (pulseSamples, numSamples - samplePosition);
 
             voiceIdx = (voiceIdx + 1) % numVoices;
             fillBlock (block, getAmp(), samplePosition, samplesToFill, voiceIdx);
-            curFreqHz = insert (curFreqHz, (float) tuning.frequencyForMidiNote (message.getNoteNumber()), voiceIdx);
+            const auto tunedFrequency = [this, useMTSNow, &message]
+            {
+                if (useMTSNow)
+                    return MTS_NoteToFrequency (mtsClient, (char) message.getNoteNumber(), (char) message.getChannel());
+                else
+                    return tuning.frequencyForMidiNote (message.getNoteNumber());
+            }();
 
+            curFreqHz = insert (curFreqHz, (float) tunedFrequency, voiceIdx);
             leftoverSamples[voiceIdx] = pulseSamples - samplesToFill;
         }
     }
@@ -189,6 +212,19 @@ void Trigger::setMappingFile (const File& mappingFile)
     mappingName = mappingFile.getFileNameWithoutExtension();
 
     setTuningFromScaleAndMappingData();
+}
+
+bool Trigger::isMTSAvailable() const noexcept
+{
+    if (mtsClient == nullptr)
+        return false;
+
+    return MTS_HasMaster (mtsClient);
+}
+
+bool Trigger::isCurrentlyUsingMTS() const noexcept
+{
+    return isMTSAvailable() && useMTSParam->get();
 }
 
 void Trigger::getTuningState (XmlElement* xml)

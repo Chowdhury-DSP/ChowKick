@@ -8,7 +8,7 @@ constexpr int offset = int (0.0001 * fs); // 0.1 millisecond
 } // namespace
 
 PulseViewer::PulseViewer (AudioProcessorValueTreeState& vtState) : vts (vtState),
-                                                                   trigger (vts, false),
+                                                                   trigger (vts, false, false),
                                                                    noise (vts, false),
                                                                    shaper (vts, fs, false),
                                                                    block (blockData, 1, nSamples)

@@ -26,7 +26,7 @@ float getYForMagnitude (float mag, float height)
 } // namespace
 
 FilterViewer::FilterViewer (AudioProcessorValueTreeState& vtState) : vts (vtState),
-                                                                     trigger (vts),
+                                                                     trigger (vts, false, false),
                                                                      resFilter (vts, trigger),
                                                                      helper (resFilter)
 {

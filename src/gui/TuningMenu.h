@@ -3,10 +3,11 @@
 #include "ChowKick.h"
 
 class TuningMenu : public ComboBox,
-                   private Trigger::Listener
+                   private Trigger::Listener,
+                   private Timer
 {
 public:
-    TuningMenu (Trigger& trig);
+    TuningMenu (Trigger& trig, AudioProcessorValueTreeState& vts);
     ~TuningMenu() override;
 
     void tuningChanged() override { refreshMenu(); }
@@ -20,7 +21,13 @@ private:
     void refreshMenuIOS();
 #endif
 
+    void timerCallback() override;
+    void addMTSOptionToMenu (PopupMenu& menu);
+
     Trigger& trigger;
+    RangedAudioParameter& useMTSParam;
+    bool wasMTSParamOn = false;
+    bool wasMTSMasterConnected = false;
 
     std::shared_ptr<FileChooser> fileChooser;
 
@@ -36,7 +43,7 @@ public:
         : foleys::GuiItem (builder, node)
     {
         auto plugin = dynamic_cast<ChowKick*> (builder.getMagicState().getProcessor());
-        comp = std::make_unique<TuningMenu> (plugin->getTrigger());
+        comp = std::make_unique<TuningMenu> (plugin->getTrigger(), plugin->getVTS());
         addAndMakeVisible (comp.get());
     }
 

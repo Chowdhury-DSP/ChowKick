@@ -68,16 +68,21 @@ void chooseUserTuningLibraryPath (std::shared_ptr<FileChooser>& fileChooser, Cal
 {
     auto config = getUserLibraryConfigFile();
     if (config.existsAsFile())
-        return File (config.loadFileAsString());
+        return { config.loadFileAsString() };
 
-    return File();
+    return {};
 }
 } // namespace
 
-TuningMenu::TuningMenu (Trigger& trig) : trigger (trig)
+TuningMenu::TuningMenu (Trigger& trig, AudioProcessorValueTreeState& vts)
+    : trigger (trig), useMTSParam (*vts.getParameter (TriggerTags::useMTSTag.getParamID()))
 {
     trigger.addListener (this);
+    wasMTSParamOn = useMTSParam.getValue() > 0.5f;
+    wasMTSMasterConnected = trigger.isMTSAvailable();
     refreshMenu();
+
+    startTimer (100);
 
     setColour (ComboBox::backgroundColourId, Colours::transparentBlack);
     setJustificationType (Justification::centred);
@@ -108,6 +113,36 @@ TuningMenu::~TuningMenu()
     trigger.removeListener (this);
 }
 
+void TuningMenu::timerCallback()
+{
+    const auto isUsingMTSParamOn = useMTSParam.getValue() > 0.5f;
+    const auto isMTSMasterConnected = trigger.isMTSAvailable();
+
+    if (isMTSMasterConnected != wasMTSMasterConnected || isUsingMTSParamOn != wasMTSParamOn)
+    {
+        wasMTSParamOn = isUsingMTSParamOn;
+        wasMTSMasterConnected = isMTSMasterConnected;
+        refreshMenu();
+    }
+}
+
+void TuningMenu::addMTSOptionToMenu (PopupMenu& menu)
+{
+    if (wasMTSMasterConnected)
+    {
+        PopupMenu::Item mtsItem;
+        mtsItem.itemID = 1001;
+        mtsItem.text = "Use MTS Tuning";
+        mtsItem.colour = wasMTSParamOn ? Colour { 0xFFFFB200 } : Colours::white;
+        mtsItem.action = [this]
+        {
+            useMTSParam.setValueNotifyingHost ((useMTSParam.getValue() > 0.5f) ? 0.0f : 1.0f);
+            refreshMenu();
+        };
+        menu.addItem (mtsItem);
+    }
+}
+
 void TuningMenu::refreshMenu()
 {
 #if JUCE_IOS
@@ -123,42 +158,44 @@ void TuningMenu::refreshMenu()
 
     auto sclName = trigger.getScaleName();
     auto scaleOption = "Select SCL" + (sclName.isEmpty() ? "" : " (" + sclName + ")");
-    rootMenu->addItem (scaleOption, [=]
+    rootMenu->addItem (scaleOption, [this, factoryTuningPath]
                        {
                            resetMenuText();
                            fileChooser = std::make_shared<FileChooser> ("Choose Scale", factoryTuningPath, "*.scl");
-                           fileChooser->launchAsync (fileChooserFlags, [=] (const FileChooser& fc)
+                           fileChooser->launchAsync (fileChooserFlags, [this] (const FileChooser& fc)
                                                      { trigger.setScaleFile (fc.getResult()); }); });
 
     auto kbmName = trigger.getMappingName();
     auto mappingOption = "Select KBM" + (kbmName.isEmpty() ? "" : " (" + kbmName + ")");
-    rootMenu->addItem (mappingOption, [=]
+    rootMenu->addItem (mappingOption, [this, factoryTuningPath]
                        {
                            resetMenuText();
                            fileChooser = std::make_shared<FileChooser> ("Choose Keyboard Mapping", factoryTuningPath, "*.kbm");
-                           fileChooser->launchAsync (fileChooserFlags, [=] (const FileChooser& fc)
+                           fileChooser->launchAsync (fileChooserFlags, [this] (const FileChooser& fc)
                                                      { trigger.setMappingFile (fc.getResult()); }); });
 
-    rootMenu->addItem ("Reset to Standard (12TET)", [=]
+    rootMenu->addItem ("Reset to Standard (12TET)", [this]
                        { trigger.resetTuning(); });
 
-    rootMenu->addItem ("Select user tuning directory", [=]
-                       {
-                           resetMenuText();
-                           chooseUserTuningLibraryPath (fileChooser, [=]
-                                                        { refreshMenu(); }); });
+    addMTSOptionToMenu (*rootMenu);
 
     rootMenu->addSeparator();
+    rootMenu->addItem ("Select user tuning directory", [this]
+                       {
+                           resetMenuText();
+                           chooseUserTuningLibraryPath (fileChooser, [this]
+                                                        { refreshMenu(); }); });
+
     if (factoryTuningPath != File() && factoryTuningPath.isDirectory())
     {
-        rootMenu->addItem ("Open Factory Tuning Directory", [=]
+        rootMenu->addItem ("Open Factory Tuning Directory", [this, factoryTuningPath]
                            {
                                resetMenuText();
                                factoryTuningPath.startAsProcess(); });
     }
     if (userTuningPath != File())
     {
-        rootMenu->addItem ("Open User Tuning Directory", [=]
+        rootMenu->addItem ("Open User Tuning Directory", [this, userTuningPath]
                            {
                                resetMenuText();
                                userTuningPath.startAsProcess(); });
@@ -251,8 +288,10 @@ void TuningMenu::refreshMenuIOS()
 
     rootMenu->addSubMenu (mappingOption, mappingMenu);
 
-    rootMenu->addItem ("Reset to Standard (12TET)", [=]
+    rootMenu->addItem ("Reset to Standard (12TET)", [this]
                        { trigger.resetTuning(); });
+
+    addMTSOptionToMenu (*rootMenu);
 
     resetMenuText();
 }

@@ -7,12 +7,16 @@ namespace TriggerTags
 const juce::ParameterID widthTag { "trig_width", VersionHints::original };
 const juce::ParameterID ampTag { "trig_amp", VersionHints::original };
 const juce::ParameterID voicesTag { "trig_voices", VersionHints::original };
+const juce::ParameterID useMTSTag { "use_mts", VersionHints::v1_2_0 };
 } // namespace TriggerTags
 
 class Trigger
 {
 public:
-    Trigger (AudioProcessorValueTreeState& vts, bool allowParamModulation = true);
+    explicit Trigger (AudioProcessorValueTreeState& vts,
+                      bool allowParamModulation = true,
+                      bool initialiseMTSClient = true);
+    ~Trigger();
 
     static void addParameters (Parameters& params);
     void prepareToPlay (double sampleRate, int samplesPerBlock);
@@ -27,6 +31,8 @@ public:
 
     String getScaleName() const noexcept { return scaleName; }
     String getMappingName() const noexcept { return mappingName; }
+    bool isMTSAvailable() const noexcept;
+    bool isCurrentlyUsingMTS() const noexcept;
 
     void getTuningState (XmlElement* xml);
     void setTuningState (XmlElement* xml);
@@ -49,6 +55,7 @@ private:
     chowdsp::FloatParameter* widthParam = nullptr;
     chowdsp::FloatParameter* ampParam = nullptr;
     chowdsp::ChoiceParameter* voicesParam = nullptr;
+    chowdsp::BoolParameter* useMTSParam = nullptr;
     const bool allowParamModulation = true;
 
     float fs = 44100.0f;
@@ -64,6 +71,8 @@ private:
     std::string scaleData;
     String mappingName;
     std::string mappingData;
+
+    MTSClient* mtsClient = nullptr;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Trigger)
 };
