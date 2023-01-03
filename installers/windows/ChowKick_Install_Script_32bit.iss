@@ -74,7 +74,7 @@ begin
     False, 'New Folder');
 
   Vst_32DirPage.add('');
-  Vst_32DirPage.values[0] := ExpandConstant('{commoncf32}\VST');
+  Vst_32DirPage.values[0] := ExpandConstant('{commoncf32}\VST2');
 
   //Standalone Dir Page
   StandaloneDirPage := CreateInputDirPage(Vst_32DirPage.ID,

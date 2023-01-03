@@ -160,6 +160,7 @@ void TuningMenu::refreshMenu()
     auto scaleOption = "Select SCL" + (sclName.isEmpty() ? "" : " (" + sclName + ")");
     rootMenu->addItem (scaleOption, [this, factoryTuningPath, fileChooserFlags]
                        {
+                           ignoreUnused (fileChooserFlags);
                            resetMenuText();
                            fileChooser = std::make_shared<FileChooser> ("Choose Scale", factoryTuningPath, "*.scl");
                            fileChooser->launchAsync (fileChooserFlags, [this] (const FileChooser& fc)
@@ -169,6 +170,7 @@ void TuningMenu::refreshMenu()
     auto mappingOption = "Select KBM" + (kbmName.isEmpty() ? "" : " (" + kbmName + ")");
     rootMenu->addItem (mappingOption, [this, factoryTuningPath, fileChooserFlags]
                        {
+                           ignoreUnused (fileChooserFlags);
                            resetMenuText();
                            fileChooser = std::make_shared<FileChooser> ("Choose Keyboard Mapping", factoryTuningPath, "*.kbm");
                            fileChooser->launchAsync (fileChooserFlags, [this] (const FileChooser& fc)
