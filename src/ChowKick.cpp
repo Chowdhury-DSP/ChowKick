@@ -147,6 +147,8 @@ void ChowKick::getStateInformation (MemoryBlock& destData)
     xml->addChildElement (tuningXml.release());
     xml->addChildElement (presetManager->saveXmlState().release());
 
+    xml->setAttribute ("plugin_version", JucePlugin_VersionString);
+
     copyXmlToBinary (*xml, destData);
 }
 
@@ -169,6 +171,19 @@ void ChowKick::setStateInformation (const void* data, int sizeInBytes)
             xmlState->deleteAllChildElementsWithTagName (chowdsp::PresetManager::presetStateTag);
 
             vts.replaceState (ValueTree::fromXml (*xmlState));
+
+            using Version = chowdsp::VersionUtils::Version;
+            const auto stateVersion = Version { xmlState->getStringAttribute ("plugin_version", "1.1.1") };
+            if (stateVersion <= Version { "1.1.1" })
+            {
+                // MTS support was added after version 1.1.1
+                auto* useMTSParam = vts.getParameter (TriggerTags::useMTSTag.getParamID());
+                useMTSParam->setValueNotifyingHost (0.0f);
+
+                // Velocity sensitivity was added after version 1.1.1
+                auto* veloSenseParam = vts.getParameter (TriggerTags::enableVelocitySenseTag.getParamID());
+                veloSenseParam->setValueNotifyingHost (0.0f);
+            }
         }
     }
 }

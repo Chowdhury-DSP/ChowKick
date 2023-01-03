@@ -9,7 +9,7 @@ class SettingsButton : public DrawableButton,
     using SettingID = chowdsp::GlobalPluginSettings::SettingID;
 
 public:
-    SettingsButton (const ChowKick& processor, chowdsp::OpenGLHelper* openGLHelper);
+    SettingsButton (ChowKick& processor, chowdsp::OpenGLHelper* openGLHelper);
     ~SettingsButton() override;
 
     void globalSettingChanged (SettingID settingID);
@@ -17,10 +17,12 @@ public:
 private:
     void showSettingsMenu();
     void openGLMenu (PopupMenu& menu, int itemID);
+    void velocitySenseMenu (PopupMenu& menu, int itemID);
     void copyDiagnosticInfo();
 
     const ChowKick& proc;
     chowdsp::OpenGLHelper* openGLHelper;
+    chowdsp::BoolParameter* velocitySenseParam = nullptr;
 
     chowdsp::SharedPluginSettings pluginSettings;
     chowdsp::SharedLNFAllocator lnfAllocator;
