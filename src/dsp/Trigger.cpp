@@ -26,6 +26,7 @@ Trigger::Trigger (AudioProcessorValueTreeState& vts, bool allowParamMod, bool in
     loadParameterPointer (ampParam, vts, ampTag);
     loadParameterPointer (voicesParam, vts, voicesTag);
     loadParameterPointer (useMTSParam, vts, useMTSTag);
+    loadParameterPointer (useVeloSenseParam, vts, enableVelocitySenseTag);
 
     if (initMTSClient)
         mtsClient = MTS_RegisterClient();
@@ -70,6 +71,7 @@ void Trigger::addParameters (Parameters& params)
                                              StringArray { "1", "2", "3", "4" },
                                              0);
     emplace_param<chowdsp::BoolParameter> (params, useMTSTag, "Use MTS", true);
+    emplace_param<chowdsp::BoolParameter> (params, enableVelocitySenseTag, "Velocity Sensitivity", true);
 }
 
 void Trigger::prepareToPlay (double sampleRate, int /*samplesPerBlock*/)
@@ -97,7 +99,7 @@ void Trigger::processBlock (chowdsp::AudioBlock<Vec>& block, const int numSample
     for (size_t i = 0; i < numVoices; ++i)
     {
         int samplesToFill = jmin (leftoverSamples[i], numSamples);
-        fillBlock (block, getAmp(), 0, samplesToFill, i);
+        fillBlock (block, getAmp() * velocityAmplitudes[i], 0, samplesToFill, i);
         leftoverSamples[i] -= samplesToFill;
     }
 
@@ -113,7 +115,12 @@ void Trigger::processBlock (chowdsp::AudioBlock<Vec>& block, const int numSample
             auto samplesToFill = jmin (pulseSamples, numSamples - samplePosition);
 
             voiceIdx = (voiceIdx + 1) % numVoices;
-            fillBlock (block, getAmp(), samplePosition, samplesToFill, voiceIdx);
+            if (useVeloSenseParam->get())
+                velocityAmplitudes[voiceIdx] = 0.1f + 1.8f * message.getFloatVelocity();
+            else
+                velocityAmplitudes[voiceIdx] = 1.0f;
+
+            fillBlock (block, getAmp() * velocityAmplitudes[voiceIdx], samplePosition, samplesToFill, voiceIdx);
             const auto tunedFrequency = [this, useMTSNow, &message]
             {
                 if (useMTSNow)

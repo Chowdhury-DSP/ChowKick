@@ -8,6 +8,7 @@ const juce::ParameterID widthTag { "trig_width", VersionHints::original };
 const juce::ParameterID ampTag { "trig_amp", VersionHints::original };
 const juce::ParameterID voicesTag { "trig_voices", VersionHints::original };
 const juce::ParameterID useMTSTag { "use_mts", VersionHints::v1_2_0 };
+const juce::ParameterID enableVelocitySenseTag { "velo_sense", VersionHints::v1_2_0 };
 } // namespace TriggerTags
 
 class Trigger
@@ -56,6 +57,7 @@ private:
     chowdsp::FloatParameter* ampParam = nullptr;
     chowdsp::ChoiceParameter* voicesParam = nullptr;
     chowdsp::BoolParameter* useMTSParam = nullptr;
+    chowdsp::BoolParameter* useVeloSenseParam = nullptr;
     const bool allowParamModulation = true;
 
     float fs = 44100.0f;
@@ -63,7 +65,8 @@ private:
 
     size_t voiceIdx = 0;
     size_t numVoices = 0;
-    std::array<int, Vec::size> leftoverSamples { 0 };
+    std::array<int, Vec::size> leftoverSamples {};
+    std::array<float, Vec::size> velocityAmplitudes { 1.0f, 1.0f, 1.0f, 1.0f };
 
     Tunings::Tuning tuning;
     ListenerList<Listener> tuningListeners;

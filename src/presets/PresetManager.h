@@ -6,9 +6,11 @@ class ChowKick;
 class PresetManager : public chowdsp::PresetManager
 {
 public:
-    PresetManager (AudioProcessorValueTreeState& vts);
+    explicit PresetManager (AudioProcessorValueTreeState& vts);
 
     chowdsp::Preset loadUserPresetFromFile (const File& file) override;
+
+    void loadPresetState (const juce::XmlElement* xml) override;
 
 private:
     ChowKick* plugin;
