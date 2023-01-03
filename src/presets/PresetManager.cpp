@@ -70,3 +70,23 @@ chowdsp::Preset PresetManager::loadUserPresetFromFile (const File& file)
 
     return { name, vendor, *xmlState, category };
 }
+
+void PresetManager::loadPresetState (const juce::XmlElement* xml)
+{
+    StringArray presetAgnosticParams { TriggerTags::useMTSTag.getParamID(), TriggerTags::enableVelocitySenseTag.getParamID() };
+
+    auto newState = juce::ValueTree::fromXml (*xml);
+    for (auto& param : presetAgnosticParams)
+    {
+        auto curParamTree = vts.state.getChildWithProperty ("id", param);
+        jassert (curParamTree.isValid());
+
+        auto presetParamTree = newState.getChildWithProperty ("id", param);
+        if (presetParamTree.isValid())
+            presetParamTree.copyPropertiesFrom (curParamTree, nullptr);
+        else
+            newState.appendChild (curParamTree.createCopy(), nullptr);
+    }
+
+    vts.replaceState (newState);
+}

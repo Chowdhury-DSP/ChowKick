@@ -8,9 +8,9 @@ const Colour onColour = Colour (0xFFEAA92C);
 const Colour offColour = Colours::white;
 } // namespace
 
-SettingsButton::SettingsButton (const ChowKick& processor, chowdsp::OpenGLHelper* oglHelper) : DrawableButton ("Settings", DrawableButton::ImageFitted),
-                                                                                               proc (processor),
-                                                                                               openGLHelper (oglHelper)
+SettingsButton::SettingsButton (ChowKick& processor, chowdsp::OpenGLHelper* oglHelper) : DrawableButton ("Settings", DrawableButton::ImageFitted),
+                                                                                         proc (processor),
+                                                                                         openGLHelper (oglHelper)
 {
 #if JUCE_MODULE_AVAILABLE_juce_opengl
     Logger::writeToLog ("Checking OpenGL availability...");
@@ -23,6 +23,8 @@ SettingsButton::SettingsButton (const ChowKick& processor, chowdsp::OpenGLHelper
     pluginSettings->addProperties<&SettingsButton::globalSettingChanged> ({ { openglID, shouldUseOpenGLByDefault } }, *this);
 
     globalSettingChanged (openglID);
+
+    chowdsp::ParamUtils::loadParameterPointer (velocitySenseParam, processor.getVTS(), TriggerTags::enableVelocitySenseTag);
 
     auto cog = Drawable::createFromImageData (BinaryData::cogsolid_svg, BinaryData::cogsolid_svgSize);
     setImages (cog.get());
@@ -54,6 +56,7 @@ void SettingsButton::showSettingsMenu()
     PopupMenu menu;
 
     openGLMenu (menu, 100);
+    velocitySenseMenu (menu, 200);
 
     menu.addSeparator();
     menu.addItem ("View Source Code", []
@@ -101,6 +104,19 @@ void SettingsButton::openGLMenu (PopupMenu& menu, int itemID)
     { pluginSettings->setProperty (openglID, ! isCurrentlyOn); };
     item.colour = isCurrentlyOn ? onColour : offColour;
 
+    menu.addItem (item);
+}
+
+void SettingsButton::velocitySenseMenu (PopupMenu& menu, int itemID)
+{
+    const auto isCurrentlyOn = velocitySenseParam->get();
+
+    PopupMenu::Item item;
+    item.itemID = ++itemID;
+    item.text = "Enable Velocity Sensitivity";
+    item.action = [this, isCurrentlyOn]
+    { velocitySenseParam->setValueNotifyingHost (isCurrentlyOn ? 0.0f : 1.0f); };
+    item.colour = isCurrentlyOn ? onColour : offColour;
     menu.addItem (item);
 }
 
