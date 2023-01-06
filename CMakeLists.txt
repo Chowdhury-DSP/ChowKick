@@ -20,7 +20,7 @@ endif()
 # Build LV2 only on Linux
 if(UNIX AND NOT APPLE)
     message(STATUS "Building LV2 plugin format")
-    list(APPEND JUCE_FORMATS LV2)
+#    list(APPEND JUCE_FORMATS LV2) # juce_lv2_helper fails with JUCE 7.0.4 and up, so let's disable for now
 endif()
 
 add_subdirectory(modules)
