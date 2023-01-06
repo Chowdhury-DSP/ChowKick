@@ -8,9 +8,10 @@ const Colour onColour = Colour (0xFFEAA92C);
 const Colour offColour = Colours::white;
 } // namespace
 
-SettingsButton::SettingsButton (ChowKick& processor, chowdsp::OpenGLHelper* oglHelper) : DrawableButton ("Settings", DrawableButton::ImageFitted),
-                                                                                         proc (processor),
-                                                                                         openGLHelper (oglHelper)
+SettingsButton::SettingsButton (ChowKick& processor,
+                                chowdsp::OpenGLHelper* oglHelper) : DrawableButton ("Settings", DrawableButton::ImageFitted),
+                                                                    proc (processor),
+                                                                    openGLHelper (oglHelper)
 {
 #if JUCE_MODULE_AVAILABLE_juce_opengl
     Logger::writeToLog ("Checking OpenGL availability...");

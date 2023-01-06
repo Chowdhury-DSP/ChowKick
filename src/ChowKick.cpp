@@ -101,7 +101,7 @@ void ChowKick::processSynth (AudioBuffer<float>& buffer, MidiBuffer& midi)
 
 AudioProcessorEditor* ChowKick::createEditor()
 {
-    if (openGLHelper == nullptr)
+    if (openGLHelper == nullptr && wrapperType != WrapperType::wrapperType_LV2) // LV2 doesn't play nicely with OpenGL
         openGLHelper = std::make_unique<chowdsp::OpenGLHelper>();
 
     hostContextProvider.reset();
