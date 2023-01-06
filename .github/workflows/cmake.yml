@@ -44,9 +44,8 @@ jobs:
       run: cmake -Bbuild
 
     - name: Build
-      uses: GabrielBB/xvfb-action@v1
-      with:
-        run: cmake --build build --config Release --parallel
+      shell: bash
+      run: cmake --build build --config Release --parallel
 
     - name: Validate
       if: runner.os == 'Windows' || runner.os == 'MacOS'
