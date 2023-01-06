@@ -172,9 +172,9 @@ void ChowKick::setStateInformation (const void* data, int sizeInBytes)
 
             vts.replaceState (ValueTree::fromXml (*xmlState));
 
-            using Version = chowdsp::VersionUtils::Version;
-            const auto stateVersion = Version { xmlState->getStringAttribute ("plugin_version", "1.1.1") };
-            if (stateVersion <= Version { "1.1.1" })
+            using namespace chowdsp::version_literals;
+            const auto stateVersion = chowdsp::Version { xmlState->getStringAttribute ("plugin_version", "1.1.1") };
+            if (stateVersion <= "1.1.1"_v)
             {
                 // MTS support was added after version 1.1.1
                 auto* useMTSParam = vts.getParameter (TriggerTags::useMTSTag.getParamID());
