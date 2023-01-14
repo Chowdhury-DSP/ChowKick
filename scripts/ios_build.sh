@@ -29,7 +29,7 @@ if [ "$1" == "build" ] || [ "$1" == "configure" ]; then
   if [ "$1" == "build" ]; then
   xcodebuild -project build-ios/ChowKick.xcodeproj \
     -scheme ChowKick_Standalone archive -configuration Release -allowProvisioningUpdates \
-    -sdk iphoneos -jobs 12 -archivePath ChowKick.xcarchive | xcpretty
+    -sdk iphoneos -jobs 12 -archivePath ChowKick.xcarchive # | xcpretty
   fi
 fi
 
