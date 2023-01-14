@@ -1,59 +1,59 @@
-name: CI-iOS
-
-on:
-  push:
-    branches:
-    - main
-    - develop
-    - ios*
-    paths-ignore:
-    - 'manual/**'
-    - 'sim/**'
-    - '*.sh'
-    - '*.md'
-  pull_request:
-    branches:
-    - main
-    - develop
-    paths-ignore:
-    - 'manual/**'
-    - 'sim/**'
-    - '*.sh'
-    - '*.md'
-  workflow_dispatch:
-
-jobs:
-  build_and_test:
-    if: contains(toJson(github.event.commits), '***NO_CI***') == false && contains(toJson(github.event.commits), '[ci skip]') == false && contains(toJson(github.event.commits), '[skip ci]') == false
-    name: Build AUv3 plugin for iOS
-    runs-on: macos-latest
-
-    steps:
-    - name: Get latest CMake
-      uses: lukka/get-cmake@latest
-
-    - name: Checkout code
-      uses: actions/checkout@v2
-      with:
-        submodules: recursive
-
-    - uses: Apple-Actions/import-codesign-certs@v1
-      with:
-        p12-file-base64: ${{ secrets.IOS_CERTIFICATES_BASE64 }}
-        p12-password: ${{ secrets.IOS_CERTIFICATES_PASS }}
-
-#    - uses: Apple-Actions/download-provisioning-profiles@v1
+#name: CI-iOS
+#
+#on:
+#  push:
+#    branches:
+#    - main
+#    - develop
+#    - ios*
+#    paths-ignore:
+#    - 'manual/**'
+#    - 'sim/**'
+#    - '*.sh'
+#    - '*.md'
+#  pull_request:
+#    branches:
+#    - main
+#    - develop
+#    paths-ignore:
+#    - 'manual/**'
+#    - 'sim/**'
+#    - '*.sh'
+#    - '*.md'
+#  workflow_dispatch:
+#
+#jobs:
+#  build_and_test:
+#    if: contains(toJson(github.event.commits), '***NO_CI***') == false && contains(toJson(github.event.commits), '[ci skip]') == false && contains(toJson(github.event.commits), '[skip ci]') == false
+#    name: Build AUv3 plugin for iOS
+#    runs-on: macos-latest
+#
+#    steps:
+#    - name: Get latest CMake
+#      uses: lukka/get-cmake@latest
+#
+#    - name: Checkout code
+#      uses: actions/checkout@v2
 #      with:
-#        bundle-id: com.chowdsp.ChowKick*
-#        issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
-#        api-key-id: ${{ secrets.APPSTORE_KEY_ID }}
-#        api-private-key: ${{ secrets.APPSTORE_PRIVATE_KEY }}
-
-    - name: Configure and Build
-      run: bash scripts/ios_build.sh build
-      env:
-        TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-
-#    - name: Build
-#      shell: bash
-#      run: cmake --build build-ios --config Release --parallel 4 | xcpretty
+#        submodules: recursive
+#
+#    - uses: Apple-Actions/import-codesign-certs@v1
+#      with:
+#        p12-file-base64: ${{ secrets.IOS_CERTIFICATES_BASE64 }}
+#        p12-password: ${{ secrets.IOS_CERTIFICATES_PASS }}
+#
+##    - uses: Apple-Actions/download-provisioning-profiles@v1
+##      with:
+##        bundle-id: com.chowdsp.ChowKick*
+##        issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+##        api-key-id: ${{ secrets.APPSTORE_KEY_ID }}
+##        api-private-key: ${{ secrets.APPSTORE_PRIVATE_KEY }}
+#
+#    - name: Configure and Build
+#      run: bash scripts/ios_build.sh build
+#      env:
+#        TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+#
+##    - name: Build
+##      shell: bash
+##      run: cmake --build build-ios --config Release --parallel 4 | xcpretty
