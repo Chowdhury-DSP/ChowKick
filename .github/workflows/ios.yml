@@ -50,7 +50,7 @@ jobs:
 #        api-private-key: ${{ secrets.APPSTORE_PRIVATE_KEY }}
 
     - name: Configure and Build
-      run: bash scripts/ios_build.sh
+      run: bash scripts/ios_build.sh build
       env:
         TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
 
