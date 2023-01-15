@@ -11,7 +11,6 @@ juce_add_modules(foleys_gui_magic)
 add_subdirectory(chowdsp_wdf)
 
 add_subdirectory(tuning-library EXCLUDE_FROM_ALL)
-add_subdirectory(oddsound-mts EXCLUDE_FROM_ALL)
 
 include(cmake/WarningFlags.cmake)
 add_library(juce_plugin_modules STATIC)
@@ -29,7 +28,6 @@ target_link_libraries(juce_plugin_modules
         chowdsp::chowdsp_presets
         chowdsp::chowdsp_wdf
         tuning-library
-        oddsound-mts
     PUBLIC
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
@@ -69,6 +67,13 @@ if(CHOWKICK_BUILD_CLAP)
             chowdsp::chowdsp_clap_extensions
             clap_juce_extensions
     )
+endif()
+
+if (CHOWKICK_BUILD_WITH_MTS)
+    message(STATUS "Linking with MTS")
+    add_subdirectory(oddsound-mts EXCLUDE_FROM_ALL)
+    target_link_libraries(juce_plugin_modules PRIVATE oddsound-mts)
+    target_compile_definitions(juce_plugin_modules PUBLIC CHOW_KICK_WITH_MTS=1)
 endif()
 
 set_target_properties(juce_plugin_modules PROPERTIES

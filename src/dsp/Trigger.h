@@ -75,7 +75,9 @@ private:
     String mappingName;
     std::string mappingData;
 
+#if CHOW_KICK_WITH_MTS
     MTSClient* mtsClient = nullptr;
+#endif
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Trigger)
 };

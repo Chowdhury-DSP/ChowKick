@@ -18,7 +18,7 @@ inline Vec insert (const Vec& v, float s, size_t i) noexcept
 }
 } // namespace
 
-Trigger::Trigger (AudioProcessorValueTreeState& vts, bool allowParamMod, bool initMTSClient)
+Trigger::Trigger (AudioProcessorValueTreeState& vts, bool allowParamMod, [[maybe_unused]] bool initMTSClient)
     : allowParamModulation (allowParamMod)
 {
     using namespace chowdsp::ParamUtils;
@@ -28,14 +28,18 @@ Trigger::Trigger (AudioProcessorValueTreeState& vts, bool allowParamMod, bool in
     loadParameterPointer (useMTSParam, vts, useMTSTag);
     loadParameterPointer (useVeloSenseParam, vts, enableVelocitySenseTag);
 
+#if CHOW_KICK_WITH_MTS
     if (initMTSClient)
         mtsClient = MTS_RegisterClient();
+#endif
 }
 
-Trigger::~Trigger()
+Trigger::~Trigger() // NOLINT
 {
+#if CHOW_KICK_WITH_MTS
     if (mtsClient != nullptr)
         MTS_DeregisterClient (mtsClient);
+#endif
 }
 
 void Trigger::setNumVoices()
@@ -108,8 +112,10 @@ void Trigger::processBlock (chowdsp::AudioBlock<Vec>& block, const int numSample
         auto message = mm.getMessage();
         if (message.isNoteOn())
         {
+#if CHOW_KICK_WITH_MTS
             if (useMTSNow && MTS_ShouldFilterNote (mtsClient, (char) message.getNoteNumber(), (char) message.getChannel()))
                 continue;
+#endif
 
             const auto samplePosition = mm.samplePosition;
             auto samplesToFill = jmin (pulseSamples, numSamples - samplePosition);
@@ -123,9 +129,12 @@ void Trigger::processBlock (chowdsp::AudioBlock<Vec>& block, const int numSample
             fillBlock (block, getAmp() * velocityAmplitudes[voiceIdx], samplePosition, samplesToFill, voiceIdx);
             const auto tunedFrequency = [this, useMTSNow, &message]
             {
+                ignoreUnused (useMTSNow);
+#if CHOW_KICK_WITH_MTS
                 if (useMTSNow)
                     return MTS_NoteToFrequency (mtsClient, (char) message.getNoteNumber(), (char) message.getChannel());
                 else
+#endif
                     return tuning.frequencyForMidiNote (message.getNoteNumber());
             }();
 
@@ -221,12 +230,16 @@ void Trigger::setMappingFile (const File& mappingFile)
     setTuningFromScaleAndMappingData();
 }
 
-bool Trigger::isMTSAvailable() const noexcept
+bool Trigger::isMTSAvailable() const noexcept // NOLINT
 {
+#if CHOW_KICK_WITH_MTS
     if (mtsClient == nullptr)
         return false;
 
     return MTS_HasMaster (mtsClient);
+#else
+    return false;
+#endif
 }
 
 bool Trigger::isCurrentlyUsingMTS() const noexcept

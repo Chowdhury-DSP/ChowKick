@@ -1,7 +1,10 @@
 #!/bin/bash
 
 set -e
-TEAM_ID=$(more ~/Developer/mac_id)
+if [[ -z "${TEAM_ID}" ]]; then
+  MY_SCRIPT_VARIABLE="Some default value because DEPLOY_ENV is undefined"
+  TEAM_ID=$(more ~/Developer/mac_id)
+fi
 
 if [ "$1" == "help" ]; then
   echo "Run bash ios_build.sh build clean"
@@ -11,23 +14,23 @@ if [ "$1" == "help" ]; then
 fi
 
 if [ "$1" == "build" ] || [ "$1" == "configure" ]; then
-echo "Running CMake configuration..."
+  echo "Running CMake configuration..."
 
-# clean up old builds
-if [ "$2" == "clean" ]; then rm -Rf build-ios; fi
+  # clean up old builds
+  if [ "$2" == "clean" ]; then rm -Rf build-ios; fi
 
-# generate new builds
-cmake -Bbuild-ios -GXcode -DCMAKE_SYSTEM_NAME=iOS \
-    -DCMAKE_OSX_DEPLOYMENT_TARGET=11.4 \
-    -DCMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM="$TEAM_ID" \
-    -DCMAKE_XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY="1,2" \
-    -DCMAKE_XCODE_ATTRIBUTE_ENABLE_BITCODE="NO"
+  # generate new builds
+  cmake -Bbuild-ios -GXcode -DCMAKE_SYSTEM_NAME=iOS \
+      -DCMAKE_OSX_DEPLOYMENT_TARGET=11.4 \
+      -DCMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM="$TEAM_ID" \
+      -DCMAKE_XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY="1,2" \
+      -DCMAKE_XCODE_ATTRIBUTE_ENABLE_BITCODE="NO"
 
-if [ "$1" == "build" ]; then
-xcodebuild -project build-ios/ChowKick.xcodeproj \
-  -scheme ChowKick_Standalone archive -configuration Release \
-  -sdk iphoneos -jobs 12 -archivePath ChowKick.xcarchive | xcpretty
-fi
+  if [ "$1" == "build" ]; then
+  xcodebuild -project build-ios/ChowKick.xcodeproj \
+    -scheme ChowKick_Standalone archive -configuration Release -allowProvisioningUpdates \
+    -sdk iphoneos -jobs 12 -archivePath ChowKick.xcarchive # | xcpretty
+  fi
 fi
 
 if [ "$1" == "version" ]; then

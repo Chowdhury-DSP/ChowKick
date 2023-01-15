@@ -17,12 +17,10 @@ public:
 private:
     void showSettingsMenu();
     void openGLMenu (PopupMenu& menu, int itemID);
-    void velocitySenseMenu (PopupMenu& menu, int itemID);
     void copyDiagnosticInfo();
 
     const ChowKick& proc;
     chowdsp::OpenGLHelper* openGLHelper;
-    chowdsp::BoolParameter* velocitySenseParam = nullptr;
 
     chowdsp::SharedPluginSettings pluginSettings;
     chowdsp::SharedLNFAllocator lnfAllocator;

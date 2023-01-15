@@ -293,8 +293,6 @@ void TuningMenu::refreshMenuIOS()
     rootMenu->addItem ("Reset to Standard (12TET)", [this]
                        { trigger.resetTuning(); });
 
-    addMTSOptionToMenu (*rootMenu);
-
     resetMenuText();
 }
 #endif

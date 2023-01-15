@@ -187,39 +187,45 @@
                 </View>
                 <View max-height="5" background-color="00000000"/>
             </View>
-            <View flex-direction="row" flex-grow="0.2" margin="2" padding="0" background-color="FF425866">
+            <View flex-direction="column" flex-grow="0.2" margin="2" padding="0" background-color="FF425866">
                 <ModSlider class="SliderClass" parameter="out_level" caption="Level" slider-type="linear-vertical"
                            background-color="00000000" lookAndFeel="SliderLNF" slider-thumb="FFFFB200"
                            slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
                            caption-color="C5D1D8" slider-background="1B2A33" name="Level"
                            tooltip="Controls the output level"/>
+                <TextButton parameter="velo_sense" text="Velocity" text_on="Velocity" background-color="00000000"
+                            margin="0" padding="5" button-color="FF1B2A33" flex-grow="0.125"
+                            button-on-color="FFFFB200" lookAndFeel="LookAndFeel_V3" name="Velocity Sense"
+                            tooltip="Enables velocity sensitivity."
+                            button-off-text="FFFFFFFF" button-on-text="FFFFFFFF"/>
             </View>
         </View>
         <KeyboardComponent padding="0" margin="0" flex-grow="0.4"/>
-        <View margin="0" max-height="40" background-color="1B2A33" flex-grow="0.1"
+        <View margin="0" max-height="30" background-color="1B2A33" flex-grow="0.1"
               lookAndFeel="MyLNF" padding="0">
-            <View background-color="00000000" flex-grow="0.5"/>
-            <ComboBox max-width="100" margin="0" padding="0" parameter="trig_voices"
+            <View background-color="00000000" flex-grow="0.1"/>
+            <ComboBox max-width="100" margin="0" padding="0" parameter="trig_voices" flex-grow="0.65"
                       lookAndFeel="ComboBoxLNF" combo-outline="00000000" combo-background="1B2A33"
                       combo-menu-background="1B2A33" combo-menu-background-highlight="FF425866"
                       background-color="00000000" name="Voices"
                       tooltip="Selects how many polyphonic voices the kick drum can have"/>
-            <View flex-grow="0.5" background-color="00000000"/>
-            <TuningMenu margin="0" padding="0" background-color="00000000" lookAndFeel="TuningMenuLNF"
+            <View background-color="00000000" flex-grow="0.05"/>
+            <TuningMenu margin="0" padding="0" background-color="00000000" flex-grow="0.55"
+                        lookAndFeel="TuningMenuLNF" max-width="100"
                         name="Tuning Menu" tooltip="Select a custom scale or keyboard mapping"/>
-            <View flex-grow="0.5" background-color="00000000"/>
+            <View flex-grow="0.05" background-color="00000000"/>
             <ComboBox combo-background="1B2A33" parameter="res_mode" name="Res. Mode"
                       margin="0" padding="0" background-color="00000000" lookAndFeel="ComboBoxLNF"
-                      tooltip="Selects the mode used by the resonance filter"/>
-            <View flex-grow="0.5" background-color="00000000"/>
-            <TipJar max-height="35" margin="0" padding="0" lookAndFeel="ComboBoxLNF" combo-outline="00000000"
-                    combo-background="00000000" combo-menu-background="1B2A33"
-                    combo-menu-background-highlight="FF425866"/>
-            <View flex-grow="0.25" background-color="00000000"/>
+                      tooltip="Selects the mode used by the resonance filter" flex-grow="1.5"
+                      max-width="200"/>
+            <View flex-grow="0.15" background-color="00000000"/>
+            <PresetComp flex-grow="1.5" margin="0" padding="2" background-color="00000000"
+                        background="FF425866" text-highlight="FF8B3232" lookAndFeel="BottomBarLNF"
+                        name="Presets" tooltip="Load and save plugin presets"/>
+            <View margin="0" background-color="00000000" lookAndFeel="MyLNF" flex-grow="0.05"/>
             <SettingsButton lookAndFeel="ComboBoxLNF" background-color="00000000" flex-grow="0.15"
-                            margin="0" padding="5" max-width="40" min-width="25" name="Settings"
+                            margin="0" padding="2" max-width="40" min-width="25" name="Settings"
                             tooltip="Opens the plugin settings menu."/>
         </View>
     </View>
 </magic>
-         
