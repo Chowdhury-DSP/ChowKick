@@ -287,7 +287,10 @@ void ModSliderItem::resized()
     }();
 
     if (slider.has_value())
+    {
         slider->setTextBoxStyle (textBoxPosition, false, proportionOfWidth (0.75f), sliderTextHeightToUse);
+        slider->setColour (juce::Slider::ColourIds::textBoxOutlineColourId, juce::Colours::transparentBlack);
+    }
 
     foleys::GuiItem::resized();
 }

@@ -60,26 +60,28 @@
                                    slider-text="FFFFFFFF" slider-text-outline="00000000"
                                    slider-text-highlight="00000000" slider-type="rotary-horizontal-vertical"
                                    slider-track="1B2A33" slider-thumb="FFFFB200" caption-color="C5D1D8"
-                                   tooltip="Controls the length of the trigger pulse" name="Width"/>
+                                   tooltip="Controls the length of the trigger pulse" name="Width"
+                                   slidertext-width="80" slidertext-height="17"/>
                         <ModSlider class="SliderClass" parameter="trig_amp" caption="Amplitude"
                                    lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
                                    slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
                                    slider-text-highlight="00000000" slider-text-outline="00000000"
                                    caption-color="C5D1D8" tooltip="Controls the amplitude of the trigger pulse"
-                                   name="Amplitude" slider-type="rotary-horizontal-vertical"/>
+                                   name="Amplitude" slider-type="rotary-horizontal-vertical"
+                                   slidertext-width="80" slidertext-height="17"/>
                         <ModSlider class="SliderClass" parameter="pulse_decay" caption="Decay" lookAndFeel="SliderLNF"
                                    margin="0" background-color="0x00000000" slider-thumb="FFFFB200"
                                    slider-track="1B2A33" slider-text-outline="00000000" slider-text-highlight="00000000"
                                    slider-text="FFFFFFFF" caption-color="C5D1D8" slider-type="rotary-horizontal-vertical"
                                    tooltip="Controls the decay characteristic of the pulse shaper circuit"
-                                   name="Decay"/>
+                                   name="Decay" slidertext-width="80" slidertext-height="17"/>
                         <ModSlider class="SliderClass" parameter="pulse_sustain" caption="Sustain"
                                    lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
                                    slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
                                    slider-text-highlight="00000000" slider-text-outline="00000000"
                                    caption-color="C5D1D8" slider-type="rotary-horizontal-vertical"
                                    tooltip="Controls the sustain characteristic of the pulse shaper circuit"
-                                   name="Sustain"/>
+                                   name="Sustain" slidertext-width="80" slidertext-height="17"/>
                         <View flex-grow="0.05" background-color="0x00000000"/>
                     </View>
                     <View margin="0" padding="0" background-color="0x00000000" flex-grow="0.95">
@@ -89,21 +91,21 @@
                                    caption-color="C5D1D8" margin="0" padding="0" border="0" background-color="00000000"
                                    slider-textbox="textbox-below" slider-thumb="FFFFB200" slider-track="1B2A33"
                                    slider-text="FFFFFFFF" slider-text-highlight="00000000"
-                                   slider-text-outline="00000000"
+                                   slider-text-outline="00000000" slidertext-width="80" slidertext-height="17"
                                    tooltip="Controls the amount of noise added to the kick signal"/>
                         <ModSlider parameter="noise_decay" slider-type="rotary-horizontal-vertical"
                                    name="Noise Decay" lookAndFeel="SliderLNF" caption="Noise Decay"
                                    caption-color="C5D1D8" margin="0" padding="0" border="0" background-color="00000000"
                                    slider-textbox="textbox-below" slider-thumb="FFFFB200" slider-track="1B2A33"
                                    slider-text="FFFFFFFF" slider-text-highlight="00000000"
-                                   slider-text-outline="00000000"
+                                   slider-text-outline="00000000" slidertext-width="80" slidertext-height="17"
                                    tooltip="Controls the decay length of the added noise"/>
                         <ModSlider parameter="noise_freq" slider-type="rotary-horizontal-vertical"
                                    name="Noise Cutoff" lookAndFeel="SliderLNF" caption="Noise Cutoff"
                                    caption-color="C5D1D8" margin="0" padding="0" border="0" background-color="00000000"
                                    slider-track="1B2A33" slider-thumb="FFFFB200" slider-textbox="textbox-below"
                                    slider-text="FFFFFFFF" slider-text-highlight="00000000"
-                                   slider-text-outline="00000000"
+                                   slider-text-outline="00000000" slidertext-width="80" slidertext-height="17"
                                    tooltip="Controls the cutoff frequency of the added noise"/>
                         <View margin="0" padding="0" background-color="00000000" flex-direction="column">
                             <View background-color="00000000" flex-grow="0.15"/>
@@ -140,17 +142,18 @@
                                     slider-text-highlight="00000000" slider-text-outline="00000000"
                                     caption-color="C5D1D8" disable-param="res_link" disable-for-val="1"
                                     name="Frequency" slider-type="rotary-horizontal-vertical"
-                                    tooltip="Controls the frequency of the filter when not in link mode"/>
+                                    tooltip="Controls the frequency of the filter when not in link mode"
+                                    slidertext-width="80" slidertext-height="17"/>
                     <ModSlider class="SliderClass" parameter="res_q" caption="Q" lookAndFeel="SliderLNF"
                                margin="0" background-color="0x00000000" slider-thumb="FFFFB200"
                                slider-track="1B2A33" slider-text="FFFFFFFF" slider-text-highlight="00000000"
                                slider-text-outline="00000000" caption-color="C5D1D8"
-                               tooltip="Controls the resonant of the filter"
+                               tooltip="Controls the resonant of the filter" slidertext-width="80" slidertext-height="17"
                                name="Q" slider-type="rotary-horizontal-vertical"/>
                     <ModSlider class="SliderClass" parameter="res_damp" caption="Damping" lookAndFeel="SliderLNF"
                                margin="0" background-color="0x00000000" slider-thumb="FFFFB200"
                                slider-track="1B2A33" slider-text="FFFFFFFF" slider-text-highlight="00000000"
-                               slider-text-outline="00000000" caption-color="C5D1D8"
+                               slider-text-outline="00000000" caption-color="C5D1D8" slidertext-width="80" slidertext-height="17"
                                tooltip="Controls the damping of the filter feedback"
                                name="Damping" slider-type="rotary-horizontal-vertical"/>
                 </View>
@@ -159,12 +162,12 @@
                                     background-color="0x00000000"
                                     lookAndFeel="SliderLNF" slider-thumb="FFFFB200" slider-track="1B2A33"
                                     slider-text="FFFFFFFF" slider-text-highlight="00000000"
-                                    slider-text-outline="00000000"
+                                    slider-text-outline="00000000" slidertext-width="80" slidertext-height="17"
                                     caption-color="C5D1D8" slider-type="rotary-horizontal-vertical"
                                     tooltip="Controls nonlinear behaviour of the filter resonance"
                                     name="Tight" disable-param="res_mode" disable-for-val="0"/>
                     <ModSlider class="SliderClass" parameter="res_bounce" caption="Bounce"
-                                    background-color="0x00000000"
+                                    background-color="0x00000000" slidertext-width="80" slidertext-height="17"
                                     lookAndFeel="SliderLNF" slider-thumb="FFFFB200" slider-track="1B2A33"
                                     slider-text="FFFFFFFF" slider-text-highlight="00000000"
                                     slider-text-outline="00000000"
@@ -175,14 +178,14 @@
                                lookAndFeel="SliderLNF" slider-thumb="FFFFB200" slider-track="1B2A33"
                                slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
                                caption-color="C5D1D8" tooltip="Controls the response of the output tone filter"
-                               name="Tone" slider-type="rotary-horizontal-vertical"/>
+                               name="Tone" slider-type="rotary-horizontal-vertical" slidertext-width="80" slidertext-height="17"/>
                     <ModSlider class="SliderClass" parameter="res_portamento" caption="Portamento"
                                lookAndFeel="SliderLNF" margin="0" background-color="0x00000000"
                                slider-thumb="FFFFB200" slider-track="1B2A33" slider-text="FFFFFFFF"
                                slider-text-highlight="00000000" slider-text-outline="00000000"
                                caption-color="C5D1D8" slider-type="rotary-horizontal-vertical"
                                tooltip="Controls the portamento time between notes on the same voice"
-                               name="Portamento"/>
+                               name="Portamento" slidertext-width="80" slidertext-height="17"/>
                 </View>
                 <View max-height="5" background-color="00000000"/>
             </View>
@@ -191,7 +194,7 @@
                            background-color="00000000" lookAndFeel="SliderLNF" slider-thumb="FFFFB200"
                            slider-text="FFFFFFFF" slider-text-highlight="00000000" slider-text-outline="00000000"
                            caption-color="C5D1D8" slider-background="1B2A33" name="Level"
-                           tooltip="Controls the output level"/>
+                           tooltip="Controls the output level" slidertext-width="80" slidertext-height="17"/>
                 <TextButton parameter="velo_sense" text="Velocity" text_on="Velocity" background-color="00000000"
                             margin="0" padding="5" button-color="FF1B2A33" flex-grow="0.125"
                             button-on-color="FFFFB200" lookAndFeel="LookAndFeel_V3" name="Velocity Sense"

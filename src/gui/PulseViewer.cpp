@@ -48,7 +48,7 @@ void PulseViewer::updatePath()
     shaper.reset();
 
     block.clear();
-    auto midiMessage = MidiMessage::noteOn (1, 64, (uint8) 127);
+    auto midiMessage = MidiMessage::noteOn (1, 64, (uint8) 64);
     MidiBuffer midiBuffer;
     midiBuffer.addEvent (midiMessage, offset);
 
