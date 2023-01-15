@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0]
+- Added CLAP plugin format.
+- Added MTS support.
+- Added velocity sensitivity.
+
 ## [1.1.1] 2021-11-07
 - Fixed bug with saving/loading plugin state.
 - Made presets agnostic to tuning setting.
