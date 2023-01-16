@@ -2,10 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.2.0]
+## [1.2.0] - 2023-01-16
 - Added CLAP plugin format.
 - Added MTS support.
 - Added velocity sensitivity.
+- Improved OpenGL handling on Windows.
 
 ## [1.1.1] 2021-11-07
 - Fixed bug with saving/loading plugin state.
