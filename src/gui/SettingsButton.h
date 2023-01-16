@@ -4,7 +4,7 @@
 
 class ChowKick;
 class SettingsButton : public DrawableButton,
-                       private chowdsp::TrackedByBroadcasters
+                       public chowdsp::TrackedByBroadcasters
 {
     using SettingID = chowdsp::GlobalPluginSettings::SettingID;
 

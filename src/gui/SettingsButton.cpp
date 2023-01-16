@@ -22,7 +22,6 @@ SettingsButton::SettingsButton (ChowKick& processor,
     Logger::writeToLog ("Skipping OpenGL checks: Plugin was compiled without linking to OpenGL!");
 #endif
     pluginSettings->addProperties<&SettingsButton::globalSettingChanged> ({ { openglID, shouldUseOpenGLByDefault } }, *this);
-
     globalSettingChanged (openglID);
 
     auto cog = Drawable::createFromImageData (BinaryData::cogsolid_svg, BinaryData::cogsolid_svgSize);
